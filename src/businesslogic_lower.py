@@ -39,3 +39,16 @@ def generate_possible_tiles_for_enemy(dungeon_map):
                 possible_tiles.append((i, j))
 
     return possible_tiles
+
+def generate_possible_tiles_for_traps(dungeon_map):
+    from src.constants import DUNGEON_HEIGHT, DUNGEON_WIDTH, FLOOR_TILE, ENEMY_TILE
+
+    possible_tiles = []
+    for i in range(DUNGEON_HEIGHT):
+        for j in range(DUNGEON_WIDTH):
+            if dungeon_map[i][j] == FLOOR_TILE and dungeon_map[i][j] != PLAYER_TILE and dungeon_map[i][j] != ENEMY_TILE:
+                if i == 1 and j <= 4:
+                    continue
+                possible_tiles.append((i, j))
+
+    return possible_tiles

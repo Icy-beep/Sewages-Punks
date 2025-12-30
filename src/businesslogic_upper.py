@@ -53,4 +53,11 @@ def create_dungeon():
     for tile, how_many in enemy_coordinates:
         dungeon_map[tile][how_many] = ENEMY_TILE
 
+    possible_tiles = generate_possible_tiles_for_traps(dungeon_map)
+    how_many_traps = random.randint(MIN_TRAPS, MAX_TRAPS)
+    traps_coordinates = random.sample(possible_tiles, how_many_traps)
+
+    for tile, how_many in traps_coordinates:
+        dungeon_map[tile][how_many] = TRAP_TILE
+
     return dungeon_map
