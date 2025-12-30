@@ -26,4 +26,26 @@ def create_dungeon():
 
                 dungeon_map[i].append(WALL_TILE)
 
+    passes = generate_passes()
+
+    for i in range(0, DUNGEON_HEIGHT):
+        for j in range(0, DUNGEON_WIDTH):
+            if i % 2 != 0 and 1 <= j <= 12:
+                dungeon_map[i][j] = FLOOR_TILE
+                dungeon_map[1][1] = PLAYER_TILE
+            if i == 2:
+                dungeon_map[i][passes[0][0]] = FLOOR_TILE
+                dungeon_map[i][passes[0][1]] = FLOOR_TILE
+            if i == 4:
+                dungeon_map[i][passes[1][0]] = FLOOR_TILE
+                dungeon_map[i][passes[1][1]] = FLOOR_TILE
+            if i == 6:
+                dungeon_map[i][passes[2][0]] = FLOOR_TILE
+                dungeon_map[i][passes[2][1]] = FLOOR_TILE
+            if i == 8:
+                dungeon_map[i][passes[3][0]] = FLOOR_TILE
+                dungeon_map[i][passes[3][1]] = FLOOR_TILE
+
+
+
     return dungeon_map
