@@ -92,8 +92,11 @@ def movement_player(location: list[list[int]], command: str):
     if command == 'd':
         new_position[1] += 1
 
-    if location[new_position[0]][new_position[1]] == WALL_TILE or location[new_position[0]][new_position[1]] == ENEMY_TILE:
+    if location[new_position[0]][new_position[1]] == WALL_TILE:
         return location, new_position
+
+    if location[new_position[0]][new_position[1]] == ENEMY_TILE:
+        fight = try_start_fight()
 
     location[old_position[0]][old_position[1]] = FLOOR_TILE
 

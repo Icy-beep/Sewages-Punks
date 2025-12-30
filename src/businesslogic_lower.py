@@ -116,3 +116,7 @@ def search_player_position(location: list[list[int]]) -> list[int] | None:
                 return player_position
 
     return None
+
+def try_start_fight():
+
+    return True
