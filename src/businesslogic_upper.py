@@ -67,10 +67,17 @@ def create_dungeon():
     for tile, how_many in chests_coordinates:
         dungeon_map[tile][how_many] = CHEST_TILE
 
+    possible_tiles = generate_possible_tiles_for_key(dungeon_map)
+    how_many_keys = AMT_KEY
+    key_coordinates = random.sample(possible_tiles, how_many_keys)
+
+    for tile, how_many in key_coordinates:
+        dungeon_map[tile][how_many] = KEY_TILE
 
 
 
 
 
 
-        return dungeon_map
+
+    return dungeon_map
