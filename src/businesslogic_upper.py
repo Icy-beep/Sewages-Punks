@@ -46,6 +46,11 @@ def create_dungeon():
                 dungeon_map[i][passes[3][0]] = FLOOR_TILE
                 dungeon_map[i][passes[3][1]] = FLOOR_TILE
 
+    possible_tiles = generate_possible_tiles_for_enemy(dungeon_map)
+    how_many_enemies = random.randint(MIN_ENEMY, MAX_ENEMY)
+    enemy_coordinates = random.sample(possible_tiles, how_many_enemies)
 
+    for tile, how_many in enemy_coordinates:
+        dungeon_map[tile][how_many] = ENEMY_TILE
 
     return dungeon_map
