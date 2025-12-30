@@ -100,3 +100,19 @@ def generate_possible_tiles_for_key(dungeon_map):
 
 
     return possible_tiles
+
+def search_player_position(location: list[list[int]]) -> list[int] | None:
+
+    rows = len(location)
+    columns = len(location[0])
+
+    player_position = []
+
+    for x in range(rows):
+        for y in range(columns):
+            if location[x][y] == PLAYER_TILE:
+                player_position.append(x)
+                player_position.append(y)
+                return player_position
+
+    return None
