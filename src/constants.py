@@ -34,4 +34,4 @@ WALL_ICON = '\033[0;37m'
 FLOOR_ICON = '\033[0;37m'
 TRAP_ICON = '\033[2;31m'
 
-EXIT_COMMANDS = ['EXIT', 'QUIT', 'Q', 'q',]
+EXIT_COMMANDS = ['exit', 'EXIT', 'QUIT', 'Q', 'q',]
