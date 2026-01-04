@@ -34,7 +34,18 @@ def show_dungeon_map(dungeon):
 
     return ''
 
-def START_FIGHT_MESSAGE(enemy_name):
+def start_fight_message(enemy) -> str:
 
-    if enemy_name[0][0]:
-        print(f'{START_FIGHT_MESSAGE_FONT} Вы вступаете в бой с панком')
+    if enemy[0] == NAME_ENEMY_PUNK:
+        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с панком')
+
+    if enemy[0] == NAME_ENEMY_SYNTH_HOUND:
+        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с синт. гончей')
+
+    if enemy[0] == NAME_ENEMY_GLITCH_BUTCHER:
+        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с мясником')
+
+    if enemy[0] == NAME_ENEMY_PSY_CODER:
+        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с пси-кодером')
+
+    return ''
