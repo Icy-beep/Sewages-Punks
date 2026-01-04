@@ -1,5 +1,6 @@
 from src.businesslogic_lower import *
 from src.constants import *
+from src.enemies import *
 
 def create_dungeon():
     """
@@ -113,7 +114,32 @@ def fight(location, new_position):
 
         attack = 1
 
+def create_enemy():
+    import random
 
+    name = choose_enemy()
+
+
+    hp_random = random.randint(0, 40)
+    initiative_random = random.randint(1, 2)
+
+    if random.random() < BASE_CHANCE - 0.80:
+        if name[ENTITY_HP] <= 70:
+            name[ENTITY_HP] = name[ENTITY_HP] + hp_random
+        else:
+            name[ENTITY_HP] = name[ENTITY_HP] + hp_random
+
+    if name[ENTITY_INITIATIVE] < 5:
+        if random.random() <= BASE_CHANCE - 0.50:
+            name[ENTITY_INITIATIVE] + initiative_random
+    if name[ENTITY_INITIATIVE] > 5:
+        if random.random() <= BASE_CHANCE - 0.50:
+            name[ENTITY_INITIATIVE] - initiative_random
+
+    hp_enemy = name[1]
+    initiative_enemy = name[2]
+
+    return name, hp_enemy, initiative_enemy,
 
 
 
