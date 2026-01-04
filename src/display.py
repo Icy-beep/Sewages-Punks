@@ -33,3 +33,8 @@ def show_dungeon_map(dungeon):
                 print(TRAP_ICON + '.', end='')
 
     return ''
+
+def START_FIGHT_MESSAGE(enemy_name):
+
+    if enemy_name[0][0]:
+        print(f'{START_FIGHT_MESSAGE_FONT} Вы вступаете в бой с панком')
