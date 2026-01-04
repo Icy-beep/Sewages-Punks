@@ -1,4 +1,5 @@
 from src.constants import *
+from src.enemies import *
 
 def generate_i_path():
     import random
@@ -126,5 +127,23 @@ def try_start_fight(location, new_position) -> bool:
 
     return if_fight
 
+def choose_enemy():
+     import random
+
+     choosing = random.randint(1, 4)
+
+     if choosing == 1:
+         enemy = punk
+
+     if choosing == 2:
+         enemy = enemy_2
+
+     if choosing == 3:
+         enemy = enemy_3
+
+     if choosing == 4:
+         enemy = enemy_4
+
+     return enemy
 
 
