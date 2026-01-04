@@ -106,13 +106,14 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
 
     return new_position
 
-def fight(location, new_position):
+def try_start_fight(location, new_position) -> bool:
 
-    is_fight = try_start_fight(location, new_position)
+    if_fight = False
 
-    while is_fight:
+    if location[new_position[0]][new_position[1]] == ENEMY_TILE:
+        if_fight = True
 
-        attack = 1
+    return if_fight
 
 def create_enemy():
     import random

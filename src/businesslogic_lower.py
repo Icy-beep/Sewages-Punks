@@ -118,15 +118,6 @@ def search_player_position(location: list[list[int]]) -> list[int] | None:
 
     return None
 
-def try_start_fight(location, new_position) -> bool:
-
-    if_fight = False
-
-    if location[new_position[0]][new_position[1]] == ENEMY_TILE:
-        if_fight = True
-
-    return if_fight
-
 def choose_enemy():
      import random
 
