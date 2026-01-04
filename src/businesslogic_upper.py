@@ -105,6 +105,14 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
 
     return new_position
 
+def fight(location, new_position):
+
+    is_fight = try_start_fight(location, new_position)
+
+    while is_fight:
+
+        attack = 1
+
 
 
 
