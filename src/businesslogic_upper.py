@@ -77,7 +77,7 @@ def create_dungeon():
 
     return dungeon_map
 
-def movement_player(location: list[list[int]], command: str):
+def movement_player(location: list[list[int]], command: str) -> list[int]:
 
     position = search_player_position(location)
     old_position = position
@@ -92,14 +92,20 @@ def movement_player(location: list[list[int]], command: str):
     if command == 'd':
         new_position[1] += 1
 
-    if location[new_position[0]][new_position[1]] == WALL_TILE:
-        return location, new_position
+    target_tile = location[new_position[0]][new_position[1]]
 
-    if location[new_position[0]][new_position[1]] == ENEMY_TILE:
-        fight = try_start_fight()
+    if target_tile == WALL_TILE:
+        return new_position
+
+    if target_tile == ENEMY_TILE:
+        return new_position
 
     location[old_position[0]][old_position[1]] = FLOOR_TILE
-
     location[new_position[0]][new_position[1]] = PLAYER_TILE
 
-    return location, new_position
+    return new_position
+
+
+
+
+
