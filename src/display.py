@@ -1,3 +1,5 @@
+import os
+
 from src.constants import *
 
 
@@ -33,6 +35,12 @@ def show_dungeon_map(dungeon):
                 print(TRAP_ICON + '.', end='')
 
     return ''
+def show_movement_legend():
+    print('Передвижение')
+    print('Верх - w')
+    print('Лево - a')
+    print('Низ - s')
+    print('Право - d')
 
 def start_fight_message(enemy) -> str:
 
@@ -49,3 +57,42 @@ def start_fight_message(enemy) -> str:
         return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с пси-кодером')
 
     return ''
+
+def show_battle_information(player, enemy):
+    import random
+    import time
+    import string
+
+    player_hp = player[ENTITY_HP]
+    player_initiative = player[ENTITY_INITIATIVE]
+
+    enemy_hp = enemy[ENTITY_HP]
+    enemy_initiative = enemy[ENTITY_INITIATIVE]
+
+    chars = string.ascii_letters + string.digits + string.punctuation
+
+    print()
+
+    for i in range(500):
+        fake_value = "".join(random.choice(chars) for _ in range(3))
+        print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {fake_value}', end='')
+        print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {fake_value}', end='')
+        time.sleep(0.001)
+
+    print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_hp}')
+    print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {player_initiative}')
+
+    print()
+
+    for i in range(500):
+        fake_value = "".join(random.choice(chars) for _ in range(3))
+        print(f'\r{ENEMY_HP_FONT}Здоровье противника: {fake_value}', end='')
+        print(f'\r{ENEMY_INITIATIVE_FONT}Инициатива противника: {fake_value}', end='')
+        time.sleep(0.001)
+
+    print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_hp}     ')
+    print(f'\r{ENEMY_INITIATIVE_FONT}Инициатива противника: {enemy_initiative}     ')
+
+def show_combat_legend():
+    print('a - атака')
+    print('d - защита')
