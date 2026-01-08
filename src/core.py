@@ -1,24 +1,24 @@
 import random
+import time
+import os
 
-from src import enemies
 from src.businesslogic_upper import *
 from src.display import *
 from src.constants import *
-from src.enemies import *
-from src.player import *
+from src.entities import *
+
+def create_player():
+    print('')
+
 
 def adventuring():
-
     dungeon_map = create_dungeon()
-
     user_input = ''
+
     while user_input not in EXIT_COMMANDS:
+        os.system('cls')
         print(show_dungeon_map(dungeon_map))
-        print('command')
-        print('up - w')
-        print('left - a')
-        print('down - s')
-        print('right - d')
+        show_movement_legend()
         user_input = input('>>')
 
         new_position = movement_player(dungeon_map, user_input)
@@ -26,15 +26,21 @@ def adventuring():
         is_fight = try_start_fight(dungeon_map, new_position)
 
         if is_fight:
-            return is_fight
+            return STATE_OF_ADVENTURING_FIGHT
 
-    return None
+    return STATE_OF_ADVENTURING_EXIT
 
-def fight():
+def fight(player_data):
+    import time
+    is_fight = True
     enemy = create_enemy()
-
-    print(enemy)
+    os.system('cls')
     print(start_fight_message(enemy))
+
+    while is_fight:
+        pass
+
+
 
 
 
