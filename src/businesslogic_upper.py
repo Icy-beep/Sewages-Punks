@@ -1,7 +1,6 @@
 from src.businesslogic_lower import *
 from src.constants import *
-from src.enemies import *
-from src.player import *
+from src.entities import *
 
 def create_dungeon():
     """
@@ -85,13 +84,13 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
     old_position = position
     new_position = position[:]
 
-    if command == 'w':
+    if command == COMMAND_MOVE_UP:
         new_position[0] -= 1
-    if command == 'a':
+    if command == COMMAND_MOVE_LEFT:
         new_position[1] -= 1
-    if command == 's':
+    if command == COMMAND_MOVE_DOWN:
         new_position[0] += 1
-    if command == 'd':
+    if command == COMMAND_MOVE_RIGHT:
         new_position[1] += 1
 
     target_tile = location[new_position[0]][new_position[1]]
@@ -117,27 +116,52 @@ def try_start_fight(location, new_position) -> bool:
     return if_fight
 
 def create_enemy():
-    import random
+    #import random
 
     enemy = choose_enemy()
 
-    hp_random = random.randint(0, 40)
-    initiative_random = random.randint(1, 2)
-
-    if random.random() < BASE_CHANCE - 0.80:
-        if enemy[ENTITY_HP] <= 70:
-            enemy[ENTITY_HP] = enemy[ENTITY_HP] + hp_random
-        else:
-            enemy[ENTITY_HP] = enemy[ENTITY_HP] - hp_random
-
-    if enemy[ENTITY_INITIATIVE] < 5:
-        if random.random() <= BASE_CHANCE - 0.50:
-            enemy[ENTITY_INITIATIVE] + initiative_random
-    if enemy[ENTITY_INITIATIVE] > 5:
-        if random.random() <= BASE_CHANCE - 0.50:
-            enemy[ENTITY_INITIATIVE] - initiative_random
+    # hp_random = random.randint(0, 40)
+    # initiative_random = random.randint(1, 2)
+    #
+    # if random.random() < BASE_CHANCE - 0.80:
+    #     if enemy[ENTITY_HP] <= 70:
+    #         enemy[ENTITY_HP] = enemy[ENTITY_HP] + hp_random
+    #     else:
+    #         enemy[ENTITY_HP] = enemy[ENTITY_HP] - hp_random
+    #
+    # if enemy[ENTITY_INITIATIVE] < 5:
+    #     if random.random() <= BASE_CHANCE - 0.50:
+    #         enemy[ENTITY_INITIATIVE] + initiative_random
+    # if enemy[ENTITY_INITIATIVE] > 5:
+    #     if random.random() <= BASE_CHANCE - 0.50:
+    #         enemy[ENTITY_INITIATIVE] - initiative_random
 
     return enemy
+
+def initiative_throw(player_data, enemy_data):
+    import random
+    left_border = 0
+    right_border = 5
+
+    throw_is_good = False
+
+    while not throw_is_good:
+        player_throw = random.randint(left_border, right_border)
+        enemy_throw = random.randint(left_border, right_border)
+
+        player_data[ENTITY_INITIATIVE] += player_throw
+        enemy_data[ENTITY_INITIATIVE] += enemy_throw
+
+        if player_data[ENTITY_INITIATIVE] > 10:
+            player_data[ENTITY_INITIATIVE] = 10
+
+        if enemy_data[ENTITY_INITIATIVE] > 10:
+            enemy_data[ENTITY_INITIATIVE] = 10
+
+        if player_data[ENTITY_INITIATIVE] > enemy_data[ENTITY_INITIATIVE] or enemy_data[ENTITY_INITIATIVE] > player_data[ENTITY_INITIATIVE]:
+            throw_is_good = True
+
+    return player_data, enemy_data
 
 
 
