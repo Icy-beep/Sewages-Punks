@@ -119,6 +119,7 @@ def create_enemy():
     #import random
 
     enemy = choose_enemy()
+    copy_of_enemy = enemy[:]
 
     # hp_random = random.randint(0, 40)
     # initiative_random = random.randint(1, 2)
@@ -136,7 +137,7 @@ def create_enemy():
     #     if random.random() <= BASE_CHANCE - 0.50:
     #         enemy[ENTITY_INITIATIVE] - initiative_random
 
-    return enemy
+    return copy_of_enemy
 
 def initiative_throw(player_data, enemy_data):
     import random
@@ -146,22 +147,35 @@ def initiative_throw(player_data, enemy_data):
     throw_is_good = False
 
     while not throw_is_good:
+        player_initiative = player_data[ENTITY_INITIATIVE]
+        enemy_initiative = enemy_data[ENTITY_INITIATIVE]
+
         player_throw = random.randint(left_border, right_border)
         enemy_throw = random.randint(left_border, right_border)
 
-        player_data[ENTITY_INITIATIVE] += player_throw
-        enemy_data[ENTITY_INITIATIVE] += enemy_throw
+        player_initiative += player_throw
+        enemy_initiative += enemy_throw
 
-        if player_data[ENTITY_INITIATIVE] > 10:
-            player_data[ENTITY_INITIATIVE] = 10
+        if player_initiative > 10:
+            player_initiative = 10
 
-        if enemy_data[ENTITY_INITIATIVE] > 10:
-            enemy_data[ENTITY_INITIATIVE] = 10
+        if enemy_initiative > 10:
+            enemy_initiative = 10
 
-        if player_data[ENTITY_INITIATIVE] > enemy_data[ENTITY_INITIATIVE] or enemy_data[ENTITY_INITIATIVE] > player_data[ENTITY_INITIATIVE]:
+        if player_initiative > enemy_initiative or enemy_initiative > player_initiative:
             throw_is_good = True
 
+    player_data[ENTITY_INITIATIVE] = player_initiative
+    enemy_data[ENTITY_INITIATIVE] = enemy_initiative
+
     return player_data, enemy_data
+
+
+
+
+
+
+
 
 
 
