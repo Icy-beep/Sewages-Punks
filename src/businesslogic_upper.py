@@ -181,7 +181,25 @@ def randomise_damage(damage):
     damage += random_damage
     return damage
 
+def try_ruin_attack_for_player(player_data):
+    import random
 
+    throw = random.random()
+
+    if throw < player_data[ENTITY_MISS_CHANCE]:
+        return True
+
+    return False
+
+def try_ruin_attack_for_enemy(enemy_data):
+    import random
+
+    throw = random.random()
+
+    if throw < enemy_data[ENTITY_MISS_CHANCE]:
+        return True
+
+    return False
 
 
 
