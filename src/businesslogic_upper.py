@@ -170,6 +170,17 @@ def initiative_throw(player_data, enemy_data):
 
     return player_data, enemy_data
 
+def randomise_damage(damage):
+    import random
+
+    left_border = -2
+    right_border = 2
+
+    random_damage = random.randint(left_border, right_border)
+
+    damage += random_damage
+    return damage
+
 
 
 
