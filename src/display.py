@@ -79,8 +79,8 @@ def show_battle_information(player, enemy):
         print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {fake_value}', end='')
         time.sleep(0.001)
 
-    print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_hp}')
-    print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {player_initiative}')
+    print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_hp}       ')
+    print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {player_initiative}       ')
 
     print()
 
@@ -96,3 +96,28 @@ def show_battle_information(player, enemy):
 def show_combat_legend():
     print('a - атака')
     print('d - защита')
+    print('i - информация о битве')
+
+def show_enemy_hp(enemy_data):
+    import random
+    import string
+
+    chars = string.ascii_letters + string.digits + string.punctuation
+
+    for i in range(500):
+        fake_value = "".join(random.choice(chars) for _ in range(3))
+        print(f'\r{ENEMY_HP_FONT}Здоровье противника: {fake_value}', end='')
+
+    print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_data[ENTITY_HP]}     ')
+
+def show_player_hp(player_data):
+    import random
+    import string
+
+    chars = string.ascii_letters + string.digits + string.punctuation
+
+    for i in range(500):
+        fake_value = "".join(random.choice(chars) for _ in range(3))
+        print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {fake_value}', end='')
+
+    print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_data[ENTITY_HP]}     ')
