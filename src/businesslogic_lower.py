@@ -1,5 +1,5 @@
 from src.constants import *
-from src.enemies import *
+from src.entities import *
 
 def generate_i_path():
     import random
@@ -127,13 +127,13 @@ def choose_enemy():
          enemy = punk
 
      if choosing == 2:
-         enemy = enemy_2
+         enemy = synth_hound
 
      if choosing == 3:
-         enemy = enemy_3
+         enemy = glitch_butcher
 
      if choosing == 4:
-         enemy = enemy_4
+         enemy = psy_coder
 
      return enemy
 
