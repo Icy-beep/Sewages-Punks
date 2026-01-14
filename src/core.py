@@ -52,6 +52,8 @@ def fight(player_data):
 
     player_data, enemy_data = initiative_throw(player_data, enemy_data)
 
+    count_of_heal = 4
+
     enemy_step = False
     player_step = False
 
@@ -108,6 +110,15 @@ def fight(player_data):
                 print('Вы пытаетесь уклониться шанс промаха противника увеличен')
                 time.sleep(2)
                 os.system('cls')
+
+            if user_input == 'h':
+                player_data[ENTITY_HP] += 10
+
+                count_of_heal -= 1
+
+                heal_message()
+
+                continue
 
             if user_input == 'i':
                 showing = True
