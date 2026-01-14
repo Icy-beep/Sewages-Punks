@@ -30,10 +30,39 @@ def adventuring(dungeon_map, player_data):
 
         new_position = movement_player(dungeon_map, user_input)
 
-        if dungeon_map[new_position[0]][new_position[1]] == TRAP_TILE:
-            print('Вы попали в ловушку -5HP')
-            player_data[ENTITY_HP] -= 5
-            enter_continue()
+        if dungeon_map[new_position[x_coord]][new_position[y_coord]] == TRAP_TILE:
+            print('Перед вами ловушка')
+            trap_inputs()
+            user_input = input('>>')
+
+            trap_case = True
+
+            while trap_case:
+                if user_input not in TRAP_COMMANDS:
+                    continue
+
+                if user_input == '1':
+                    defuse = defuse_trap(player_data)
+                    if defuse:
+                        print('Ловушка обезврежена')
+                        dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
+                        trap_case = False
+                    if not defuse:
+                        print('У вас нет набора для обезвреживания ловушки')
+                        continue
+
+
+                if user_input == '2':
+                    defuse = defuse_trap_run()
+                    if defuse:
+                        print('Вы пробежали, ловушка активировалась у вас за спиной')
+                        dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
+                        trap_case = False
+                    else:
+                        print('Вы не успели ловушка вас зацепила -5HP')
+                        player_data[ENTITY_HP] -= 5
+                        dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
+                        trap_case = False
 
 
         is_fight = try_start_fight(dungeon_map, new_position)
