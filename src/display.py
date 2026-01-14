@@ -125,4 +125,7 @@ def show_player_hp(player_data):
 def heal_message():
 
     print('Вы использовали свой регенеративный ингалятор')
-    
+
+def empty_heal_message():
+
+    print('Ваш регенеративный ингалятор пуст')
