@@ -33,6 +33,7 @@ def adventuring(dungeon_map, player_data):
         if dungeon_map[new_position[0]][new_position[1]] == TRAP_TILE:
             print('Вы попали в ловушку -5HP')
             player_data[ENTITY_HP] -= 5
+            enter_continue()
 
 
         is_fight = try_start_fight(dungeon_map, new_position)
