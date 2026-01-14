@@ -112,11 +112,14 @@ def fight(player_data):
                 os.system('cls')
 
             if user_input == 'h':
-                player_data[ENTITY_HP] += 10
+                if count_of_heal >= 0:
+                    player_data[ENTITY_HP] += 10
 
-                count_of_heal -= 1
+                    count_of_heal -= 1
 
-                heal_message()
+                    heal_message()
+                else:
+                    empty_heal_message()
 
                 continue
 
