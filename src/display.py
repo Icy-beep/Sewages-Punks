@@ -110,6 +110,18 @@ def show_enemy_hp(enemy_data):
 
     print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_data[ENTITY_HP]}     ')
 
+def enter_continue(what_print):
+
+    showing = True
+    while showing:
+
+        print(what_print)
+        print('нажмите ENTER чтобы продолжить')
+        user_input = input('>>')
+        os.system('cls')
+
+        showing = False
+
 def show_player_hp(player_data):
     import random
     import string
