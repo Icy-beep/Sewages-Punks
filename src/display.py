@@ -121,3 +121,8 @@ def show_player_hp(player_data):
         print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {fake_value}', end='')
 
     print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_data[ENTITY_HP]}     ')
+
+def heal_message():
+
+    print('Вы использовали свой регенеративный ингалятор')
+    
