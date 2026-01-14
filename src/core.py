@@ -124,16 +124,8 @@ def fight(player_data):
                 continue
 
             if user_input == 'i':
-                showing = True
-                while showing:
-                    show_battle_information(player_data, enemy_data)
-                    print()
-                    print('нажмите ENTER чтобы продолжить')
-                    user_input = input('>>')
+                enter_continue(show_battle_information(player_data, enemy_data))
 
-                    showing = False
-
-                os.system('cls')
                 continue
 
 
