@@ -30,6 +30,74 @@ def adventuring(dungeon_map, player_data):
 
         new_position = movement_player(dungeon_map, user_input)
 
+        if dungeon_map[new_position[x_coord]][new_position[y_coord]] == CHEST_TILE:
+
+            item = open_chest()
+
+            if item == ITEM_DEFUSAL_KIT:
+                player_data[PLAYER_ITEM_DEFUSAL_KIT] += 1
+                dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
+
+            if item == ITEM_NOTHING:
+                dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
+                continue
+
+        if dungeon_map[new_position[x_coord]][new_position[y_coord]] == EXIT_TILE:
+            clear_display()
+            print('Вы пытаетесь открыть дверь')
+            enter_continue()
+
+            door_case = True
+
+            while door_case:
+                clear_display()
+                exit_interactions()
+                user_input = input('>>')
+
+                if user_input not in DOOR_INTERACTION_COMMANDS:
+                    continue
+
+                if user_input == '1':
+                    if player_data[PLAYER_ITEM_KEY] >= 1:
+                        clear_display()
+
+                        choosing = True
+                        while choosing:
+                            print('У вас есть ключ-карта, применить?')
+                            print('1 - Да')
+                            print('2 - Нет')
+                            user_input = input('>>')
+
+                            if user_input == '1':
+                                clear_display()
+                                print('Вы провели ключ-картой по считывателю, кардридер издал приятный одобрительный звук и дверь с небольшим скрипом приоткрылась')
+                                enter_continue()
+                                return STATE_OF_ADVENTURING_EXFILL, new_position
+
+                            if user_input == '2':
+                                clear_display()
+                                print('Вы отходите от двери')
+                                choosing = False
+                                door_case = False
+
+                if user_input == '2':
+                    clear_display()
+                    print('Вы бьёте ногой по двери грохот раздался по всей канализации но дверь не открылась')
+                    enter_continue()
+                    continue
+
+                if user_input == '3':
+                    clear_display()
+                    print('Вы отходите от двери')
+                    door_case = False
+
+        if dungeon_map[new_position[x_coord]][new_position[y_coord]] == KEY_TILE:
+            clear_display()
+            print('Вы нашли ключ-карту')
+            player_data[PLAYER_ITEM_KEY] += 1
+            enter_continue()
+            dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
+
         if dungeon_map[new_position[x_coord]][new_position[y_coord]] == TRAP_TILE:
             print('Перед вами ловушка')
             trap_inputs()
