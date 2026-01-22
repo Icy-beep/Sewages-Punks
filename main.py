@@ -11,14 +11,23 @@ def game_start():
 def game_loop(player_data):
     is_fight = False
     game_is_run = True
+    exfill = False
     dungeon = create_dungeon()
 
     while game_is_run:
         while not is_fight:
+            if exfill:
+                dungeon = create_dungeon()
+                exfill = False
+
             state_of_adventuring, new_position = adventuring(dungeon, player_data)
 
             if state_of_adventuring == STATE_OF_ADVENTURING_FIGHT:
                 break
+
+            if state_of_adventuring == STATE_OF_ADVENTURING_EXFILL:
+                exfill = True
+                pass
 
             if state_of_adventuring == STATE_OF_ADVENTURING_EXIT:
                 exit(0)
