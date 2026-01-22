@@ -124,16 +124,16 @@ def choose_enemy():
      choosing = random.randint(1, 4)
 
      if choosing == 1:
-         enemy = punk
+         enemy = punk[:]
 
      if choosing == 2:
-         enemy = synth_hound
+         enemy = synth_hound[:]
 
      if choosing == 3:
-         enemy = glitch_butcher
+         enemy = glitch_butcher[:]
 
      if choosing == 4:
-         enemy = psy_coder
+         enemy = psy_coder[:]
 
      return enemy
 
