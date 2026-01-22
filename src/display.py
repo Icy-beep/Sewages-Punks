@@ -42,6 +42,43 @@ def show_movement_legend():
     print('Низ - s')
     print('Право - d')
 
+def initiative_throw_message():
+
+    print('Решается чей ход первый')
+
+def throw_animation(player_data, enemy_data):
+    import random
+    import string
+    import time
+
+    chars = string.ascii_letters + string.digits + string.punctuation
+
+    print()
+
+
+    for i in range(50):
+        fake_value = "".join(random.choice(chars) for _ in range(8))
+
+        print(f"\rВаша инициатива: {fake_value}", end='')
+        time.sleep(0.04)
+
+    print(f'\rВаша инициатива: {player_data[ENTITY_INITIATIVE]}         ')
+
+    print()
+
+    for i in range(50):
+        fake_value = "".join(random.choice(chars) for _ in range(8))
+
+        print(f"\rИнициатива врага: {fake_value}", end='')
+        time.sleep(0.04)
+
+    print(f'\rИнициатива врага: {enemy_data[ENTITY_INITIATIVE]}        ')
+
+def trap_inputs():
+
+    print('1 - Обезвредить')
+    print('2 - Пробежать')
+
 def start_fight_message(enemy) -> str:
 
     if enemy[0] == NAME_ENEMY_PUNK:
