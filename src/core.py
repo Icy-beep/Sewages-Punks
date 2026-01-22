@@ -23,7 +23,7 @@ def adventuring(dungeon_map, player_data):
     user_input = ''
 
     while user_input not in EXIT_COMMANDS:
-        os.system('cls')
+        clear_display()
         print(show_dungeon_map(dungeon_map))
         show_movement_legend()
         user_input = input('>>')
