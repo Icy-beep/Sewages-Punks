@@ -99,35 +99,44 @@ def adventuring(dungeon_map, player_data):
             dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
 
         if dungeon_map[new_position[x_coord]][new_position[y_coord]] == TRAP_TILE:
+            clear_display()
             print('Перед вами ловушка')
-            trap_inputs()
-            user_input = input('>>')
 
             trap_case = True
 
             while trap_case:
+                trap_inputs()
+                user_input = input('>>')
                 if user_input not in TRAP_COMMANDS:
                     continue
 
                 if user_input == '1':
                     defuse = defuse_trap(player_data)
                     if defuse:
+                        clear_display()
                         print('Ловушка обезврежена')
+                        enter_continue()
                         dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                         trap_case = False
                     if not defuse:
+                        clear_display()
                         print('У вас нет набора для обезвреживания ловушки')
+                        enter_continue()
                         continue
 
 
                 if user_input == '2':
                     defuse = defuse_trap_run()
                     if defuse:
+                        clear_display()
                         print('Вы пробежали, ловушка активировалась у вас за спиной')
+                        enter_continue()
                         dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                         trap_case = False
                     else:
+                        clear_display()
                         print('Вы не успели ловушка вас зацепила -5HP')
+                        enter_continue()
                         player_data[ENTITY_HP] -= 5
                         dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                         trap_case = False
@@ -145,10 +154,17 @@ def fight(player_data):
 
     is_fight = True
     enemy_data = create_enemy()
-    os.system('cls')
+    clear_display()
     print(start_fight_message(enemy_data))
+    enter_continue()
 
+    print()
+
+    initiative_throw_message()
     player_data, enemy_data = initiative_throw(player_data, enemy_data)
+    throw_animation(player_data, enemy_data)
+    enter_continue()
+    clear_display()
 
     count_of_heal = 4
 
@@ -169,10 +185,16 @@ def fight(player_data):
             break
 
         if player_step:
-            print(f'{PLAYER_HP_FONT}Ваше ход')
+            who = 'player'
+            count_of_use_heal_in_step = 0
+            message_about_step(enemy = 0, player = 1)
 
             show_combat_legend()
             user_input = input('>>')
+
+            if user_input not in COMBAT_COMMANDS:
+                clear_display()
+                continue
 
             if user_input == 'a':
 
@@ -182,7 +204,10 @@ def fight(player_data):
                 is_miss = try_ruin_attack_for_player(player_data)
 
                 if is_miss:
+                    clear_display()
                     print('Промах!')
+                    enter_continue()
+                    clear_display()
                     player_step = False
                     enemy_step = True
                     continue
@@ -190,14 +215,15 @@ def fight(player_data):
 
                 enemy_data[ENTITY_HP] -= damage
 
-                os.system('cls')
-                print(f'Попадание, вы нанесли {damage} - урона')
-                time.sleep(2)
+                clear_display()
+                hit_message(damage, who)
+                enter_continue()
+                clear_display()
 
                 show_enemy_hp(enemy_data)
                 print()
-                time.sleep(2)
-                os.system('cls')
+                enter_continue()
+                clear_display()
 
                 if enemy_data[ENTITY_HP] <= 0:
                     player_win = True
@@ -206,23 +232,45 @@ def fight(player_data):
                 enemy_data[ENTITY_MISS_CHANCE] += 0.4
 
                 print('Вы пытаетесь уклониться шанс промаха противника увеличен')
-                time.sleep(2)
-                os.system('cls')
+                enter_continue()
+                clear_display()
 
             if user_input == 'h':
                 if count_of_heal >= 0:
                     player_data[ENTITY_HP] += 10
 
+                    count_of_use_heal_in_step += 1
+
+                    if count_of_use_heal_in_step > 1:
+                        toxication_message()
+                        player_data[ENTITY_TOXICITY] += 1
+
+                        if player_data[ENTITY_TOXICITY] >= 5:
+                            player_data[ENTITY_HP] -= 5
+                            toxication_damage_message()
+                            enter_continue()
+                            clear_display()
+
+
+                    if player_data[ENTITY_HP] >= 100:
+                        player_data[ENTITY_HP] = 100
+
                     count_of_heal -= 1
 
                     heal_message()
+                    show_player_hp(player_data)
+                    enter_continue()
+                    clear_display()
                 else:
                     empty_heal_message()
+                    enter_continue()
+                    clear_display()
 
                 continue
 
             if user_input == 'i':
-                enter_continue(show_battle_information(player_data, enemy_data))
+                show_battle_information(player_data, enemy_data)
+                enter_continue()
 
                 continue
 
@@ -231,10 +279,11 @@ def fight(player_data):
             enemy_step = True
 
         if enemy_step:
+            if enemy_data[ENTITY_HP] <= 0:
+                continue
 
-            print(f'{ENEMY_HP_FONT}Ход противника')
-            time.sleep(2)
-            os.system('cls')
+            who = 'enemy'
+            message_about_step(player = 0, enemy = 1)
 
             damage = enemy_data[ENTITY_DAMAGE]
             damage = randomise_damage(damage)
@@ -243,20 +292,21 @@ def fight(player_data):
 
             if is_miss:
                 print('Враг промахнулся')
-                time.sleep(2)
-                os.system('cls')
+                enter_continue()
+                clear_display()
                 enemy_step = False
                 player_step = True
                 continue
 
             player_data[ENTITY_HP] -= damage
-            print(f'Попадание враг нанес {damage} урона')
+            hit_message(damage, who)
+            clear_display()
             show_player_hp(player_data)
-            time.sleep(2)
-            os.system('cls')
+            enter_continue()
 
             if player_data[ENTITY_HP] <= 0:
                 print('Враг победил')
+                enter_continue()
                 enemy_win = True
 
 
