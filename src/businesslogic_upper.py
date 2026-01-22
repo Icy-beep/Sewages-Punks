@@ -208,6 +208,18 @@ def defuse_trap(player_data):
     else:
         return False
 
+def defuse_trap_run():
+    import random
+
+    chance = BASE_CHANCE - 0.70
+
+    if random.random() < chance:
+        return True
+    else:
+        return False
+
+def open_chest():
+    import random
 
 
 
