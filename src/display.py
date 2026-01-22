@@ -1,4 +1,5 @@
 import os
+from _pyrepl.commands import clear_screen
 
 from src.constants import *
 
@@ -100,40 +101,37 @@ def show_battle_information(player, enemy):
     import time
     import string
 
+    clear_display()
+
     player_hp = player[ENTITY_HP]
-    player_initiative = player[ENTITY_INITIATIVE]
 
     enemy_hp = enemy[ENTITY_HP]
-    enemy_initiative = enemy[ENTITY_INITIATIVE]
 
     chars = string.ascii_letters + string.digits + string.punctuation
 
     print()
 
     for i in range(500):
-        fake_value = "".join(random.choice(chars) for _ in range(3))
+        fake_value = "".join(random.choice(chars) for _ in range(10))
         print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {fake_value}', end='')
-        print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {fake_value}', end='')
         time.sleep(0.001)
 
     print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_hp}       ')
-    print(f'\r{PLAYER_INITIATIVE_FONT}Ваша инициатива: {player_initiative}       ')
 
     print()
 
     for i in range(500):
-        fake_value = "".join(random.choice(chars) for _ in range(3))
+        fake_value = "".join(random.choice(chars) for _ in range(10))
         print(f'\r{ENEMY_HP_FONT}Здоровье противника: {fake_value}', end='')
-        print(f'\r{ENEMY_INITIATIVE_FONT}Инициатива противника: {fake_value}', end='')
         time.sleep(0.001)
 
-    print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_hp}     ')
-    print(f'\r{ENEMY_INITIATIVE_FONT}Инициатива противника: {enemy_initiative}     ')
+    print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_hp}        ')
 
 def show_combat_legend():
     print('a - атака')
     print('d - защита')
     print('i - информация о битве')
+    print('h - лечение')
 
 def show_enemy_hp(enemy_data):
     import random
@@ -147,17 +145,20 @@ def show_enemy_hp(enemy_data):
 
     print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_data[ENTITY_HP]}     ')
 
-def enter_continue(what_print):
+def enter_continue():
 
     showing = True
     while showing:
-
-        print(what_print)
+        print()
         print('нажмите ENTER чтобы продолжить')
         user_input = input('>>')
-        os.system('cls')
+        clear_display()
 
         showing = False
+
+def clear_display():
+
+    os.system('cls')
 
 def show_player_hp(player_data):
     import random
@@ -178,3 +179,33 @@ def heal_message():
 def empty_heal_message():
 
     print('Ваш регенеративный ингалятор пуст')
+
+def message_about_step(player = 0, enemy = 0):
+
+    if player == 1:
+        print(f'{PLAYER_HP_FONT}Ваш ход')
+
+    if enemy == 1:
+        print(f'{ENEMY_HP_FONT}Ход противника')
+
+def toxication_message():
+
+    print('Уровень интоксикации увеличен')
+
+def toxication_damage_message():
+
+    print('Уровень интоксикации критический -5HP')
+
+def hit_message(damage, who):
+
+    if who == 'enemy':
+        print(f'Попадание, враг нанес {damage} - урона')
+
+    if who == 'player':
+        print(f'Попадание, вы нанесли {damage} - урона')
+
+def exit_interactions():
+
+    print('1 - Открыть ключ-картой')
+    print('2 - Выбить ногой')
+    print('3 - Уйти')
