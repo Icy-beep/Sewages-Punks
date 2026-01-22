@@ -221,6 +221,9 @@ def defuse_trap_run():
 def open_chest():
     import random
 
+    item = random.randint(0, 1)
+
+    return item
 
 
 
