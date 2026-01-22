@@ -85,15 +85,15 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
     new_position = position[:]
 
     if command == COMMAND_MOVE_UP:
-        new_position[0] -= 1
+        new_position[x_coord] -= 1
     if command == COMMAND_MOVE_LEFT:
-        new_position[1] -= 1
+        new_position[y_coord] -= 1
     if command == COMMAND_MOVE_DOWN:
-        new_position[0] += 1
+        new_position[x_coord] += 1
     if command == COMMAND_MOVE_RIGHT:
-        new_position[1] += 1
+        new_position[y_coord] += 1
 
-    target_tile = location[new_position[0]][new_position[1]]
+    target_tile = location[new_position[x_coord]][new_position[y_coord]]
 
     if target_tile == WALL_TILE:
         return new_position
@@ -101,8 +101,21 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
     if target_tile == ENEMY_TILE:
         return new_position
 
-    location[old_position[0]][old_position[1]] = FLOOR_TILE
-    location[new_position[0]][new_position[1]] = PLAYER_TILE
+    if target_tile == TRAP_TILE:
+        return new_position
+
+    if target_tile == CHEST_TILE:
+        return new_position
+
+    if target_tile == KEY_TILE:
+        return new_position
+
+    if target_tile == EXIT_TILE:
+        return new_position
+
+
+    location[old_position[x_coord]][old_position[y_coord]] = FLOOR_TILE
+    location[new_position[x_coord]][new_position[y_coord]] = PLAYER_TILE
 
     return new_position
 
