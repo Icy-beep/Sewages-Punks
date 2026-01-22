@@ -201,6 +201,13 @@ def try_ruin_attack_for_enemy(enemy_data):
 
     return False
 
+def defuse_trap(player_data):
+
+    if player_data[PLAYER_ITEM_DEFUSAL_KIT] >= 1:
+        return True
+    else:
+        return False
+
 
 
 
