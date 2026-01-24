@@ -209,3 +209,11 @@ def exit_interactions():
     print('1 - Открыть ключ-картой')
     print('2 - Выбить ногой')
     print('3 - Уйти')
+
+def loot_message(loot):
+
+    if loot == ITEM_DEFUSAL_KIT:
+        print('Вы нашли набор для обезвреживания ловушек')
+
+    if loot == ITEM_NOTHING:
+        print('Вы ничего не нашли')
