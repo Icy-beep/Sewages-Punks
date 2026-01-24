@@ -36,6 +36,8 @@ def adventuring(dungeon_map, player_data):
 
             if item == ITEM_DEFUSAL_KIT:
                 player_data[PLAYER_ITEM_DEFUSAL_KIT] += 1
+                clear_display()
+                loot_message(item)
                 dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
 
             if item == ITEM_NOTHING:
