@@ -41,6 +41,7 @@ def adventuring(dungeon_map, player_data):
                 dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
 
             if item == ITEM_NOTHING:
+                loot_message(item)
                 dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                 continue
 
