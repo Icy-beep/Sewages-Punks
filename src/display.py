@@ -3,6 +3,27 @@ from _pyrepl.commands import clear_screen
 
 from src.constants import *
 
+GAME_OVER_MESSAGE = 'GAME OVER'
+INPUT_PLAYER_NAME_MESSAGE = 'Введите имя персонажа'
+YOU_TRY_OPEN_DOR_MESSAGE = 'Вы пытаетесь открыть дверь'
+CARD_READER_MESSAGE = 'Вы провели ключ-картой по считывателю, кардридер издал приятный одобрительный звук и дверь с небольшим скрипом приоткрылась'
+DOOR_INTERACTION_MESSAGE = 'Вы отходите от двери'
+KICK_THE_DOOR_MESSAGE = 'Вы бьёте ногой по двери грохот раздался по всей канализации но дверь не открылась'
+STEP_OUT_THE_DOOR_MESSAGE = 'Вы отходите от двери'
+YOU_FOUND_KEY_CARD_MESSAGE = 'Вы нашли ключ-карту'
+TRAP_FORWARD_MESSAGE = 'Перед вами ловушка'
+TRAP_DEFUSED_MESSAGE = 'Ловушка обезврежена'
+YOU_DONT_HAVE_DEFKIT_MESSAGE = 'У вас нет набора для обезвреживания ловушки'
+TRAP_ACTIVATED_MESSAGE = 'Вы пробежали, ловушка активировалась у вас за спиной'
+TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE = 'Вы не успели ловушка вас зацепила -5HP'
+PLAYER_TRY_DODGE_MESSAGE = 'Вы пытаетесь уклониться шанс промаха противника увеличен'
+ENEMY_MISS_MESSAGE = 'Враг промахнулся'
+ENEMY_WIN_MESSAGE = 'Враг победил'
+
+PLAYER_WORD_VARIABLE = 'player'
+ENEMY_WORD_VARIABLE = 'enemy'
+
+MISS_WORD = 'Промах!'
 
 def show_dungeon_map(dungeon):
 
@@ -217,3 +238,8 @@ def loot_message(loot):
 
     if loot == ITEM_NOTHING:
         print('Вы ничего не нашли')
+
+def key_card_options_menu():
+    print('У вас есть ключ-карта, применить?')
+    print('1 - Да')
+    print('2 - Нет')

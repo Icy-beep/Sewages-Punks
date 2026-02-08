@@ -34,7 +34,7 @@ def game_loop(player_data):
 
         fight(player_data)
         if player_data[ENTITY_HP] <= 0:
-            print('GAME OVER')
+            print(GAME_OVER_MESSAGE)
             sys.exit(0)
         dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
 

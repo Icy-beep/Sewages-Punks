@@ -1,17 +1,13 @@
-import random
-import time
-import os
-
 from src.businesslogic_upper import *
 from src.display import *
-from src.constants import *
 from src.entities import *
+from src.constants import *
 
 def create_player():
     global player_name
     global player
 
-    print('Введите своё имя')
+    print(INPUT_PLAYER_NAME_MESSAGE)
     user_input = input('>>')
 
     player_name = user_input
@@ -47,7 +43,7 @@ def adventuring(dungeon_map, player_data):
 
         if dungeon_map[new_position[x_coord]][new_position[y_coord]] == EXIT_TILE:
             clear_display()
-            print('Вы пытаетесь открыть дверь')
+            print(YOU_TRY_OPEN_DOR_MESSAGE)
             enter_continue()
 
             door_case = True
@@ -66,44 +62,42 @@ def adventuring(dungeon_map, player_data):
 
                         choosing = True
                         while choosing:
-                            print('У вас есть ключ-карта, применить?')
-                            print('1 - Да')
-                            print('2 - Нет')
+                            key_card_options_menu()
                             user_input = input('>>')
 
                             if user_input == '1':
                                 clear_display()
-                                print('Вы провели ключ-картой по считывателю, кардридер издал приятный одобрительный звук и дверь с небольшим скрипом приоткрылась')
+                                print(CARD_READER_MESSAGE)
                                 enter_continue()
                                 return STATE_OF_ADVENTURING_EXFILL, new_position
 
                             if user_input == '2':
                                 clear_display()
-                                print('Вы отходите от двери')
+                                print(DOOR_INTERACTION_MESSAGE)
                                 choosing = False
                                 door_case = False
 
                 if user_input == '2':
                     clear_display()
-                    print('Вы бьёте ногой по двери грохот раздался по всей канализации но дверь не открылась')
+                    print(KICK_THE_DOOR_MESSAGE)
                     enter_continue()
                     continue
 
                 if user_input == '3':
                     clear_display()
-                    print('Вы отходите от двери')
+                    print(STEP_OUT_THE_DOOR_MESSAGE)
                     door_case = False
 
         if dungeon_map[new_position[x_coord]][new_position[y_coord]] == KEY_TILE:
             clear_display()
-            print('Вы нашли ключ-карту')
+            print(YOU_FOUND_KEY_CARD_MESSAGE)
             player_data[PLAYER_ITEM_KEY] += 1
             enter_continue()
             dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
 
         if dungeon_map[new_position[x_coord]][new_position[y_coord]] == TRAP_TILE:
             clear_display()
-            print('Перед вами ловушка')
+            print(TRAP_FORWARD_MESSAGE)
 
             trap_case = True
 
@@ -117,13 +111,13 @@ def adventuring(dungeon_map, player_data):
                     defuse = defuse_trap(player_data)
                     if defuse:
                         clear_display()
-                        print('Ловушка обезврежена')
+                        print(TRAP_DEFUSED_MESSAGE)
                         enter_continue()
                         dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                         trap_case = False
                     if not defuse:
                         clear_display()
-                        print('У вас нет набора для обезвреживания ловушки')
+                        print(YOU_DONT_HAVE_DEFKIT_MESSAGE)
                         enter_continue()
                         continue
 
@@ -132,13 +126,13 @@ def adventuring(dungeon_map, player_data):
                     defuse = defuse_trap_run()
                     if defuse:
                         clear_display()
-                        print('Вы пробежали, ловушка активировалась у вас за спиной')
+                        print(TRAP_ACTIVATED_MESSAGE)
                         enter_continue()
                         dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                         trap_case = False
                     else:
                         clear_display()
-                        print('Вы не успели ловушка вас зацепила -5HP')
+                        print(TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE)
                         enter_continue()
                         player_data[ENTITY_HP] -= 5
                         dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
@@ -153,7 +147,6 @@ def adventuring(dungeon_map, player_data):
     return STATE_OF_ADVENTURING_EXIT
 
 def fight(player_data):
-    import time
 
     is_fight = True
     enemy_data = create_enemy()
@@ -188,7 +181,7 @@ def fight(player_data):
             break
 
         if player_step:
-            who = 'player'
+            who = PLAYER_WORD_VARIABLE
             count_of_use_heal_in_step = 0
             message_about_step(enemy = 0, player = 1)
 
@@ -208,7 +201,7 @@ def fight(player_data):
 
                 if is_miss:
                     clear_display()
-                    print('Промах!')
+                    print(MISS_WORD)
                     enter_continue()
                     clear_display()
                     player_step = False
@@ -234,7 +227,7 @@ def fight(player_data):
             if user_input == 'd':
                 enemy_data[ENTITY_MISS_CHANCE] += 0.4
 
-                print('Вы пытаетесь уклониться шанс промаха противника увеличен')
+                print(PLAYER_TRY_DODGE_MESSAGE)
                 enter_continue()
                 clear_display()
 
@@ -285,7 +278,7 @@ def fight(player_data):
             if enemy_data[ENTITY_HP] <= 0:
                 continue
 
-            who = 'enemy'
+            who = ENEMY_WORD_VARIABLE
             message_about_step(player = 0, enemy = 1)
 
             damage = enemy_data[ENTITY_DAMAGE]
@@ -294,7 +287,7 @@ def fight(player_data):
             is_miss = try_ruin_attack_for_enemy(enemy_data)
 
             if is_miss:
-                print('Враг промахнулся')
+                print(ENEMY_MISS_MESSAGE)
                 enter_continue()
                 clear_display()
                 enemy_step = False
@@ -308,7 +301,7 @@ def fight(player_data):
             enter_continue()
 
             if player_data[ENTITY_HP] <= 0:
-                print('Враг победил')
+                print(ENEMY_WIN_MESSAGE)
                 enter_continue()
                 enemy_win = True
 
