@@ -1,0 +1,38 @@
+# Python
+# .env: virtual environment (often named .venv or venv)
+# .venv: virtual environment recommended by pypa
+# venv: virtual environment often found in project root
+.env
+.venv/
+venv/
+env/
+
+# Byte-code files
+*.pyc
+__pycache__/
+
+# Distribution / packaging
+.Python
+build/
+dist/
+eggs/
+build/
+dist/
+main.spec
+src/__pycache__/
+*.egg-info/
+*.egg
+
+# Testing
+.pytest_cache/
+
+# PyCharm/JetBrains IDE
+# .idea folder: specific to your local PyCharm setup
+# If you want to ignore the entire .idea folder, uncomment the following line
+.idea/
+.idea
+
+# Other temporary files
+*.swp
+*.bak
+*.tmp
