@@ -4,8 +4,23 @@ from src.entities import *
 
 def create_dungeon():
     """
+    Генерирует двумерную карту подземелья, интегрируя геометрию уровня и игровые объекты.
 
-    :return: Возвращает карту подземелья
+    Функция пошагово формирует структуру:
+    1. Создает сетку стен и размещает выход - (`EXIT_TILE`).
+    2. Генерирует проходимые пути и размещает игрока - (`PLAYER_TILE`).
+    3. Случайно распределяет врагов, ловушки, сундуки и ключи на доступных участках пола.
+
+    Зависимости от констант:
+    - Размеры: `DUNGEON_HEIGHT`, `DUNGEON_WIDTH`.
+    - Тайлы: `WALL_TILE`, `FLOOR_TILE`, `PLAYER_TILE`, `EXIT_TILE`, `ENEMY_TILE`, `TRAP_TILE`, `CHEST_TILE`, `KEY_TILE`.
+    - Лимиты: `MIN_ENEMY`/`MAX_ENEMY`, `MIN_TRAPS`/`MAX_TRAPS`, `MIN_CHESTS`/`MAX_CHESTS`, `AMT_KEY`.
+
+    Внешние вызовы:
+    - `generate_passes()`: расчет координат проходов.
+    - `generate_possible_tiles_for_...()`: фильтрация пустых клеток для спавна объектов.
+
+    :return: list[list] — двумерный массив (сетка) игрового мира.
     """
     import random
     dungeon_map = []

@@ -1,6 +1,7 @@
 import sys
 
 from src.core import *
+from pregen_levels.test_level import *
 
 
 def game_start():
@@ -12,8 +13,7 @@ def game_loop(player_data):
     is_fight = False
     game_is_run = True
     exfill = False
-    dungeon = create_dungeon()
-
+    dungeon = test_level
     while game_is_run:
         while not is_fight:
             if exfill:

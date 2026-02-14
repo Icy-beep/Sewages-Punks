@@ -16,6 +16,10 @@ __pycache__/
 build/
 dist/
 eggs/
+build/
+dist/
+main.spec
+src/__pycache__/
 *.egg-info/
 *.egg
 
