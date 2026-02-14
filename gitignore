@@ -30,6 +30,7 @@ src/__pycache__/
 # .idea folder: specific to your local PyCharm setup
 # If you want to ignore the entire .idea folder, uncomment the following line
 .idea/
+.idea
 
 # Other temporary files
 *.swp
