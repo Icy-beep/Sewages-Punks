@@ -3,11 +3,8 @@ import sys
 from src.core import *
 from pregen_levels.test_level import *
 
-
-def game_start():
-    gamer = create_player()
-
-    return gamer
+def main_menu():
+    pass
 
 def game_loop(player_data):
     is_fight = False
