@@ -12,8 +12,9 @@
 не до конца доделана "графика" UI - локализация/text, получение опыта/очков,
 особые навыки игрока и врагов, лорно - сюжетная составляющая.
 
+>[!TIP]
+>###### [📥 Скачать .exe файл](https://drive.google.com/file/d/1FHUJ8stp363pgWxgd5j33j7H_yx3VcCM/view?usp=drive_link)
 
-###### [!TIP][📥 Скачать .exe файл](https://drive.google.com/file/d/1FHUJ8stp363pgWxgd5j33j7H_yx3VcCM/view?usp=drive_link)
-
-    Выполнил: Сафонов Никита Сергеевич                                              Группа: РП-13 
+>[!NOTE]    
+>Выполнил: Сафонов Никита Сергеевич                                              Группа: РП-13 
 
