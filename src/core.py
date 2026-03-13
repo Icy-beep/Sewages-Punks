@@ -3,18 +3,6 @@ from src.display import *
 from src.entities import *
 from src.constants import *
 
-def create_player():
-    global player_name
-    global player
-
-    print(INPUT_PLAYER_NAME_MESSAGE)
-    user_input = input('>>')
-
-    player_name = user_input
-
-    return player
-
-
 def adventuring(dungeon_map, player_data):
     user_input = ''
 
