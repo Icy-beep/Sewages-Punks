@@ -79,7 +79,7 @@ WALL_ICON = WHITE_TEXT_REGULAR
 FLOOR_ICON = WHITE_TEXT_REGULAR
 TRAP_ICON = RED_TEXT_BRIGHT
 
-MOVEMENT_COMMANDS = ['w', 'a', 's', 'd']
+MOVEMENT_COMMANDS = ['w', 'a', 's', 'd', 'ф', 'ы', 'в', 'ц']
 EXIT_COMMANDS = ['exit', 'EXIT', 'QUIT', 'Q', 'q',]
 COMBAT_COMMANDS = ['a', 'd', 'i', 'h']
 TRAP_COMMANDS = ['1', '2']
