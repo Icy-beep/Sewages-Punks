@@ -40,5 +40,5 @@ def game_over():
 
 
 if __name__ == '__main__':
-    player = game_start()
+    global player
     game_loop(player)
