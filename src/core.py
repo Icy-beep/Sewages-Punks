@@ -13,7 +13,7 @@ def adventuring(dungeon_map, player_data):
         print(show_dungeon_map(dungeon_map))
         show_movement_legend()
         char = msvcrt.getch()
-        user_input = char.decode('utf-8').lower()
+        user_input = char.decode('utf-8', errors='ignore').lower()
 
         if user_input in MOVEMENT_COMMANDS:
             new_position = movement_player(dungeon_map, user_input)
