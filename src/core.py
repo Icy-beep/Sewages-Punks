@@ -3,6 +3,8 @@ from src.display import *
 from src.entities import *
 from src.constants import *
 
+import msvcrt
+
 def adventuring(dungeon_map, player_data):
     user_input = ''
 
@@ -10,9 +12,14 @@ def adventuring(dungeon_map, player_data):
         clear_display()
         print(show_dungeon_map(dungeon_map))
         show_movement_legend()
-        user_input = input('>>')
+        char = msvcrt.getch()
+        user_input = char.decode('utf-8').lower()
 
-        new_position = movement_player(dungeon_map, user_input)
+        if user_input in MOVEMENT_COMMANDS:
+            new_position = movement_player(dungeon_map, user_input)
+
+        else:
+            continue
 
         if dungeon_map[new_position[x_coord]][new_position[y_coord]] == CHEST_TILE:
 

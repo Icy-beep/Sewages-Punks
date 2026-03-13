@@ -36,3 +36,5 @@ src/__pycache__/
 *.swp
 *.bak
 *.tmp
+
+SewagesPunks.spec

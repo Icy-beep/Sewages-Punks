@@ -33,40 +33,40 @@ def show_dungeon_map(dungeon):
             print(end=' ')
 
             if dungeon[i][j] == 0:
-                print(PLAYER_ICON + '@', end='')
+                print(PLAYER_ICON + '@' + RESET, end='')
 
             if dungeon[i][j] == 1:
-                print(ENEMY_ICON + 'F', end='')
+                print(ENEMY_ICON + 'F' + RESET, end='')
 
             if dungeon[i][j] == 2:
-                print(EXIT_ICON + 'E', end='')
+                print(EXIT_ICON + 'E' + RESET, end='')
 
             if dungeon[i][j] == 3:
-                print(KEY_ICON + 'K', end='')
+                print(KEY_ICON + 'K' + RESET, end='')
 
             if dungeon[i][j] == 4:
-                print(CHEST_ICON + 'C', end='')
+                print(CHEST_ICON + 'C' + RESET, end='')
 
             if dungeon[i][j] == 5:
-                print(WALL_ICON + '█', end='')
+                print(WALL_ICON + '█' + RESET, end='')
 
             if dungeon[i][j] == 6:
-                print(FLOOR_ICON + '.', end='')
+                print(FLOOR_ICON + '.' + RESET, end='')
 
             if dungeon[i][j] == 7:
-                print(TRAP_ICON + '.', end='')
+                print(TRAP_ICON + '.' + RESET, end='')
 
     return ''
 def show_movement_legend():
-    print('Передвижение')
-    print('Верх - w')
-    print('Лево - a')
-    print('Низ - s')
-    print('Право - d')
+    print(WHITE_TEXT_BRIGHT + 'Передвижение' + RESET)
+    print(WHITE_TEXT_BRIGHT + 'Верх - w' + RESET)
+    print(WHITE_TEXT_BRIGHT + 'Лево - a' + RESET)
+    print(WHITE_TEXT_BRIGHT + 'Низ - s' + RESET)
+    print(WHITE_TEXT_BRIGHT + 'Право - d' + RESET)
 
 def initiative_throw_message():
 
-    print('Решается чей ход первый')
+    print(WHITE_TEXT_BRIGHT + 'Решается чей ход первый' + RESET)
 
 def throw_animation(player_data, enemy_data):
     import random
@@ -86,8 +86,6 @@ def throw_animation(player_data, enemy_data):
 
     print(f'\rВаша инициатива: {player_data[ENTITY_INITIATIVE]}         ')
 
-    print()
-
     for i in range(50):
         fake_value = "".join(random.choice(chars) for _ in range(8))
 
@@ -98,22 +96,22 @@ def throw_animation(player_data, enemy_data):
 
 def trap_inputs():
 
-    print('1 - Обезвредить')
-    print('2 - Пробежать')
+    print(MAGENTA_TEXT_BRIGHT + '1 - Обезвредить' + RESET)
+    print(MAGENTA_TEXT_BRIGHT + '2 - Пробежать' + RESET)
 
 def start_fight_message(enemy) -> str:
 
     if enemy[0] == NAME_ENEMY_PUNK:
-        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с панком')
+        return f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с панком{RESET}'
 
     if enemy[0] == NAME_ENEMY_SYNTH_HOUND:
-        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с синт. гончей')
+        return f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с синт. гончей{RESET}'
 
     if enemy[0] == NAME_ENEMY_GLITCH_BUTCHER:
-        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с мясником')
+        return f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с мясником{RESET}'
 
     if enemy[0] == NAME_ENEMY_PSY_CODER:
-        return (f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с пси-кодером')
+        return f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с пси-кодером{RESET}'
 
     return ''
 
