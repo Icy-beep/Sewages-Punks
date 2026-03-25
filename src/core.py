@@ -29,10 +29,15 @@ def adventuring(dungeon_map, player_data):
                 player_data[PLAYER_ITEM_DEFUSAL_KIT] += 1
                 clear_display()
                 loot_message(item)
+                enter_continue()
+                clear_display()
                 dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
 
             if item == ITEM_NOTHING:
+                clear_display()
                 loot_message(item)
+                enter_continue()
+                clear_display()
                 dungeon_map[new_position[x_coord]][new_position[y_coord]] = FLOOR_TILE
                 continue
 
@@ -148,8 +153,6 @@ def fight(player_data):
     clear_display()
     print(start_fight_message(enemy_data))
     enter_continue()
-
-    print()
 
     initiative_throw_message()
     player_data, enemy_data = initiative_throw(player_data, enemy_data)
@@ -291,6 +294,7 @@ def fight(player_data):
 
             player_data[ENTITY_HP] -= damage
             hit_message(damage, who)
+            enter_continue()
             clear_display()
             show_player_hp(player_data)
             enter_continue()
