@@ -24,7 +24,7 @@
 - особые навыки игрока и врагов, лорно - сюжетная составляющая.
 ````
 >[!TIP]
->[📥 Скачать .exe файл](https://drive.google.com/file/d/1xp3HHmCUOvkzkWa5XL51wHUswTjczCV5/view?usp=sharing)
+>[📥 Скачать .exe файл](https://drive.google.com/file/d/1K8Q9EWKOTcAr3n88IxcMmkjRu6Diq_76/view?usp=sharing)
 
 >[!NOTE]    
 >Выполнил: Сафонов Никита Сергеевич | Группа: РП-13 
