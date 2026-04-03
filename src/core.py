@@ -11,10 +11,11 @@ import datetime
 def adventuring(dungeon_map, player_data):
     user_input = ''
     return_to_main_menu = False
+    adventuring_not_end = True
 
-    while user_input not in EXIT_COMMANDS:
+    while adventuring_not_end:
         clear_display()
-        print(show_dungeon_map(dungeon_map))
+        show_dungeon_map(dungeon_map)
         show_movement_legend()
 
         char = msvcrt.getch()
@@ -35,7 +36,7 @@ def adventuring(dungeon_map, player_data):
                     loaded = load_game()
                     if loaded:
                         dungeon_map, player_data = loaded
-                        print(f"{GREEN_TEXT_BRIGHT}[ ДАННЫЕ ПЕРЕЗАПИСАНЫ ИЗ ТОЧКИ ВОССТАНОВЛЕНИЯ ]{RESET}")
+                        print(f"{GREEN_TEXT_BRIGHT}[ DATA OVERWRITTEN FROM RESTORE POINT ]{RESET}")
 
                 if choice in QUIT_TO_MAIN_MENU:
                     return_to_main_menu = True
@@ -362,7 +363,7 @@ def save_game(player_data, dungeon):
     if not os.path.exists(SAVE_DIR):
         os.makedirs(SAVE_DIR)
 
-    print(f"\n{MAGENTA_TEXT_BRIGHT}[ ВВЕДИТЕ НАЗВАНИЕ ДЛЯ СОХРАНЕНИЯ ]{RESET}")
+    print(f"\n{MAGENTA_TEXT_BRIGHT}[ SAVE AS... ]{RESET}")
     user_name = input(f"{MAGENTA_TEXT_BRIGHT}>>> {RESET}").strip()
 
     if not user_name:
@@ -386,10 +387,10 @@ def save_game(player_data, dungeon):
             json.dump(data, f, ensure_ascii=False, indent=4)
 
         actual_name = os.path.basename(final_path)
-        print(f"{GREEN_TEXT_BRIGHT}[ СИНХРОНИЗАЦИЯ: {actual_name} УСПЕШНО ЗАПИСАН ]{RESET}")
+        print(f"{GREEN_TEXT_BRIGHT}[ SYNCHRONIZE: {actual_name} WRITE SUCCESSFUL ]{RESET}")
         return True
     except Exception as e:
-        print(f"{RED_TEXT_BRIGHT}[ КРИТИЧЕСКИЙ СБОЙ ЗАПИСИ: {e} ]{RESET}")
+        print(f"{RED_TEXT_BRIGHT}[ SYNC INTERRUPTED: DATA LOSS DETECTED {e} ]{RESET}")
         return False
 
 
@@ -403,10 +404,10 @@ def load_game():
     files.sort(key=lambda x: os.path.getmtime(os.path.join(SAVE_DIR, x)), reverse=True)
 
     if not files:
-        print(f"{RED_TEXT_BRIGHT}[ ОШИБКА: НЕТ ДОСТУПНЫХ ДАННЫХ В СЕКТОРЕ ]{RESET}")
+        print(f"{RED_TEXT_BRIGHT}[ ERROR: DATA IS NONE IN THAT SECTOR ]{RESET}")
         return None
 
-    print(f"\n{MAGENTA_TEXT_BRIGHT}--- [ ДОСТУПНЫЕ ТОЧКИ ВОССТАНОВЛЕНИЯ ] ---{RESET}")
+    print(f"\n{MAGENTA_TEXT_BRIGHT}--- [ ACTIVE RESTORE POINTS ] ---{RESET}")
     for i, file in enumerate(files, 1):
         path = os.path.join(SAVE_DIR, file)
         mtime = os.path.getmtime(path)
@@ -415,13 +416,13 @@ def load_game():
         print(f"  {i}. {file.ljust(25)} | {BLUE_TEXT_BRIGHT}{date_str}{RESET}")
 
     try:
-        choice = int(input(f"\n{MAGENTA_TEXT_BRIGHT}ВЫБЕРИТЕ ИНДЕКС > {RESET}")) - 1
+        choice = int(input(f"\n{MAGENTA_TEXT_BRIGHT}CHOOSE THE INDEX > {RESET}")) - 1
         if 0 <= choice < len(files):
             with open(os.path.join(SAVE_DIR, files[choice]), "r", encoding="utf-8") as f:
                 data = json.load(f)
                 return data["dungeon"], data["player"]
     except (ValueError, IndexError):
-        print(f"{RED_TEXT_BRIGHT}[ ОШИБКА: НЕВЕРНЫЙ ИНДЕКС ]{RESET}")
+        print(f"{RED_TEXT_BRIGHT}[ ERROR: WRONG INDEX ]{RESET}")
 
     return None
 

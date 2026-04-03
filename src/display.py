@@ -70,15 +70,14 @@ def show_dungeon_map(dungeon):
 
     footer = f"{WALL_ICON}╚" + "═" * (DUNGEON_WIDTH * 2 + 1) + f"╝{RESET}"
     print(footer)
-    print(f"{MAGENTA_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{RESET} ", end='')
 
 
 def show_movement_legend():
-    print(WHITE_TEXT_BRIGHT + 'Movement' + RESET)
-    print(WHITE_TEXT_BRIGHT + 'Up - w' + RESET)
-    print(WHITE_TEXT_BRIGHT + 'Left - a' + RESET)
-    print(WHITE_TEXT_BRIGHT + 'Down - s' + RESET)
-    print(WHITE_TEXT_BRIGHT + 'Right - d' + RESET)
+    print(WHITE_TEXT_REGULAR + 'Movement' + RESET)
+    print(WHITE_TEXT_REGULAR + 'UP - w' + RESET)
+    print(WHITE_TEXT_REGULAR + 'LEFT - a' + RESET)
+    print(WHITE_TEXT_REGULAR + 'DOWN - s' + RESET)
+    print(WHITE_TEXT_REGULAR + 'RIGHT - d' + RESET)
 
 
 def initiative_throw_message():
@@ -297,10 +296,10 @@ def draw_main_menu():
     {c_accent}  ___________________________________________________________________________{c_reset}
         """
     print(logo)
-    print(f"{c_main}[ 1 ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET} - DATA (NEW GAME)")
-    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET} - DATA (LOAD GAME)")
-    print(f"{c_main}[ 3 ]{c_reset} SYSTEM RE-CALIBRATION (SETTINGS)")
-    print(f"{c_main}[ 4 ]{c_reset} DISCONNECT FROM NETWORK (EXIT)")
+    print(f"{c_main}[ 1 ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET} - DATA ({c_main}NEW GAME{c_reset})")
+    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET} - DATA ({c_main}LOAD GAME{c_reset})")
+    print(f"{c_main}[ 3 ]{c_reset} SYSTEM RE-CALIBRATION ({c_main}SETTINGS{c_reset})")
+    print(f"{c_main}[ 4 ]{c_reset} DISCONNECT FROM NETWORK ({c_main}EXIT{c_reset})")
     print(f"{c_accent}  ___________________________________________________________________________{c_reset}")
 
 
