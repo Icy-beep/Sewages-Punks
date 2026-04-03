@@ -8,7 +8,7 @@ INPUT_PLAYER_NAME_MESSAGE = r'Enter your name'
 YOU_TRY_OPEN_DOR_MESSAGE = r'You try open dor'
 CARD_READER_MESSAGE = r'You ran the keycard across the scanner. The device emitted a satisfying chime of access granted, and the door groaned open with a faint metallic screech'
 DOOR_INTERACTION_MESSAGE = r"You move away from the entrance or exit... it's a matter of perspective."
-KICK_THE_DOOR_MESSAGE = r'Вы бьёте ногой по двери грохот раздался по всей канализации но дверь не открылась'
+KICK_THE_DOOR_MESSAGE = r"You kick the door. The bang echoes through the sewers, but the door won't budge."
 STEP_OUT_THE_DOOR_MESSAGE = r"You move away from the entrance or exit... it's a matter of perspective."
 YOU_FOUND_KEY_CARD_MESSAGE = r'You found a keycard'
 TRAP_FORWARD_MESSAGE = r"There's a trap right in front of you."
@@ -283,8 +283,8 @@ def draw_main_menu():
     {c_accent}  ___________________________________________________________________________{c_reset}
         """
     print(logo)
-    print(f"{c_main}[ 1 ]{c_reset} ASCEND TO LUNAR SURFACE (NEW GAME)")
-    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED MEMORIES (LOAD GAME)")
+    print(f"{c_main}[ 1 ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET}{c_main} - DATA (NEW GAME){c_reset}")
+    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET}{c_main} - DATA (LOAD GAME){c_reset}")
     print(f"{c_main}[ 3 ]{c_reset} SYSTEM RE-CALIBRATION (SETTINGS)")
     print(f"{c_main}[ 4 ]{c_reset} DISCONNECT FROM NETWORK (EXIT)")
     print(f"{c_accent}  ___________________________________________________________________________{c_reset}")
@@ -300,20 +300,20 @@ def show_setting_stub():
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
     lines = [
-        "FATAL ERROR: Settings module 'SYS_CONFIG_V.4.2' not found.",
-        "ENCRYPTION LEVEL: MILITARY-GRADE (AES-512)",
-        "STATUS: Operation suspended by Moon_City_Admin.",
-        "REASON: Neural link synchronization in progress..."
+        f"{RED_TEXT_BRIGHT}FATAL ERROR{RESET}: {c_main}Settings module 'SYS_CONFIG_V.4.2' not found.",
+        f"ENCRYPTION LEVEL: MILITARY-GRADE (AES-512)",
+        f"STATUS: Operation suspended by Moon_City_Admin.",
+        f"REASON: Psy link synchronization in progress...{RESET}"
     ]
 
     for line in lines:
         print(f"{c_main}[ LOG ]:{c_reset} {line}")
         time.sleep(0.1)
 
-    print(f"\n{c_warn}>> ПОЖАЛУЙСТА, ОБРАТИТЕСЬ К БЛИЖАЙШЕМУ ПСИ-ДОКУ ДЛЯ ОБНОВЛЕНИЯ ПО <<{c_reset}")
+    print(f"\n{c_warn}>> PLEASE, SEE YOUR NEAREST PSY-DOC FOR A SOFTWARE UPDATE. <<{c_reset}")
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
-    input(f"\n{c_accent}Нажмите [ENTER], чтобы вернуться в терминал...{c_reset}")
+    input(f"\n{c_accent}Press [ENTER] to go back to the terminal...{c_reset}")
 
 
 def show_ingame_menu():
