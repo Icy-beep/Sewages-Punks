@@ -33,5 +33,5 @@
 - недостаточно протестированы новые меню и Сохранение/загрузка игры.
 ````
 >[!TIP]
->[📥 Скачать .exe файл](https://pixeldrain.com/u/hiaptCST)
+>[📥 Скачать .exe файл](https://pixeldrain.com/u/8mHGJEue)
 
