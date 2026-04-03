@@ -272,21 +272,22 @@ def draw_main_menu():
     c_reset = RESET
 
     logo = f"""
-    {c_main}  ██████╗███████╗██╗    ██╗ █████╗  ██████╗ ███████╗███████╗
-      ██╔════╝██╔════╝██║    ██║██╔══██╗██╔════╝ ██╔════╝██╔════╝
-      ╚█████╗ █████╗  ██║ █╗ ██║███████║██║  ███╗█████╗  ███████╗
-       ╚═══██╗██╔══╝  ██║███╗██║██╔══██║██║   ██║██╔══╝  ╚════██║
-      ██████╔╝███████╗╚███╔███╔╝██║  ██║╚██████╔╝███████╗███████║
-      ╚═════╝ ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝
-                  {c_accent}>> S E W A G E S _ P U N K S <<{c_main}
-    {c_accent}  ___________________________________________________________{c_reset}
+    {c_main}  
+      ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗              ██████╗██╗████████╗██╗   ██
+      ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║    █████╗   ██╔════╝██║╚══██╔══╝╚██╗ ██╔╝
+      ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║    █████║   ██║     ██║   ██║    ╚████╔╝      
+      ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║    ╚════╝   ██║     ██║   ██║     ╚██╔╝        
+      ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║             ╚██████╗██║   ██║      ██║ 
+      ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝              ╚═════╝╚═╝   ╚═╝      ╚═╝  
+                  {c_accent}>> S E W A G E S & P U N K S <<{c_main}
+    {c_accent}  ___________________________________________________________________________{c_reset}
         """
     print(logo)
-    print(f"{c_main}[ 1 ]{c_reset} INITIALIZE NEURAL LINK (NEW GAME)")
-    print(f"{c_main}[ 2 ]{c_reset} RECOVER MEMORY FRAGMENT (LOAD GAME)")
-    print(f"{c_main}[ 3 ]{c_reset} SYSTEM CALIBRATION (SETTINGS)")
-    print(f"{c_main}[ 4 ]{c_reset} TERMINATE SESSION (EXIT)")
-    print(f"{c_accent}  ___________________________________________________________{c_reset}")
+    print(f"{c_main}[ 1 ]{c_reset} ASCEND TO LUNAR SURFACE (NEW GAME)")
+    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED MEMORIES (LOAD GAME)")
+    print(f"{c_main}[ 3 ]{c_reset} SYSTEM RE-CALIBRATION (SETTINGS)")
+    print(f"{c_main}[ 4 ]{c_reset} DISCONNECT FROM NETWORK (EXIT)")
+    print(f"{c_accent}  ___________________________________________________________________________{c_reset}")
 
 
 def show_setting_stub():
