@@ -35,7 +35,7 @@
 - недостаточно протестированы новые меню и Сохранение/загрузка игры.
 ````
 >[!TIP]
->[📥 Скачать .exe файл](https://drive.google.com/file/d/1K8Q9EWKOTcAr3n88IxcMmkjRu6Diq_76/view?usp=sharing)
+>[📥 Скачать .exe файл](https://drive.google.com/file/d/1EnjDZK9CECRKSR6NCdhCmv14-knfgGeF/view?usp=sharing)
 
 >[!NOTE]    
 >Выполнил: Сафонов Никита Сергеевич | Группа: РП-13
