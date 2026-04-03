@@ -1,6 +1,11 @@
 from src.constants import *
 player_name = ''
-player = [player_name, 100, 5, 10, 0.1, 0, 0, 0]
+
+
+def create_default_player():
+    player_base_data = [player_name, 100, 5, 10, 0.1, 0, 0, 0]
+    return player_base_data
+
 punk = [NAME_ENEMY_PUNK, 66, 5, 5, 0.1, 0]
 synth_hound = [NAME_ENEMY_SYNTH_HOUND, 50, 7, 10, 0.1, 0]
 glitch_butcher = [NAME_ENEMY_GLITCH_BUTCHER, 100, 5, 10, 0.3, 0]

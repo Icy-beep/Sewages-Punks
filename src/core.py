@@ -4,6 +4,8 @@ from src.entities import *
 from src.constants import *
 
 import msvcrt
+import json
+
 
 def adventuring(dungeon_map, player_data):
     user_input = ''
@@ -145,6 +147,7 @@ def adventuring(dungeon_map, player_data):
             return STATE_OF_ADVENTURING_FIGHT, new_position
 
     return STATE_OF_ADVENTURING_EXIT
+
 
 def fight(player_data):
 
@@ -310,6 +313,21 @@ def fight(player_data):
             player_step = True
 
 
+def save_game(player_data, dungeon):
+    data = {
+        "player": player_data,
+        "dungeon": dungeon
+    }
+    with open("savegame.json", "w") as f:
+        json.dump(data, f)
+
+
+def load_game():
+    try:
+        with open("savegame.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
 
 
 

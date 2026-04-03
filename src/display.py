@@ -1,5 +1,5 @@
 import os
-from _pyrepl.commands import clear_screen
+import time
 
 from src.constants import *
 
@@ -57,6 +57,8 @@ def show_dungeon_map(dungeon):
                 print(TRAP_ICON + '.' + RESET, end='')
 
     return ''
+
+
 def show_movement_legend():
     print(WHITE_TEXT_BRIGHT + 'Передвижение' + RESET)
     print(WHITE_TEXT_BRIGHT + 'Верх - w' + RESET)
@@ -64,9 +66,11 @@ def show_movement_legend():
     print(WHITE_TEXT_BRIGHT + 'Низ - s' + RESET)
     print(WHITE_TEXT_BRIGHT + 'Право - d' + RESET)
 
+
 def initiative_throw_message():
 
     print(WHITE_TEXT_BRIGHT + 'Решается чей ход первый' + RESET)
+
 
 def throw_animation(player_data, enemy_data):
     import random
@@ -94,10 +98,12 @@ def throw_animation(player_data, enemy_data):
 
     print(f'\rИнициатива врага: {enemy_data[ENTITY_INITIATIVE]}        ')
 
+
 def trap_inputs():
 
     print(MAGENTA_TEXT_BRIGHT + '1 - Обезвредить' + RESET)
     print(MAGENTA_TEXT_BRIGHT + '2 - Пробежать' + RESET)
+
 
 def start_fight_message(enemy) -> str:
 
@@ -114,6 +120,7 @@ def start_fight_message(enemy) -> str:
         return f'{START_FIGHT_MESSAGE_FONT}Вы вступаете в бой с пси-кодером{RESET}'
 
     return ''
+
 
 def show_battle_information(player, enemy):
     import random
@@ -146,11 +153,13 @@ def show_battle_information(player, enemy):
 
     print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_hp}        ')
 
+
 def show_combat_legend():
     print('a - атака')
     print('d - защита')
     print('i - информация о битве')
     print('h - лечение')
+
 
 def show_enemy_hp(enemy_data):
     import random
@@ -164,6 +173,7 @@ def show_enemy_hp(enemy_data):
 
     print(f'\r{ENEMY_HP_FONT}Здоровье противника: {enemy_data[ENTITY_HP]}     ')
 
+
 def enter_continue():
 
     showing = True
@@ -175,9 +185,11 @@ def enter_continue():
 
         showing = False
 
+
 def clear_display():
 
     os.system('cls')
+
 
 def show_player_hp(player_data):
     import random
@@ -191,13 +203,16 @@ def show_player_hp(player_data):
 
     print(f'\r{PLAYER_HP_FONT}Ваше здоровье: {player_data[ENTITY_HP]}     ')
 
+
 def heal_message():
 
     print('Вы использовали свой регенеративный ингалятор')
 
+
 def empty_heal_message():
 
     print('Ваш регенеративный ингалятор пуст')
+
 
 def message_about_step(player = 0, enemy = 0):
 
@@ -207,13 +222,16 @@ def message_about_step(player = 0, enemy = 0):
     if enemy == 1:
         print(f'{ENEMY_HP_FONT}Ход противника')
 
+
 def toxication_message():
 
     print('Уровень интоксикации увеличен')
 
+
 def toxication_damage_message():
 
     print('Уровень интоксикации критический -5HP')
+
 
 def hit_message(damage, who):
 
@@ -223,11 +241,13 @@ def hit_message(damage, who):
     if who == 'player':
         print(f'Попадание, вы нанесли {damage} - урона')
 
+
 def exit_interactions():
 
     print('1 - Открыть ключ-картой')
     print('2 - Выбить ногой')
     print('3 - Уйти')
+
 
 def loot_message(loot):
 
@@ -237,7 +257,57 @@ def loot_message(loot):
     if loot == ITEM_NOTHING:
         print('Вы ничего не нашли')
 
+
 def key_card_options_menu():
     print('У вас есть ключ-карта, применить?')
     print('1 - Да')
     print('2 - Нет')
+
+
+def draw_main_menu():
+    c_main = LIGHT_BLUE_TEXT_BRIGHT
+    c_accent = MAGENTA_TEXT_BRIGHT
+    c_reset = RESET
+
+    logo = f"""
+    {c_main}  ██████╗███████╗██╗    ██╗ █████╗  ██████╗ ███████╗███████╗
+      ██╔════╝██╔════╝██║    ██║██╔══██╗██╔════╝ ██╔════╝██╔════╝
+      ╚█████╗ █████╗  ██║ █╗ ██║███████║██║  ███╗█████╗  ███████╗
+       ╚═══██╗██╔══╝  ██║███╗██║██╔══██║██║   ██║██╔══╝  ╚════██║
+      ██████╔╝███████╗╚███╔███╔╝██║  ██║╚██████╔╝███████╗███████║
+      ╚═════╝ ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝
+                  {c_accent}>> S E W A G E S _ P U N K S <<{c_main}
+    {c_accent}  ___________________________________________________________{c_reset}
+        """
+    print(logo)
+    print(f"{c_main}[ 1 ]{c_reset} INITIALIZE NEURAL LINK (NEW GAME)")
+    print(f"{c_main}[ 2 ]{c_reset} RECOVER MEMORY FRAGMENT (LOAD GAME)")
+    print(f"{c_main}[ 3 ]{c_reset} SYSTEM CALIBRATION (SETTINGS)")
+    print(f"{c_main}[ 4 ]{c_reset} TERMINATE SESSION (EXIT)")
+    print(f"{c_accent}  ___________________________________________________________{c_reset}")
+
+
+def show_setting_stub():
+    c_main = LIGHT_BLUE_TEXT_BRIGHT
+    c_accent = MAGENTA_TEXT_BRIGHT
+    c_warn = RED_TEXT_BRIGHT
+    c_reset = RESET
+
+    print(f"\n{c_accent}[ ACCESS DENIED ]{c_reset}")
+    print(f"{c_main}-----------------------------------------------------------{c_reset}")
+
+    lines = [
+        "FATAL ERROR: Settings module 'SYS_CONFIG_V.4.2' not found.",
+        "ENCRYPTION LEVEL: MILITARY-GRADE (AES-512)",
+        "STATUS: Operation suspended by Moon_City_Admin.",
+        "REASON: Neural link synchronization in progress..."
+    ]
+
+    for line in lines:
+        print(f"{c_main}[ LOG ]:{c_reset} {line}")
+        time.sleep(0.1)
+
+    print(f"\n{c_warn}>> ПОЖАЛУЙСТА, ОБРАТИТЕСЬ К БЛИЖАЙШЕМУ ПСИ-ДОКУ ДЛЯ ОБНОВЛЕНИЯ ПО <<{c_reset}")
+    print(f"{c_main}-----------------------------------------------------------{c_reset}")
+
+    input(f"\n{c_accent}Нажмите [ENTER], чтобы вернуться в терминал...{c_reset}")

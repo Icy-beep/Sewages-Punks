@@ -27,5 +27,5 @@
 >[📥 Скачать .exe файл](https://drive.google.com/file/d/1K8Q9EWKOTcAr3n88IxcMmkjRu6Diq_76/view?usp=sharing)
 
 >[!NOTE]    
->Выполнил: Сафонов Никита Сергеевич | Группа: РП-13 
+>Выполнил: Сафонов Никита Сергеевич | Группа: РП-13
 
