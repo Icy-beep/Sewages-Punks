@@ -1,17 +1,19 @@
 import sys
+import os
 
-import entities
 from src.core import *
 from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
 from src.constants import *
-from entities import create_default_player
+from src.entities import create_default_player
+
 
 def main_menu():
     in_main_menu = True
     while in_main_menu:
+        clear_display()
         draw_main_menu()
-        choice = input(f"{MAGENTA_TEXT_BRIGHT}[SYSTEM@USER]:# {RESET}").strip()
+        choice = input(f"{MAGENTA_TEXT_BRIGHT}[SYSTEM@{PLAYER_NAME}]:# {RESET}").strip()
 
         if choice == "1":
             dungeon = create_tutorial_dungeon()
@@ -21,25 +23,26 @@ def main_menu():
         elif choice == "2":
             saved_data = load_game()
             if saved_data:
-                print(f"{GREEN_TEXT_BRIGHT}[DECRYPTING SUCCESSFUL...]{RESET}")
+                print(f"{GREEN_TEXT_BRIGHT}[DECRYPTING SUCCESSFUL: OBJECT {[PLAYER_NAME]} ---> RESTORED]{RESET}")
                 return saved_data
             else:
-                print(f"{RED_TEXT_BRIGHT}[ERROR: NO DATA ON SECTOR 0]{RESET}")
+                print(f"{RED_TEXT_BRIGHT}[ERROR: NO DATA ON SECTOR{RESET} {MAGENTA_TEXT_BRIGHT}0xxxx256]{RESET}")
 
         elif choice == "3":
             show_setting_stub()
 
         elif choice == "4":
             print(f"{RED_TEXT_REGULAR}DISCONNECTING...{RESET}")
+            time.sleep(0.2)
             sys.exit()
 
 
 def game_loop(player_data, first_dungeon):
     is_fight = False
-    game_is_run = True
+    game_loop_is_run = True
     exfill = False
     dungeon = first_dungeon
-    while game_is_run:
+    while game_loop_is_run:
         while not is_fight:
             if exfill:
                 dungeon = create_dungeon()
@@ -47,15 +50,18 @@ def game_loop(player_data, first_dungeon):
 
             state_of_adventuring, new_position = adventuring(dungeon, player_data)
 
-            if state_of_adventuring == STATE_OF_ADVENTURING_FIGHT:
+            if state_of_adventuring == FIGHT:
                 break
 
-            if state_of_adventuring == STATE_OF_ADVENTURING_EXFILL:
+            if state_of_adventuring == EXFILL:
                 exfill = True
                 pass
 
-            if state_of_adventuring == STATE_OF_ADVENTURING_EXIT:
+            if state_of_adventuring == EXIT:
                 exit(0)
+
+            if state_of_adventuring == RETURN_TO_MAIN_MENU:
+                return EXIT_TO_MAIN_MENU
 
         fight(player_data)
         if player_data[ENTITY_HP] <= 0:
@@ -68,5 +74,9 @@ def game_over():
 
 
 if __name__ == '__main__':
-    first_level, player = main_menu()
-    game_loop(player, first_level)
+    game_is_run = True
+    while game_is_run:
+        first_level, player = main_menu()
+        exit_data = game_loop(player, first_level)
+        if exit_data == EXIT_TO_MAIN_MENU:
+            pass

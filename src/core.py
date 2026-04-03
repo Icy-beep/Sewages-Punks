@@ -5,21 +5,53 @@ from src.constants import *
 
 import msvcrt
 import json
+import datetime
 
 
 def adventuring(dungeon_map, player_data):
     user_input = ''
+    return_to_main_menu = False
 
     while user_input not in EXIT_COMMANDS:
         clear_display()
         print(show_dungeon_map(dungeon_map))
         show_movement_legend()
+
         char = msvcrt.getch()
+
+        if char == ESC:
+            while True:
+                show_ingame_menu()
+
+                choice = input(f"\n    {MAGENTA_TEXT_BRIGHT}WAITING FOR INPUT... > {RESET}").lower()
+
+                if choice in RESUME:
+                    break
+
+                if choice in SAVE:
+                    save_game(player_data, dungeon_map)
+
+                if choice in LOAD:
+                    loaded = load_game()
+                    if loaded:
+                        dungeon_map, player_data = loaded
+                        print(f"{GREEN_TEXT_BRIGHT}[ ДАННЫЕ ПЕРЕЗАПИСАНЫ ИЗ ТОЧКИ ВОССТАНОВЛЕНИЯ ]{RESET}")
+
+                if choice in QUIT_TO_MAIN_MENU:
+                    return_to_main_menu = True
+                    break
+
+                if choice not in IN_GAME_MENU_COMMANDS:
+                    print(f"    {RED_TEXT_BRIGHT}INVALID COMMAND. RE-ENTER.{RESET}")
+
+        if return_to_main_menu:
+            new_position = 0
+            return RETURN_TO_MAIN_MENU, new_position
+
         user_input = char.decode('utf-8', errors='ignore').lower()
 
         if user_input in MOVEMENT_COMMANDS:
             new_position = movement_player(dungeon_map, user_input)
-
         else:
             continue
 
@@ -71,7 +103,7 @@ def adventuring(dungeon_map, player_data):
                                 clear_display()
                                 print(CARD_READER_MESSAGE)
                                 enter_continue()
-                                return STATE_OF_ADVENTURING_EXFILL, new_position
+                                return EXFILL, new_position
 
                             if user_input == '2':
                                 clear_display()
@@ -144,9 +176,9 @@ def adventuring(dungeon_map, player_data):
         is_fight = try_start_fight(dungeon_map, new_position)
 
         if is_fight:
-            return STATE_OF_ADVENTURING_FIGHT, new_position
+            return FIGHT, new_position
 
-    return STATE_OF_ADVENTURING_EXIT
+    return EXIT
 
 
 def fight(player_data):
@@ -313,21 +345,85 @@ def fight(player_data):
             player_step = True
 
 
+def get_unique_filename(base_name):
+    filename = os.path.join(SAVE_DIR, f"{base_name}.json")
+    counter = 1
+
+    temp_name = base_name
+    while os.path.exists(filename):
+        temp_name = f"{base_name}_{counter}"
+        filename = os.path.join(SAVE_DIR, f"{temp_name}.json")
+        counter += 1
+
+    return filename
+
+
 def save_game(player_data, dungeon):
+    if not os.path.exists(SAVE_DIR):
+        os.makedirs(SAVE_DIR)
+
+    print(f"\n{MAGENTA_TEXT_BRIGHT}[ ВВЕДИТЕ НАЗВАНИЕ ДЛЯ СОХРАНЕНИЯ ]{RESET}")
+    user_name = input(f"{MAGENTA_TEXT_BRIGHT}>>> {RESET}").strip()
+
+    if not user_name:
+        user_name = "savegame"
+
+    user_name = "".join(c for c in user_name if c.isalnum() or c in (' ', '_', '-')).rstrip()
+
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+
+    full_name = f"{user_name}_{timestamp}"
+
+    final_path = get_unique_filename(full_name)
+
     data = {
         "player": player_data,
         "dungeon": dungeon
     }
-    with open("savegame.json", "w") as f:
-        json.dump(data, f)
+
+    try:
+        with open(final_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+        actual_name = os.path.basename(final_path)
+        print(f"{GREEN_TEXT_BRIGHT}[ СИНХРОНИЗАЦИЯ: {actual_name} УСПЕШНО ЗАПИСАН ]{RESET}")
+        return True
+    except Exception as e:
+        print(f"{RED_TEXT_BRIGHT}[ КРИТИЧЕСКИЙ СБОЙ ЗАПИСИ: {e} ]{RESET}")
+        return False
 
 
 def load_game():
-    try:
-        with open("savegame.json", "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
+    """
+    Выводит список всех файлов в папке saves и дает выбрать нужный.
+    """
+    if not os.path.exists(SAVE_DIR): return None
+
+    files = [f for f in os.listdir(SAVE_DIR) if f.endswith('.json')]
+    files.sort(key=lambda x: os.path.getmtime(os.path.join(SAVE_DIR, x)), reverse=True)
+
+    if not files:
+        print(f"{RED_TEXT_BRIGHT}[ ОШИБКА: НЕТ ДОСТУПНЫХ ДАННЫХ В СЕКТОРЕ ]{RESET}")
         return None
+
+    print(f"\n{MAGENTA_TEXT_BRIGHT}--- [ ДОСТУПНЫЕ ТОЧКИ ВОССТАНОВЛЕНИЯ ] ---{RESET}")
+    for i, file in enumerate(files, 1):
+        path = os.path.join(SAVE_DIR, file)
+        mtime = os.path.getmtime(path)
+        date_str = datetime.datetime.fromtimestamp(mtime).strftime('%d.%m %H:%M')
+
+        print(f"  {i}. {file.ljust(25)} | {BLUE_TEXT_BRIGHT}{date_str}{RESET}")
+
+    try:
+        choice = int(input(f"\n{MAGENTA_TEXT_BRIGHT}ВЫБЕРИТЕ ИНДЕКС > {RESET}")) - 1
+        if 0 <= choice < len(files):
+            with open(os.path.join(SAVE_DIR, files[choice]), "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data["dungeon"], data["player"]
+    except (ValueError, IndexError):
+        print(f"{RED_TEXT_BRIGHT}[ ОШИБКА: НЕВЕРНЫЙ ИНДЕКС ]{RESET}")
+
+    return None
 
 
 

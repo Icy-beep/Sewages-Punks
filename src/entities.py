@@ -1,9 +1,9 @@
 from src.constants import *
-player_name = ''
+
 
 
 def create_default_player():
-    player_base_data = [player_name, 100, 5, 10, 0.1, 0, 0, 0]
+    player_base_data = [PLAYER_NAME, 100, 5, 10, 0.1, 0, 0, 0]
     return player_base_data
 
 punk = [NAME_ENEMY_PUNK, 66, 5, 5, 0.1, 0]

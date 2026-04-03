@@ -25,7 +25,7 @@ AMT_KEY = 1
 
 BASE_CHANCE = 1
 
-
+ESC = b'\x1b'
 
 BLACK_TEXT_REGULAR = '\033[30m'
 BLACK_TEXT_BRIGHT = '\033[90m'
@@ -97,16 +97,30 @@ PLAYER_ITEM_KEY = 7
 ITEM_NOTHING = 0
 ITEM_DEFUSAL_KIT = 1
 
-NAME_ENEMY_PUNK = 'Панк'
-NAME_ENEMY_SYNTH_HOUND = 'Синт. гончая'
-NAME_ENEMY_GLITCH_BUTCHER = 'Мясник'
-NAME_ENEMY_PSY_CODER = 'Пси-кодер'
+NAME_ENEMY_PUNK = 'Punk'
+NAME_ENEMY_SYNTH_HOUND = 'Synth - Hound'
+NAME_ENEMY_GLITCH_BUTCHER = 'Ripper'
+NAME_ENEMY_PSY_CODER = 'Psy - Coder'
 
-STATE_OF_ADVENTURING_FIGHT = 'is_fight'
-STATE_OF_ADVENTURING_EXIT = 'exit'
-STATE_OF_ADVENTURING_EXFILL = 'exfill'
+PLAYER_NAME = 'Elgeia'
+
+FIGHT = 'is_fight'
+EXIT = 'exit'
+EXFILL = 'exfill'
+RETURN_TO_MAIN_MENU = 'return to main menu'
+EXIT_TO_MAIN_MENU = 'exit to main menu'
 
 COMMAND_MOVE_UP = 'w'
 COMMAND_MOVE_LEFT = 'a'
 COMMAND_MOVE_DOWN = 's'
 COMMAND_MOVE_RIGHT = 'd'
+
+RESUME = ['r', 'к']
+SAVE = ['s', 'ы']
+LOAD = ['l', 'д']
+QUIT_TO_MAIN_MENU = ['q', 'й']
+IN_GAME_MENU_COMMANDS = [RESUME, SAVE, LOAD, QUIT_TO_MAIN_MENU]
+
+DEFAULT_SAVE_NAME = "savegame"
+SAVE_DIR = "saves"
+SAVE_PATH = "saves/"
