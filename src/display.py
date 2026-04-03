@@ -25,38 +25,52 @@ ENEMY_WORD_VARIABLE = 'enemy'
 
 MISS_WORD = 'Miss!'
 
+
 def show_dungeon_map(dungeon):
+    legend = [
+        f"{PLAYER_ICON}@ {RESET}- YOU",
+        f"{ENEMY_ICON}X {RESET}- ENEMY",
+        f"{KEY_ICON}§ {RESET}- KEY CARD",
+        f"{CHEST_ICON}$ {RESET}- LOOT",
+        f"{EXIT_ICON}Ω {RESET}- EXFILL",
+        "",
+        f"{WALL_ICON}█ {RESET}- WALL",
+        f"{FLOOR_ICON}· {RESET}- FREE SPACE"
+    ]
+
+    header = f"{WALL_ICON}╔════════════ [ SECTOR SCAN ] ════════════╗{RESET}"
+    print("\n" + header)
 
     for i in range(DUNGEON_HEIGHT):
-        print()
+
+        print(f"{WALL_ICON}║ {RESET}", end='')
+
         for j in range(DUNGEON_WIDTH):
-            print(end=' ')
+            cell = dungeon[i][j]
 
-            if dungeon[i][j] == 0:
-                print(PLAYER_ICON + '@' + RESET, end='')
+            if cell == 0:
+                print(PLAYER_ICON + '@' + RESET, end=' ')
+            elif cell == 1:
+                print(ENEMY_ICON + 'X' + RESET, end=' ')
+            elif cell == 2:
+                print(EXIT_ICON + 'Ω' + RESET, end=' ')
+            elif cell == 3:
+                print(KEY_ICON + '§' + RESET, end=' ')
+            elif cell == 4:
+                print(CHEST_ICON + '$' + RESET, end=' ')
+            elif cell == 5:
+                print(WALL_ICON + '█' + RESET, end=' ')
+            elif cell == 6:
+                print(FLOOR_ICON + '·' + RESET, end=' ')
+            else:
+                print('  ', end='')
 
-            if dungeon[i][j] == 1:
-                print(ENEMY_ICON + 'F' + RESET, end='')
+        legend_part = legend[i] if i < len(legend) else ""
+        print(f"{WALL_ICON}║   {RESET}{legend_part}")
 
-            if dungeon[i][j] == 2:
-                print(EXIT_ICON + 'E' + RESET, end='')
-
-            if dungeon[i][j] == 3:
-                print(KEY_ICON + 'K' + RESET, end='')
-
-            if dungeon[i][j] == 4:
-                print(CHEST_ICON + 'C' + RESET, end='')
-
-            if dungeon[i][j] == 5:
-                print(WALL_ICON + '█' + RESET, end='')
-
-            if dungeon[i][j] == 6:
-                print(FLOOR_ICON + '.' + RESET, end='')
-
-            if dungeon[i][j] == 7:
-                print(TRAP_ICON + '.' + RESET, end='')
-
-    return ''
+    footer = f"{WALL_ICON}╚" + "═" * (DUNGEON_WIDTH * 2 + 1) + f"╝{RESET}"
+    print(footer)
+    print(f"{MAGENTA_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{RESET} ", end='')
 
 
 def show_movement_legend():
@@ -279,12 +293,12 @@ def draw_main_menu():
       ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║    ╚════╝   ██║     ██║   ██║     ╚██╔╝        
       ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║             ╚██████╗██║   ██║      ██║ 
       ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝              ╚═════╝╚═╝   ╚═╝      ╚═╝  
-                        {c_accent}>> S E W A G E S & P U N K S <<{c_main}
+                                  {c_accent}>> S E W A G E S & P U N K S <<{c_main}
     {c_accent}  ___________________________________________________________________________{c_reset}
         """
     print(logo)
-    print(f"{c_main}[ 1 ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET}{c_main} - DATA (NEW GAME){c_reset}")
-    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET}{c_main} - DATA (LOAD GAME){c_reset}")
+    print(f"{c_main}[ 1 ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET} - DATA (NEW GAME)")
+    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET} - DATA (LOAD GAME)")
     print(f"{c_main}[ 3 ]{c_reset} SYSTEM RE-CALIBRATION (SETTINGS)")
     print(f"{c_main}[ 4 ]{c_reset} DISCONNECT FROM NETWORK (EXIT)")
     print(f"{c_accent}  ___________________________________________________________________________{c_reset}")
