@@ -1,5 +1,7 @@
 import os
 import time
+import sys
+import random
 
 from src.constants import *
 
@@ -16,14 +18,17 @@ TRAP_DEFUSED_MESSAGE = r"Trap neutralized."
 YOU_DONT_HAVE_DEFKIT_MESSAGE = r"Required tools not detected. You need a disarm kit to proceed."
 TRAP_ACTIVATED_MESSAGE = r"You dashed through, and the trap triggered behind your back."
 TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE = r"Failed to evade. Trap triggered. Damage taken: -5 HP"
-PLAYER_TRY_DODGE_MESSAGE = r"Evasion attempt successful. Enemy accuracy decreased."
+PLAYER_TRY_DODGE_MESSAGE = f"{BLUE_TEXT_BRIGHT}Evasion attempt successful. Enemy accuracy decreased.{RESET}"
 ENEMY_MISS_MESSAGE = r"The shot went wide."
 ENEMY_WIN_MESSAGE = r"You have been defeated."
 
 PLAYER_WORD_VARIABLE = 'player'
 ENEMY_WORD_VARIABLE = 'enemy'
 
-MISS_WORD = 'Miss!'
+def player_miss():
+    message = 'So close, but a miss!'
+
+    return message
 
 
 def show_dungeon_map(dungeon):
@@ -82,34 +87,62 @@ def show_movement_legend():
 
 def initiative_throw_message():
 
-    print(WHITE_TEXT_BRIGHT + 'Calculating initiative...' + RESET)
+    print(MAGENTA_TEXT_BRIGHT + 'Calculating initiative...' + RESET)
 
 
 def throw_animation(player_data, enemy_data):
-    import random
-    import string
-    import time
+    chars = "0123456789@#$%&*+=-/<>ABCDEF"
+    width = 50
+    height = 5
+    duration = 25
 
-    chars = string.ascii_letters + string.digits + string.punctuation
+    green = GREEN_TEXT_BRIGHT
+    red = RED_TEXT_BRIGHT
+    light_blue = LIGHT_BLUE_TEXT_BRIGHT
+    hide = HIDE_CURSOR
+    show = SHOW_CURSOR
 
-    print()
+    print(hide)
 
+    try:
+        for step in range(duration):
+            output = []
 
-    for i in range(50):
-        fake_value = "".join(random.choice(chars) for _ in range(8))
+            output.append(f"{green}--- PLAYER INITIATIVE SECTOR ---{RESET}")
+            for y in range(height):
+                line = "".join(random.choice(chars) for _ in range(width))
+                if y == height // 2:
+                    val = str(player_data[ENTITY_INITIATIVE]) if step > 15 else str(random.randint(10, 99))
+                    line = f"{light_blue}{line[:20]}{green}[ {val} ]{light_blue}{line[26:]}{RESET}"
+                else:
+                    line = f"{light_blue}{line}{RESET}"
+                output.append(line)
 
-        print(f"\rYour initiative: {fake_value}", end='')
-        time.sleep(0.04)
+            output.append("")
 
-    print(f'\rYour initiative: {player_data[ENTITY_INITIATIVE]}         ')
+            output.append(f"{red}--- ENEMY INITIATIVE SECTOR ---{RESET}")
+            for y in range(height):
+                line = "".join(random.choice(chars) for _ in range(width))
+                if y == height // 2:
+                    val = str(enemy_data[ENTITY_INITIATIVE]) if step > 15 else str(random.randint(10, 99))
+                    line = f"{light_blue}{line[:20]}{red}[ {val} ]{light_blue}{line[26:]}{RESET}"
+                else:
+                    line = f"{light_blue}{line}{RESET}"
+                output.append(line)
 
-    for i in range(50):
-        fake_value = "".join(random.choice(chars) for _ in range(8))
+            sys.stdout.write("\n".join(output) + f"\033[{height * 2 + 4}A\r")
+            sys.stdout.flush()
+            time.sleep(0.06)
 
-        print(f"\rEnemy initiative: {fake_value}", end='')
-        time.sleep(0.04)
+        print("\n" * (height * 2 + 5))
 
-    print(f'\rEnemy initiative: {enemy_data[ENTITY_INITIATIVE]}        ')
+        if player_data[ENTITY_INITIATIVE] >= enemy_data[ENTITY_INITIATIVE]:
+            print(f"{green}>>> PLAYER ACTS FIRST!{RESET}\n")
+        else:
+            print(f"{red}>>> ENEMY AMBUSH!{RESET}\n")
+
+    finally:
+        print(show)
 
 
 def trap_inputs():
@@ -121,16 +154,28 @@ def trap_inputs():
 def start_fight_message(enemy) -> str:
 
     if enemy[0] == NAME_ENEMY_PUNK:
-        return f'{START_FIGHT_MESSAGE_FONT}You are entering a fight with a Punk{RESET}'
+        return (f'{BLUE_TEXT_BRIGHT}'
+                f'......................'
+                f'You are entering a fight with a Punk'
+                f'......................{RESET}')
 
     if enemy[0] == NAME_ENEMY_SYNTH_HOUND:
-        return f'{START_FIGHT_MESSAGE_FONT}You are entering a fight with a Synth - Hound{RESET}'
+        return (f'{BLUE_TEXT_BRIGHT}'
+                f'......................'
+                f'You are entering a fight with a Synth - Hound'
+                f'......................{RESET}')
 
     if enemy[0] == NAME_ENEMY_GLITCH_BUTCHER:
-        return f'{START_FIGHT_MESSAGE_FONT}You are entering a fight with the Ripper{RESET}'
+        return (f'{BLUE_TEXT_BRIGHT}'
+                f'......................'
+                f'You are entering a fight with the Ripper'
+                f'......................{RESET}')
 
     if enemy[0] == NAME_ENEMY_PSY_CODER:
-        return f'{START_FIGHT_MESSAGE_FONT}You are entering a fight with Psy - Coder{RESET}'
+        return (f'{BLUE_TEXT_BRIGHT}'
+                f'......................'
+                f'You are entering a fight with Psy - Coder'
+                f'......................{RESET}')
 
     return ''
 
@@ -192,9 +237,7 @@ def enter_continue():
     showing = True
     while showing:
         print()
-        print(f'......................'
-              f'Press ENTER to proceed'
-              f'......................')
+        print(f'Press ENTER to proceed', end='')
         input('>>')
         clear_display()
 
@@ -221,31 +264,34 @@ def show_player_hp(player_data):
 
 def heal_message():
 
-    print('You take a deep breath from your regen-inhaler. You feel the nanites repairing your tissues.')
+    return 'You take a deep breath from your regen-inhaler. You feel the nanites repairing your tissues.'
 
 
 def empty_heal_message():
 
-    print('No doses left in your regenerative inhaler.')
+    return 'No doses left in your regenerative inhaler.'
 
 
 def message_about_step(player = 0, enemy = 0):
 
     if player == 1:
-        print(f'{PLAYER_HP_FONT}Initiative: Player')
+        return f'{PLAYER_HP_FONT}Initiative: Player'
 
     if enemy == 1:
-        print(f'{ENEMY_HP_FONT}Initiative: Enemy')
+        return f'{ENEMY_HP_FONT}Initiative: Enemy'
+
+    raise ValueError()
 
 
 def toxication_message():
+    message = f'{RED_TEXT_BRIGHT}WARNING{RESET}: {LIGHT_BLUE_TEXT_BRIGHT}TOXICATION LEVEL RISING!{RESET}'
 
-    print('Toxicity level rising')
+    return message
 
 
 def toxication_damage_message():
 
-    print('WARNING: Toxicity level critical. Health failing. -5 HP')
+    print(f'{RED_TEXT_BRIGHT}WARNING{RESET}: {LIGHT_BLUE_TEXT_BRIGHT}Toxicity level critical! -5 HP{RESET}')
 
 
 def hit_message(damage, who):
@@ -296,10 +342,10 @@ def draw_main_menu():
     {c_accent}  ___________________________________________________________________________{c_reset}
         """
     print(logo)
-    print(f"{c_main}[ 1 ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET} - DATA ({c_main}NEW GAME{c_reset})")
-    print(f"{c_main}[ 2 ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET} - DATA ({c_main}LOAD GAME{c_reset})")
-    print(f"{c_main}[ 3 ]{c_reset} SYSTEM RE-CALIBRATION ({c_main}SETTINGS{c_reset})")
-    print(f"{c_main}[ 4 ]{c_reset} DISCONNECT FROM NETWORK ({c_main}EXIT{c_reset})")
+    print(f"{c_main}[ N ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET} - DATA {c_main}(NEW GAME){c_reset}")
+    print(f"{c_main}[ L ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET} - DATA {c_main}(LOAD GAME){c_reset}")
+    print(f"{c_main}[ S ]{c_reset} SYSTEM RE-CALIBRATION {c_main}(SETTINGS){c_reset}")
+    print(f"{c_main}[ E ]{c_reset} DISCONNECT FROM NETWORK {c_main}(EXIT){c_reset}")
     print(f"{c_accent}  ___________________________________________________________________________{c_reset}")
 
 

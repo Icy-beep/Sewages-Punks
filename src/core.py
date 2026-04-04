@@ -185,6 +185,7 @@ def adventuring(dungeon_map, player_data):
 def fight(player_data):
 
     is_fight = True
+    count_of_use_heal = 0
     enemy_data = create_enemy()
     clear_display()
     print(start_fight_message(enemy_data))
@@ -216,8 +217,7 @@ def fight(player_data):
 
         if player_step:
             who = PLAYER_WORD_VARIABLE
-            count_of_use_heal_in_step = 0
-            message_about_step(enemy = 0, player = 1)
+            print(message_about_step(enemy = 0, player = 1))
 
             show_combat_legend()
             user_input = input('>>')
@@ -235,7 +235,7 @@ def fight(player_data):
 
                 if is_miss:
                     clear_display()
-                    print(MISS_WORD)
+                    print(player_miss())
                     enter_continue()
                     clear_display()
                     player_step = False
@@ -246,12 +246,8 @@ def fight(player_data):
                 enemy_data[ENTITY_HP] -= damage
 
                 clear_display()
-                hit_message(damage, who)
-                enter_continue()
-                clear_display()
-
+                hit_message(damage, 'player')
                 show_enemy_hp(enemy_data)
-                print()
                 enter_continue()
                 clear_display()
 
@@ -261,38 +257,35 @@ def fight(player_data):
             if user_input == 'd':
                 enemy_data[ENTITY_MISS_CHANCE] += 0.4
 
+                clear_display()
                 print(PLAYER_TRY_DODGE_MESSAGE)
                 enter_continue()
                 clear_display()
 
             if user_input == 'h':
-                if count_of_heal >= 0:
-                    player_data[ENTITY_HP] += 10
+                if count_of_heal > 0:
 
-                    count_of_use_heal_in_step += 1
+                    player_data[ENTITY_HP] = min(100, player_data[ENTITY_HP] + 10)
+                    count_of_heal -= 1
+                    count_of_use_heal += 1
 
-                    if count_of_use_heal_in_step > 1:
-                        toxication_message()
+                    print(heal_message())
+                    show_player_hp(player_data)
+
+                    if count_of_use_heal > 1:
                         player_data[ENTITY_TOXICITY] += 1
+                        print(toxication_message())
 
-                        if player_data[ENTITY_TOXICITY] >= 5:
+                        if player_data[ENTITY_TOXICITY] >= 2:
                             player_data[ENTITY_HP] -= 5
                             toxication_damage_message()
-                            enter_continue()
-                            clear_display()
+                            show_player_hp(player_data)
 
-
-                    if player_data[ENTITY_HP] >= 100:
-                        player_data[ENTITY_HP] = 100
-
-                    count_of_heal -= 1
-
-                    heal_message()
-                    show_player_hp(player_data)
                     enter_continue()
                     clear_display()
+
                 else:
-                    empty_heal_message()
+                    print(empty_heal_message())
                     enter_continue()
                     clear_display()
 
@@ -313,7 +306,7 @@ def fight(player_data):
                 continue
 
             who = ENEMY_WORD_VARIABLE
-            message_about_step(player = 0, enemy = 1)
+            print(message_about_step(player = 0, enemy = 1))
 
             damage = enemy_data[ENTITY_DAMAGE]
             damage = randomise_damage(damage)
@@ -330,10 +323,9 @@ def fight(player_data):
 
             player_data[ENTITY_HP] -= damage
             hit_message(damage, who)
-            enter_continue()
-            clear_display()
             show_player_hp(player_data)
             enter_continue()
+            clear_display()
 
             if player_data[ENTITY_HP] <= 0:
                 print(ENEMY_WIN_MESSAGE)

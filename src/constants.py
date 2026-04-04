@@ -26,6 +26,8 @@ AMT_KEY = 1
 BASE_CHANCE = 1
 
 ESC = b'\x1b'
+HIDE_CURSOR = "\033[?25l"
+SHOW_CURSOR = "\033[?25h"
 
 DARK_GRAY = '\033[90m'
 BRIGHT_WHITE = '\033[97m'
@@ -87,6 +89,12 @@ EXIT_COMMANDS = ['exit', 'EXIT', 'QUIT', 'Q', 'q',]
 COMBAT_COMMANDS = ['a', 'd', 'i', 'h']
 TRAP_COMMANDS = ['1', '2']
 DOOR_INTERACTION_COMMANDS = ['1', '2', '3']
+
+NEW_GAME_COMMANDS = ['n', 'new', 'new game', 'newgame']
+LOAD_GAME_COMMANDS = ['l', 'load', 'load game', 'loadgame']
+SAVE_GAME_COMMANDS = ['s', 'save', 'save game', 'savegame']
+EXIT_GAME_COMMANDS = ['e', 'exit', 'exit game', 'exitgame']
+MAIN_MENU_COMMANDS = [NEW_GAME_COMMANDS, LOAD_GAME_COMMANDS, SAVE_GAME_COMMANDS, EXIT_GAME_COMMANDS]
 
 ENTITY_NAME = 0
 ENTITY_HP = 1

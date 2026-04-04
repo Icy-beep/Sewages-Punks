@@ -15,12 +15,12 @@ def main_menu():
         draw_main_menu()
         choice = input(f"{MAGENTA_TEXT_BRIGHT}[SYSTEM@{PLAYER_NAME}]:# {RESET}").strip()
 
-        if choice == "1":
+        if choice.lower() in NEW_GAME_COMMANDS:
             dungeon = create_tutorial_dungeon()
             default_player = create_default_player()
             return dungeon, default_player
 
-        elif choice == "2":
+        elif choice.lower() in LOAD_GAME_COMMANDS:
             saved_data = load_game()
             if saved_data:
                 print(f"{GREEN_TEXT_BRIGHT}[DECRYPTING SUCCESSFUL: OBJECT {[PLAYER_NAME]} ---> RESTORED]{RESET}")
@@ -28,10 +28,10 @@ def main_menu():
             else:
                 print(f"{RED_TEXT_BRIGHT}[ERROR: NO DATA ON SECTOR{RESET} {MAGENTA_TEXT_BRIGHT}0xxxx256]{RESET}")
 
-        elif choice == "3":
+        elif choice.lower() in SAVE_GAME_COMMANDS:
             show_setting_stub()
 
-        elif choice == "4":
+        elif choice.lower() in EXIT_GAME_COMMANDS:
             print(f"{RED_TEXT_REGULAR}DISCONNECTING...{RESET}")
             time.sleep(0.2)
             sys.exit()

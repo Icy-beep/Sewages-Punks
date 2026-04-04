@@ -144,26 +144,10 @@ def try_start_fight(location, new_position) -> bool:
     return if_fight
 
 def create_enemy():
-    #import random
 
     enemy = choose_enemy()
-    copy_of_enemy = enemy[:]
 
-    # hp_random = random.randint(0, 40)
-    # initiative_random = random.randint(1, 2)
-    #
-    # if random.random() < BASE_CHANCE - 0.80:
-    #     if enemy[ENTITY_HP] <= 70:
-    #         enemy[ENTITY_HP] = enemy[ENTITY_HP] + hp_random
-    #     else:
-    #         enemy[ENTITY_HP] = enemy[ENTITY_HP] - hp_random
-    #
-    # if enemy[ENTITY_INITIATIVE] < 5:
-    #     if random.random() <= BASE_CHANCE - 0.50:
-    #         enemy[ENTITY_INITIATIVE] + initiative_random
-    # if enemy[ENTITY_INITIATIVE] > 5:
-    #     if random.random() <= BASE_CHANCE - 0.50:
-    #         enemy[ENTITY_INITIATIVE] - initiative_random
+    copy_of_enemy = enemy[:]
 
     return copy_of_enemy
 
