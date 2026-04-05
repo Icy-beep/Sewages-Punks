@@ -2,6 +2,7 @@ import os
 import time
 import sys
 import random
+import msvcrt
 
 from src.constants import *
 
@@ -23,6 +24,10 @@ ENEMY_WIN_MESSAGE = r"You have been defeated."
 
 PLAYER_WORD_VARIABLE = 'player'
 ENEMY_WORD_VARIABLE = 'enemy'
+
+def flush_input():
+    while msvcrt.kbhit():
+        msvcrt.getch()
 
 
 def skip_message():

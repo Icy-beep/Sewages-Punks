@@ -1,5 +1,6 @@
 import sys
 import os
+import msvcrt
 
 from src.core import *
 from pregen_levels.tutorial_level import create_tutorial_dungeon
@@ -85,6 +86,8 @@ if __name__ == '__main__':
             if skip in SKIP_PROLOGUE_COMMANDS_NO:
                 clear_display()
                 start_message()
+
+                flush_input()
                 enter_continue()
 
                 start_message_already_show = True
