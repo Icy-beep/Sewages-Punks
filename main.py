@@ -13,7 +13,7 @@ def main_menu():
     while in_main_menu:
         clear_display()
         draw_main_menu()
-        choice = input(f"{MAGENTA_TEXT_BRIGHT}[SYSTEM@{PLAYER_NAME}]:# {RESET}").strip()
+        choice = input(f"\n{MAGENTA_TEXT_BRIGHT}[SYSTEM@{PLAYER_NAME}]:# {RESET}").strip()
 
         if choice.lower() in NEW_GAME_COMMANDS:
             dungeon = create_tutorial_dungeon()
@@ -28,7 +28,8 @@ def main_menu():
             else:
                 print(f"{RED_TEXT_BRIGHT}[ERROR: NO DATA ON SECTOR{RESET} {MAGENTA_TEXT_BRIGHT}0xxxx256]{RESET}")
 
-        elif choice.lower() in SAVE_GAME_COMMANDS:
+        elif choice.lower() in SETTING_GAME_COMMANDS:
+            clear_display()
             show_setting_stub()
 
         elif choice.lower() in EXIT_GAME_COMMANDS:
@@ -65,7 +66,7 @@ def game_loop(player_data, first_dungeon):
 
         fight(player_data)
         if player_data[ENTITY_HP] <= 0:
-            print(GAME_OVER_MESSAGE)
+            print(game_over())
             sys.exit(0)
         dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
 
@@ -75,8 +76,19 @@ def game_over():
 
 if __name__ == '__main__':
     game_is_run = True
+    start_message_already_show = False
     while game_is_run:
         first_level, player = main_menu()
+        if not start_message_already_show:
+            print(skip_message())
+            skip = input('>>').lower()
+            if skip in SKIP_PROLOGUE_COMMANDS_NO:
+                clear_display()
+                start_message()
+                enter_continue()
+
+                start_message_already_show = True
+
         exit_data = game_loop(player, first_level)
         if exit_data == EXIT_TO_MAIN_MENU:
-            pass
+            continue

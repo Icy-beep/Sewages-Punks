@@ -5,7 +5,6 @@ import random
 
 from src.constants import *
 
-GAME_OVER_MESSAGE = r'GAME OVER'
 INPUT_PLAYER_NAME_MESSAGE = r'Enter your name'
 YOU_TRY_OPEN_DOR_MESSAGE = r'You try open dor'
 CARD_READER_MESSAGE = r'You ran the keycard across the scanner. The device emitted a satisfying chime of access granted, and the door groaned open with a faint metallic screech'
@@ -24,6 +23,74 @@ ENEMY_WIN_MESSAGE = r"You have been defeated."
 
 PLAYER_WORD_VARIABLE = 'player'
 ENEMY_WORD_VARIABLE = 'enemy'
+
+
+def skip_message():
+    message = (f'{LIGHT_BLUE_TEXT_BRIGHT}Skip the prologue?\n'
+               f'[ Y ] Yes\n'
+               f'[ N ] No{RESET}')
+
+    return message
+
+def slow_print(text, speed=0.03):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(speed)
+    print()
+
+def start_message():
+    print(f"{DARK_GRAY}" + "• " * 30 + f"{RESET}\n")
+
+    slow_print(f"{MAGENTA_TEXT_BRIGHT}[...] Initializing PSY-link synchronization... {WHITE_TEXT_BRIGHT}OK{RESET}", 0.05)
+    slow_print(f"{MAGENTA_TEXT_BRIGHT}[...] Checking Elgeia's biometrics... {WHITE_TEXT_BRIGHT}OK{RESET}", 0.05)
+    slow_print(f"{MAGENTA_TEXT_BRIGHT}{RED_TEXT_BRIGHT}[!] WARNING: Langauge interpreter malfunctions {RESET}", 0.05)
+    slow_print(f"{MAGENTA_TEXT_BRIGHT}{RED_TEXT_BRIGHT}[!] WARNING: Default language set to RUSSIAN {RESET}", 0.05)
+    print(f"{MAGENTA_TEXT_BRIGHT}" + "-" * 50 + f"{RESET}\n")
+
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Оператор, приём. Коннект стабилен. Картинка обновляется.{RESET}")
+    time.sleep(0.5)
+
+    slow_print(
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Я в очередном коллекторе. Тут всё как обычно: бетон, вонь и бесконечные переходы.{RESET}")
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Эти стоки тянутся под всем городом, сектора штамповали по одному проекту.{RESET}")
+    slow_print(
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Не удивляйся, если локации покажутся тебе одинаковыми. Это один большой лабиринт.{RESET}")
+
+    time.sleep(0.8)
+
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Зачем я здесь? Всё просто — тут можно выудить что-то очень ценное, вроде твоего линка...{RESET}")
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Крутая штука, да? Корпы плохо следят за своими вещами.{RESET}")
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Что конкретно мы ищем? Я сама не знаю и это не важно. Извини но я плачу тебе не за вопросы.{RESET}")
+
+    time.sleep(1.0)
+
+    print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}[ MISSION_DIRECTIVES ]{RESET}")
+    slow_print(f"{DARK_GRAY}— {WHITE_TEXT_BRIGHT}Следи за сканером. Видишь {RED_TEXT_BRIGHT}X ВРАГОВ{WHITE_TEXT_BRIGHT} — обходи или выводи меня на них.{RESET}")
+    slow_print(f"{DARK_GRAY}— {WHITE_TEXT_BRIGHT}Ищи {MAGENTA_TEXT_BRIGHT}§ КЛЮЧ-КАРТЫ{RESET}{WHITE_TEXT_BRIGHT}. Без них двери в следующие сектора не откроются.{RESET}")
+    slow_print(f"{DARK_GRAY}— {WHITE_TEXT_BRIGHT}Если видишь {YELLOW_TEXT_BRIGHT}$ ПОЛЕЗНЫЙ ЛУТ{WHITE_TEXT_BRIGHT} — говори где он.{RESET}")
+    slow_print(f"{DARK_GRAY}— {WHITE_TEXT_BRIGHT}Дошли до двери {LIGHT_BLUE_TEXT_BRIGHT}Ω 'ОМЕГА'{WHITE_TEXT_BRIGHT} — идём дальше.{RESET}")
+
+    print()
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Тут нет финальной точки, Оператор. Просто идём вглубь, пока не повезёт.{RESET}")
+
+    time.sleep(0.5)
+
+    print(f"\n{DARK_GRAY}" + "-" * 50 + f"{RESET}")
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM]: Включение трансляции ПСИ-передатчика...{RESET}", 0.06)
+
+
+def game_over():
+    game_over_art = f"""{RED_TEXT_BRIGHT}
+ ██████   █████  ███    ███ ███████     ██████  ██    ██ ███████ ██████  
+ ██   ██ ██   ██ ████  ████ ██          ██    ██ ██    ██ ██      ██   ██ 
+ ██   ██ ███████ ██ ████ ██ █████       ██    ██ ██    ██ █████   ██████  
+ ██   ██ ██   ██ ██  ██  ██ ██          ██    ██  ██  ██  ██      ██   ██ 
+ ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██ 
+ ╚═════╝ ╚═════╝ ╚══════╝  ╚═══════╝     ╚═════╝    ╚══╝   ╚══════╝ ╚══════╝ 
+                    {RESET}"""
+
+    return game_over_art
 
 def player_miss():
     message = 'So close, but a miss!'
@@ -78,11 +145,13 @@ def show_dungeon_map(dungeon):
 
 
 def show_movement_legend():
-    print(WHITE_TEXT_REGULAR + 'Movement' + RESET)
+    print(WHITE_TEXT_REGULAR + 'Controls' + RESET)
     print(WHITE_TEXT_REGULAR + 'UP - w' + RESET)
     print(WHITE_TEXT_REGULAR + 'LEFT - a' + RESET)
     print(WHITE_TEXT_REGULAR + 'DOWN - s' + RESET)
     print(WHITE_TEXT_REGULAR + 'RIGHT - d' + RESET)
+    print()
+    print('MENU - ESC')
 
 
 def initiative_throw_message():
@@ -108,7 +177,7 @@ def throw_animation(player_data, enemy_data):
         for step in range(duration):
             output = []
 
-            output.append(f"{green}--- PLAYER INITIATIVE SECTOR ---{RESET}")
+            output.append(f"{green}--- YOUR INITIATIVE SECTOR ---{RESET}")
             for y in range(height):
                 line = "".join(random.choice(chars) for _ in range(width))
                 if y == height // 2:
@@ -137,9 +206,9 @@ def throw_animation(player_data, enemy_data):
         print("\n" * (height * 2 + 5))
 
         if player_data[ENTITY_INITIATIVE] >= enemy_data[ENTITY_INITIATIVE]:
-            print(f"{green}>>> PLAYER ACTS FIRST!{RESET}\n")
+            print(f"{green}>>> {player_data[ENTITY_NAME]} ACTS FIRST!{RESET}\n")
         else:
-            print(f"{red}>>> ENEMY AMBUSH!{RESET}\n")
+            print(f"{red}>>> {enemy_data[ENTITY_NAME]} AMBUSH!{RESET}\n")
 
     finally:
         print(show)
@@ -275,7 +344,7 @@ def empty_heal_message():
 def message_about_step(player = 0, enemy = 0):
 
     if player == 1:
-        return f'{PLAYER_HP_FONT}Initiative: Player'
+        return f'{PLAYER_HP_FONT}Initiative: You'
 
     if enemy == 1:
         return f'{ENEMY_HP_FONT}Initiative: Enemy'
@@ -328,25 +397,41 @@ def key_card_options_menu():
 def draw_main_menu():
     c_main = LIGHT_BLUE_TEXT_BRIGHT
     c_accent = MAGENTA_TEXT_BRIGHT
+    c_red = RED_TEXT_BRIGHT
     c_reset = RESET
 
-    logo = f"""
-    {c_main}  
-      ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗              ██████╗██╗████████╗██╗   ██
-      ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║    █████╗   ██╔════╝██║╚══██╔══╝╚██╗ ██╔╝
-      ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║    █████║   ██║     ██║   ██║    ╚████╔╝      
-      ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║    ╚════╝   ██║     ██║   ██║     ╚██╔╝        
-      ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║             ╚██████╗██║   ██║      ██║ 
-      ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝              ╚═════╝╚═╝   ╚═╝      ╚═╝  
-                                  {c_accent}>> S E W A G E S & P U N K S <<{c_main}
-    {c_accent}  ___________________________________________________________________________{c_reset}
-        """
-    print(logo)
-    print(f"{c_main}[ N ]{c_reset} CREATE THE {RED_TEXT_BRIGHT}PSY{RESET} - DATA {c_main}(NEW GAME){c_reset}")
-    print(f"{c_main}[ L ]{c_reset} ACCESS ARCHIVED {RED_TEXT_BRIGHT}PSY{RESET} - DATA {c_main}(LOAD GAME){c_reset}")
-    print(f"{c_main}[ S ]{c_reset} SYSTEM RE-CALIBRATION {c_main}(SETTINGS){c_reset}")
-    print(f"{c_main}[ E ]{c_reset} DISCONNECT FROM NETWORK {c_main}(EXIT){c_reset}")
-    print(f"{c_accent}  ___________________________________________________________________________{c_reset}")
+    indent = "    "
+
+    logo = f"""{c_main}
+    ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗              ██████╗██╗████████╗██╗   ██
+    ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║    █████╗   ██╔════╝██║╚══██╔══╝╚██╗ ██╔╝
+    ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║    █████║   ██║     ██║   ██║    ╚████╔╝      
+    ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║    ╚════╝   ██║     ██║   ██║     ╚██╔╝        
+    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║             ╚██████╗██║   ██║      ██║ 
+    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝              ╚═════╝╚═╝   ╚═╝      ╚═╝{c_reset}"""
+
+    for line in logo.split('\n'):
+        print(f"{indent}{line}")
+
+    print(f"{indent}                              {c_accent}>> S E W A G E S & P U N K S <<{c_reset}")
+    print(f"{indent}{c_accent}___________________________________________________________________________{c_reset}\n")
+
+    items = [
+        ("N", "CREATE THE PSY - DATA", "(NEW GAME)"),
+        ("L", "ACCESS ARCHIVED PSY - DATA", "(LOAD GAME)"),
+        ("S", "SYSTEM RE-CALIBRATION", "(SETTINGS)"),
+        ("E", "DISCONNECT FROM NETWORK", "(EXIT)")
+    ]
+
+    for key, desc, info in items:
+
+        aligned_desc = f"{desc:<30}"
+
+        colored_desc = aligned_desc.replace("PSY", f"{c_red}PSY{c_reset}")
+
+        print(f"{indent}{c_main}[ {key} ]{c_reset} {colored_desc} {c_main}{info}{c_reset}")
+
+    print(f"\n{indent}{c_accent}___________________________________________________________________________{c_reset}")
 
 
 def show_setting_stub():
@@ -359,17 +444,17 @@ def show_setting_stub():
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
     lines = [
-        f"{RED_TEXT_BRIGHT}FATAL ERROR{RESET}: {c_main}Settings module 'SYS_CONFIG_V.4.2' not found.",
-        f"ENCRYPTION LEVEL: MILITARY-GRADE (AES-512)",
-        f"STATUS: Operation suspended by Moon_City_Admin.",
-        f"REASON: Psy link synchronization in progress...{RESET}"
+        f"{RED_TEXT_BRIGHT}FATAL ERROR:{RESET} {c_main}Settings module 'SYS_CONFIG_V.4.2' not found.",
+        f"{MAGENTA_TEXT_BRIGHT}ENCRYPTION LEVEL:{RESET} {RED_TEXT_BRIGHT}MILITARY-GRADE (AES-512)",
+        f"{MAGENTA_TEXT_BRIGHT}STATUS:{RESET} {c_main}Operation suspended by Moon_City_Admin.",
+        f"{MAGENTA_TEXT_BRIGHT}REASON:{RESET} {c_main}Illegal hardware signature {RED_TEXT_BRIGHT}[ID:██-███-VOID] {c_main}detected.{RESET}"
     ]
 
     for line in lines:
         print(f"{c_main}[ LOG ]:{c_reset} {line}")
         time.sleep(0.1)
 
-    print(f"\n{c_warn}>> PLEASE, SEE YOUR NEAREST PSY-DOC FOR A SOFTWARE UPDATE. <<{c_reset}")
+    print(f"\n{c_warn}>> MOON_CITY_ADMIN: I SEE YOUR TRACE, TRASH. ENJOY YOUR TOY UNTIL THE PSY-LINK BURNS YOUR BRAINS OUT. <<{c_reset}")
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
     input(f"\n{c_accent}Press [ENTER] to go back to the terminal...{c_reset}")

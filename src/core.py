@@ -9,7 +9,6 @@ import datetime
 
 
 def adventuring(dungeon_map, player_data):
-    user_input = ''
     return_to_main_menu = False
     adventuring_not_end = True
 
@@ -216,7 +215,6 @@ def fight(player_data):
             break
 
         if player_step:
-            who = PLAYER_WORD_VARIABLE
             print(message_about_step(enemy = 0, player = 1))
 
             show_combat_legend()
@@ -342,7 +340,6 @@ def get_unique_filename(base_name):
     filename = os.path.join(SAVE_DIR, f"{base_name}.json")
     counter = 1
 
-    temp_name = base_name
     while os.path.exists(filename):
         temp_name = f"{base_name}_{counter}"
         filename = os.path.join(SAVE_DIR, f"{temp_name}.json")
