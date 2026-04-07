@@ -14,7 +14,7 @@ def adventuring(dungeon_map, player_data):
 
     while adventuring_not_end:
         clear_display()
-        show_dungeon_map(dungeon_map)
+        show_dungeon_map(dungeon_map, player_data)
         show_movement_legend()
 
         char = msvcrt.getch()
@@ -368,7 +368,7 @@ def save_game(player_data, dungeon):
 
     data = {
         "player": player_data,
-        "dungeon": dungeon
+        "dungeon": dungeon,
     }
 
     try:
@@ -416,6 +416,20 @@ def load_game():
     return None
 
 
+def get_player_nickname():
+    while True:
+        print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}[ SYSTEM ]:# Identify yourself.{RESET}")
+        nick = input(">> ").strip()
+        if not nick:
+            clear_display()
+            print(f"{RED_TEXT_BRIGHT}[ ERROR ]:# Identification failed. Input cannot be empty.{RESET}")
+        elif len(nick) > 16:
+            clear_display()
+            print(f"{RED_TEXT_BRIGHT}[ ERROR ]:# Identity too long (max 16 chars).{RESET}")
+        else:
+            clear_display()
+            print(f"{MAGENTA_TEXT_BRIGHT}[ SYSTEM ]:# Identity confirmed. Your nickname:{nick}{RESET}\n")
+            return nick
 
 
 

@@ -117,7 +117,7 @@ NAME_ENEMY_SYNTH_HOUND = 'Synth - Hound'
 NAME_ENEMY_GLITCH_BUTCHER = 'Ripper'
 NAME_ENEMY_PSY_CODER = 'Psy - Coder'
 
-PLAYER_NAME = 'Elgeia'
+MAIN_CHARACTER_NAME = 'Elgeia'
 
 FIGHT = 'is_fight'
 EXIT = 'exit'

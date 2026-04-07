@@ -3,6 +3,7 @@ import time
 import sys
 import random
 import msvcrt
+import winsound
 
 from src.constants import *
 
@@ -31,9 +32,10 @@ def flush_input():
 
 
 def skip_message():
-    message = (f'{LIGHT_BLUE_TEXT_BRIGHT}Skip the prologue?\n'
+    message = (f'{LIGHT_BLUE_TEXT_BRIGHT}Skip the brief?\n'
                f'[ Y ] Yes\n'
-               f'[ N ] No{RESET}')
+               f'[ N ] No\n'
+               f'{RED_TEXT_BRIGHT}Any other key will skip the brief.{RESET}')
 
     return message
 
@@ -85,15 +87,119 @@ def start_message():
     slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM]: Включение трансляции ПСИ-передатчика...{RESET}", 0.06)
 
 
+def glitch_chars():
+    return ['"', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '#', '$', '@', '!', '&', '?', '+', '-']
+
+def glitch_effect(text, color=RED_TEXT_BRIGHT, speed=0.03):
+    chars = glitch_chars()
+    print(color, end='')
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(speed)
+        if random.random() < 0.02:
+            sys.stdout.write(random.choice(chars))
+        else:
+            sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(speed)
+    print(RESET)
+
+
+def blood_pressure_failure():
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[BIOSENSOR] : Monitoring arterial pressure...{RESET}")
+
+    sys_p = 90
+    dia_p = 60
+
+    while sys_p > 0 or dia_p > 0:
+        sys_p -= random.randint(5, 12)
+        dia_p -= random.randint(3, 8)
+
+        if sys_p < 0: sys_p = 0
+        if dia_p < 0: dia_p = 0
+
+        if sys_p < 20:
+            color = RED_TEXT_BRIGHT
+            wave = random.choice(["-- --", "- - -", " --- "])
+        elif sys_p < 45:
+            color = RED_TEXT_BRIGHT
+            wave = "-~-~-"
+        else:
+            color = WHITE_TEXT_BRIGHT
+            wave = "-^v^-"
+
+        sys.stdout.write(f"\r{color}[BP_STATUS]: {sys_p:02d}/{dia_p:02d} mmHg | ECG: {wave} {RESET}")
+        sys.stdout.flush()
+
+
+        if sys_p > 0:
+            freq = int(400 + (sys_p * 4.5))
+            winsound.Beep(freq, 150)
+
+            sleep_time = 0.2 + (1.5 / (sys_p + 1))
+            time.sleep(min(sleep_time, 1.2))
+        else:
+            break
+
+    sys.stdout.write(f"\r{RED_TEXT_BRIGHT}[BP_STATUS]: 00/00 mmHg | ECG: ---------------- [STOP]{RESET}")
+    sys.stdout.flush()
+
+    print(f"\n{RED_TEXT_BRIGHT}[!!!] CRITICAL: BLOOD PRESSURE ZERO.{RESET}")
+    print(f"{RED_TEXT_BRIGHT}[!!!] STATUS: FLATLINED. {RESET}")
+
+    winsound.Beep(380, 3000)
+
+
 def game_over():
+    glitch_effect(f"\n{RED_TEXT_BRIGHT}[!] CRITICAL HARDWARE FAILURE DETECTED [!]{RESET}")
+    print(f"{DARK_GRAY}{'· ' * 30}{RESET}")
+    time.sleep(0.6)
+
+    print(MAGENTA_TEXT_BRIGHT + '\n[SYSTEM@Elgeia]:' + RESET, end='')
+    slow_print(f"{MAGENTA_TEXT_BRIGHT}... I.. *cough*{RESET}", 0.3)
+    slow_print(f"\n{MAGENTA_TEXT_BRIGHT}[SYSTEM]: SIGNAL LOST: KINETIC IMPACT DETECTED {RESET} ")
+    glitch_effect("", LIGHT_BLUE_TEXT_BRIGHT, 0.08)
+    time.sleep(1.0)
+
+    blood_pressure_failure()
+
+    for _ in range(3):
+        noise = "".join(random.choice(["░", "▒", "▓", "█", " "]) for _ in range(50))
+        slow_print(f"{DARK_GRAY}{noise}{RESET}", 0.01)
+        time.sleep(0.1)
+
+    slow_print(f"\n{RED_TEXT_BRIGHT}PSY_LINK_STATION [STATUS: DISCONNECT]{RESET}")
+    print(f"{RED_TEXT_BRIGHT}{'=' * 60}{RESET}")
+    print(f"{RED_TEXT_BRIGHT}{'=' * 60}{RESET}")
+
+    time.sleep(1.0)
+    slow_print(f"\n{MAGENTA_TEXT_BRIGHT}LOCATION: {RESET}[VOID] {MAGENTA_TEXT_BRIGHT}// MEMORY_DUMP: {RESET}0x00000000")
+
+    slow_print(f"\n{MAGENTA_TEXT_BRIGHT}CONNECTION CLOSED BY PEER...{RESET}")
+    sys.stdout.flush()
+    time.sleep(2.0)
+    slow_print("\n( Press [ENTER] to try restore PSY connect )")
+    flush_input()
+    input()
+    slow_print("\n[LOG]: Restoring PSY connect ...")
+    slow_print("\n[SYSTEM]: PSY connect cannot be restored")
+    slow_print("\n[SYSTEM]: Please restart PSY link")
+
+    slow_print("\n(For restart a PSY link press ENTER)")
+    flush_input()
+    input()
+
+    print(f"\n")
+
     game_over_art = f"""{RED_TEXT_BRIGHT}
- ██████   █████  ███    ███ ███████     ██████  ██    ██ ███████ ██████  
- ██   ██ ██   ██ ████  ████ ██          ██    ██ ██    ██ ██      ██   ██ 
- ██   ██ ███████ ██ ████ ██ █████       ██    ██ ██    ██ █████   ██████  
- ██   ██ ██   ██ ██  ██  ██ ██          ██    ██  ██  ██  ██      ██   ██ 
- ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██ 
- ╚═════╝ ╚═════╝ ╚══════╝  ╚═══════╝     ╚═════╝    ╚══╝   ╚══════╝ ╚══════╝ 
-                    {RESET}"""
+███╗   ███╗██╗███████╗███████╗██╗ ██████╗ ███╗   ██╗    ███████╗ █████╗ ██╗██╗     ███████╗██████╗ 
+████╗ ████║██║██╔════╝██╔════╝██║██╔═══██╗████╗  ██║    ██╔════╝██╔══██╗██║██║     ██╔════╝██╔══██╗
+██╔████╔██║██║███████╗███████╗██║██║   ██║██╔██╗ ██║    █████╗  ███████║██║██║     █████╗  ██║  ██║
+██║╚██╔╝██║██║╚════██║╚════██║██║██║   ██║██║╚██╗██║    ██╔══╝  ██╔══██║██║██║     ██╔══╝  ██║  ██║
+██║ ╚═╝ ██║██║███████║███████║██║╚██████╔╝██║ ╚████║    ██║     ██║  ██║██║███████╗███████╗██████╔╝
+╚═╝     ╚═╝╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝{RESET} 
+"""
 
     return game_over_art
 
@@ -102,8 +208,25 @@ def player_miss():
 
     return message
 
+def player_hp_in_percent(hp):
+    current_hp = hp
+    max_hp = 100
 
-def show_dungeon_map(dungeon):
+    hp_percent = (current_hp / max_hp) * 100
+
+    hp_in_percent = f"HP: {hp_percent:.0f}%"
+
+    bar_length = 20
+    filled_length = int(bar_length * current_hp // max_hp)
+    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+
+    hp_bar = f"[{bar}] {hp_percent:.0f}%"
+
+    return hp_in_percent, hp_bar
+
+
+def show_dungeon_map(dungeon, player_data):
+    hp = player_hp_in_percent(player_data[ENTITY_HP])
     legend = [
         f"{PLAYER_ICON}@ {RESET}- YOU",
         f"{ENEMY_ICON}X {RESET}- ENEMY",
@@ -112,7 +235,9 @@ def show_dungeon_map(dungeon):
         f"{EXIT_ICON}Ω {RESET}- EXFILL",
         "",
         f"{WALL_ICON}█ {RESET}- WALL",
-        f"{FLOOR_ICON}· {RESET}- FREE SPACE"
+        f"{FLOOR_ICON}· {RESET}- FREE SPACE",
+        "",
+        f"{GREEN_TEXT_BRIGHT}HP - {hp[1]}{RESET}",
     ]
 
     header = f"{WALL_ICON}╔════════════ [ SECTOR SCAN ] ════════════╗{RESET}"
@@ -143,6 +268,7 @@ def show_dungeon_map(dungeon):
                 print('  ', end='')
 
         legend_part = legend[i] if i < len(legend) else ""
+
         print(f"{WALL_ICON}║   {RESET}{legend_part}")
 
     footer = f"{WALL_ICON}╚" + "═" * (DUNGEON_WIDTH * 2 + 1) + f"╝{RESET}"
@@ -434,10 +560,22 @@ def draw_main_menu():
 
         colored_desc = aligned_desc.replace("PSY", f"{c_red}PSY{c_reset}")
 
-        print(f"{indent}{c_main}[ {key} ]{c_reset} {colored_desc} {c_main}{info}{c_reset}")
+        print(f"{indent}{c_main}[{key}]{c_reset} {colored_desc} {c_main}{info}{c_reset}")
 
     print(f"\n{indent}{c_accent}___________________________________________________________________________{c_reset}")
 
+
+def waiting_animation(duration=6):
+    frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+    end_time = time.time() + duration
+    i = 0
+
+    while time.time() < end_time:
+        sys.stdout.write(f"\b{frames[i % len(frames)]}")
+        sys.stdout.flush()
+
+        i += 1
+        time.sleep(0.06)
 
 def show_setting_stub():
     c_main = LIGHT_BLUE_TEXT_BRIGHT
@@ -445,21 +583,27 @@ def show_setting_stub():
     c_warn = RED_TEXT_BRIGHT
     c_reset = RESET
 
-    print(f"\n{c_accent}[ ACCESS DENIED ]{c_reset}")
+    slow_print(f"\n{c_accent}[ACCESS DENIED]{c_reset}")
+    time.sleep(0.5)
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
     lines = [
         f"{RED_TEXT_BRIGHT}FATAL ERROR:{RESET} {c_main}Settings module 'SYS_CONFIG_V.4.2' not found.",
         f"{MAGENTA_TEXT_BRIGHT}ENCRYPTION LEVEL:{RESET} {RED_TEXT_BRIGHT}MILITARY-GRADE (AES-512)",
         f"{MAGENTA_TEXT_BRIGHT}STATUS:{RESET} {c_main}Operation suspended by Moon_City_Admin.",
-        f"{MAGENTA_TEXT_BRIGHT}REASON:{RESET} {c_main}Illegal hardware signature {RED_TEXT_BRIGHT}[ID:██-███-VOID] {c_main}detected.{RESET}"
+        f"{MAGENTA_TEXT_BRIGHT}REASON:{RESET} {c_main}Illegal hardware signature {RED_TEXT_BRIGHT}[ID:██-███-VOID] {c_main}detected.{RESET}\n"
     ]
 
     for line in lines:
-        print(f"{c_main}[ LOG ]:{c_reset} {line}")
-        time.sleep(0.1)
+        print(f"{c_main}[LOG]:{c_reset} ", end='')
+        time.sleep(1.5)
+        slow_print(line)
 
-    print(f"\n{c_warn}>> MOON_CITY_ADMIN: I SEE YOUR TRACE, TRASH. ENJOY YOUR TOY UNTIL THE PSY-LINK BURNS YOUR BRAINS OUT. <<{c_reset}")
+
+    print(c_warn + '>> MOON_CITY_ADMIN: ', end='')
+    waiting_animation()
+    print(f"\r{c_warn}>> MOON_CITY_ADMIN: I SEE YOUR TRACE, TRASH. ENJOY YOUR TOY UNTIL THE PSY-LINK BURNS YOUR BRAINS OUT. <<{c_reset}")
+    time.sleep(0.5)
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
     input(f"\n{c_accent}Press [ENTER] to go back to the terminal...{c_reset}")
@@ -475,7 +619,7 @@ def show_ingame_menu():
 
     header = f"""
 {c_main}    .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    {c_accent}MOON CITY {c_main} // NEURAL_LINK_STATION [STATUS: PAUSED]
+    {c_accent}MOON CITY {c_main} // PSY_LINK_STATION [STATUS: PAUSED]
     .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .{c_reset}
     """
 

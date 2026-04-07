@@ -7,14 +7,17 @@ from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
 from src.constants import *
 from src.entities import create_default_player
+from src.localization import MAIN_MENU
 
 
 def main_menu():
     in_main_menu = True
+    player_nick = 'Operator'
     while in_main_menu:
         clear_display()
         draw_main_menu()
-        choice = input(f"\n{MAGENTA_TEXT_BRIGHT}[SYSTEM@{PLAYER_NAME}]:# {RESET}").strip()
+        prompt = MAIN_MENU['player_input'].format(PLAYER_NAME=player_nick)
+        choice = input(prompt).strip()
 
         if choice.lower() in NEW_GAME_COMMANDS:
             dungeon = create_tutorial_dungeon()
@@ -24,10 +27,13 @@ def main_menu():
         elif choice.lower() in LOAD_GAME_COMMANDS:
             saved_data = load_game()
             if saved_data:
-                print(f"{GREEN_TEXT_BRIGHT}[DECRYPTING SUCCESSFUL: OBJECT {[PLAYER_NAME]} ---> RESTORED]{RESET}")
+                prompt = MAIN_MENU['decrypting_successful'].format(MAIN_CHARACTER_NAME = MAIN_CHARACTER_NAME)
+                print(prompt)
+                enter_continue()
                 return saved_data
             else:
-                print(f"{RED_TEXT_BRIGHT}[ERROR: NO DATA ON SECTOR{RESET} {MAGENTA_TEXT_BRIGHT}0xxxx256]{RESET}")
+                print(MAIN_MENU['no_data_on_sector'])
+                enter_continue()
 
         elif choice.lower() in SETTING_GAME_COMMANDS:
             clear_display()
@@ -67,19 +73,22 @@ def game_loop(player_data, first_dungeon):
 
         fight(player_data)
         if player_data[ENTITY_HP] <= 0:
-            print(game_over())
-            sys.exit(0)
-        dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
+            art = game_over()
+            flush_input()
+            clear_display()
+            slow_print(art, 0.01)
+            flush_input()
+            enter_continue()
 
-def game_over():
-    pass
+            break
+        dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
 
 
 if __name__ == '__main__':
     game_is_run = True
     start_message_already_show = False
     while game_is_run:
-        first_level, player = main_menu()
+        first_level, player, = main_menu()
         if not start_message_already_show:
             print(skip_message())
             skip = input('>>').lower()
