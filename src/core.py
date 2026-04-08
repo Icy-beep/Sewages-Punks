@@ -275,7 +275,7 @@ def fight(player_data):
                         player_data[ENTITY_TOXICITY] += 1
                         print(toxication_message())
 
-                        if player_data[ENTITY_TOXICITY] >= 2:
+                        if player_data[ENTITY_TOXICITY] > 3:
                             player_data[ENTITY_HP] -= 5
                             toxication_damage_message()
                             show_player_hp(player_data)
