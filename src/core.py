@@ -271,11 +271,11 @@ def fight(player_data):
                     print(heal_message())
                     show_player_hp(player_data)
 
-                    if count_of_use_heal > 1:
+                    if count_of_use_heal >= 1:
                         player_data[ENTITY_TOXICITY] += 1
                         print(toxication_message())
 
-                        if player_data[ENTITY_TOXICITY] > 3:
+                        if player_data[ENTITY_TOXICITY] > 4:
                             player_data[ENTITY_HP] -= 5
                             toxication_damage_message()
                             show_player_hp(player_data)

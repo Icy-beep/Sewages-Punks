@@ -381,35 +381,50 @@ def start_fight_message(enemy) -> str:
 
 
 def show_battle_information(player, enemy):
-    import random
-    import time
-    import string
-
     clear_display()
 
-    player_hp = player[ENTITY_HP]
+    bar_width = 20
+    scan_speed = 0.01
+    scan_iterations = 12
 
-    enemy_hp = enemy[ENTITY_HP]
+    p_hp = max(0, player[ENTITY_HP])
+    p_max = 100
+    tox = player[ENTITY_TOXICITY]
+    max_tox = 4
 
-    chars = string.ascii_letters + string.digits + string.punctuation
+    e_hp = max(0, enemy[ENTITY_HP])
+    e_max = 100
 
+    print("┌" + "─" * 45 + "┐")
+
+    for _ in range(scan_iterations):
+        fake = "".join(random.choice("0123456789ABCDEF") for _ in range(3))
+        sys.stdout.write(f"\r│ {PLAYER_HP_FONT}YOUR VITALS:  [ {'#' * 10} ] {fake}  ")
+        sys.stdout.flush()
+        time.sleep(scan_speed)
+
+    p_hp_fill = int((p_hp / p_max) * bar_width)
+    p_bar = ("█" * p_hp_fill).ljust(bar_width, "░")
+    sys.stdout.write(f"\r│ {PLAYER_HP_FONT}YOUR VITALS:  [{p_bar}] {p_hp}/{p_max} HP \n")
+
+    tox_fill = int((tox / max_tox) * bar_width)
+    t_bar = ("█" * tox_fill).ljust(bar_width, "·")
+    sys.stdout.write(f"│ {MAGENTA_TEXT_BRIGHT}INTOXICATION: [{t_bar}] {tox}/{max_tox}    \n")
+
+    print("│" + " " * 45 + "│")
+
+    for _ in range(scan_iterations):
+        fake = "".join(random.choice("0123456789ABCDEF") for _ in range(3))
+        sys.stdout.write(f"\r│ {ENEMY_HP_FONT}ENEMY VITALS: [ {'#' * 10} ] {fake}  ")
+        sys.stdout.flush()
+        time.sleep(scan_speed)
+
+    e_hp_fill = int((e_hp / e_max) * bar_width)
+    e_bar = ("█" * e_hp_fill).ljust(bar_width, "░")
+    sys.stdout.write(f"\r│ {ENEMY_HP_FONT}ENEMY VITALS: [{e_bar}] {e_hp}/{e_max} HP \n")
+
+    print("└" + "─" * 45 + "┘")
     print()
-
-    for i in range(500):
-        fake_value = "".join(random.choice(chars) for _ in range(10))
-        print(f'\r{PLAYER_HP_FONT}Your vitals: {fake_value}', end='')
-        time.sleep(0.001)
-
-    print(f'\r{PLAYER_HP_FONT}Your vitals: {player_hp}       ')
-
-    print()
-
-    for i in range(500):
-        fake_value = "".join(random.choice(chars) for _ in range(10))
-        print(f'\r{ENEMY_HP_FONT}Enemy vitals: {fake_value}', end='')
-        time.sleep(0.001)
-
-    print(f'\r{ENEMY_HP_FONT}Enemy vitals: {enemy_hp}        ')
 
 
 def show_combat_legend():
