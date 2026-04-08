@@ -185,6 +185,7 @@ def adventuring(dungeon_map, player_data):
 def fight(player_data):
 
     is_fight = True
+    player_data[ENTITY_TOXICITY] = 0
     count_of_use_heal = 0
     enemy_data = create_enemy()
     clear_display()

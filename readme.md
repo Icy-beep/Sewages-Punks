@@ -33,5 +33,5 @@
 - особые навыки игрока и врагов, лорно - сюжетная составляющая.
 ````
 >[!TIP]
->[📥 Скачать .exe файл](https://pixeldrain.com/u/geFanY4P)
+>[📥 Скачать .exe файл](https://pixeldrain.com/u/uUn6ncTY)
 
