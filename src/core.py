@@ -144,6 +144,7 @@ def adventuring(dungeon_map, player_data):
                 if user_input == '1':
                     defuse = defuse_trap(player_data)
                     if defuse:
+                        player_data[PLAYER_ITEM_DEFUSAL_KIT] -= 1
                         clear_display()
                         print(TRAP_DEFUSED_MESSAGE)
                         enter_continue()
