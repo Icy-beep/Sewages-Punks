@@ -1,3 +1,4 @@
+![Static Badge](https://img.shields.io/badge/Python-3.14-brightgreen)
 # Проект: Консольная игра “Подземелье”
 ````
 Игра выполнена в сеттинге
@@ -32,5 +33,5 @@
 - особые навыки игрока и врагов, лорно - сюжетная составляющая.
 ````
 >[!TIP]
->[📥 Скачать .exe файл](https://pixeldrain.com/u/SuuhKnLd)
+>[📥 Скачать .exe файл](https://pixeldrain.com/u/BtPBoYbD)
 
