@@ -845,7 +845,18 @@ def waiting_animation(duration: float = 6.0) -> None:
         i += 1
         time.sleep(0.06)
 
-def show_setting_stub():
+
+def show_setting_stub() -> None:
+    """
+    Отображает стилизованную заглушку раздела настроек в случае отказа в доступе.
+
+    Функция имитирует системную ошибку и вмешательство администратора 'Moon_City',
+    используя задержки времени, анимацию ожидания и цветной вывод для создания
+    атмосферы киберпанка.
+
+    Returns:
+        None: Функция выводит текст в терминал и ожидает ввода пользователя.
+    """
     c_main = LIGHT_BLUE_TEXT_BRIGHT
     c_accent = MAGENTA_TEXT_BRIGHT
     c_warn = RED_TEXT_BRIGHT
