@@ -40,7 +40,7 @@ def main_menu():
             show_setting_stub()
 
         elif choice.lower() in EXIT_GAME_COMMANDS:
-            print(f"{RED_TEXT_REGULAR}DISCONNECTING...{RESET}")
+            print(f"{RED_TEXT_BRIGHT}DISCONNECTING...{RESET}")
             time.sleep(0.2)
             sys.exit()
 
