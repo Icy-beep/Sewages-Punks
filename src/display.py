@@ -658,7 +658,20 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
     print(f"{MAGENTA}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
 
 
-def show_enemy_hp(enemy_data):
+def show_enemy_hp(enemy_data: list) -> None:
+    """
+    Визуализирует процесс сканирования здоровья противника с эффектом дешифровки.
+
+    Имитирует взлом систем жизнеобеспечения врага, выводя быстро сменяющиеся
+    случайные символы (шум), после чего отображает реальное значение HP.
+
+    Args:
+        enemy_data (list): Список характеристик противника,
+            где индекс ENTITY_HP содержит текущее здоровье.
+
+    Returns:
+        None: Функция выполняет анимированный вывод в консоль через возврат каретки.
+    """
     import random
     import string
 
