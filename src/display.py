@@ -889,7 +889,17 @@ def show_setting_stub() -> None:
     input(f"\n{c_accent}Press [ENTER] to go back to the terminal...{c_reset}")
 
 
-def show_ingame_menu():
+def show_ingame_menu() -> None:
+    """
+    Отображает внутриигровое меню паузы в стилистике терминала Moon City.
+
+    Функция очищает экран, выводит стилизованный заголовок со статусом
+    соединения (PAUSED) и список доступных команд (продолжить, сохранить,
+    загрузить, выход) с небольшой задержкой для создания эффекта терминала.
+
+    Returns:
+        None: Функция предназначена только для вывода интерфейса в консоль.
+    """
     c_main = LIGHT_BLUE_TEXT_BRIGHT
     c_accent = MAGENTA_TEXT_BRIGHT
     c_warn = RED_TEXT_BRIGHT
