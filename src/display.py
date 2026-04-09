@@ -726,49 +726,9 @@ def exit_interactions() -> None:
     Предоставляет игроку выбор: использовать найденную ключ-карту, попытаться
     выбить дверь силой или отойти от объекта для продолжения исследования сектора.
 
-def heal_message():
-
-    return 'You take a deep breath from your regen-inhaler. You feel the nanites repairing your tissues.'
-
-
-def empty_heal_message():
-
-    return 'No doses left in your regenerative inhaler.'
-
-
-def message_about_step(player = 0, enemy = 0):
-
-    if player == 1:
-        return f'{PLAYER_HP_FONT}Initiative: You'
-
-    if enemy == 1:
-        return f'{ENEMY_HP_FONT}Initiative: Enemy'
-
-    raise ValueError()
-
-
-def toxication_message():
-    message = f'{RED_TEXT_BRIGHT}WARNING{RESET}: {LIGHT_BLUE_TEXT_BRIGHT}TOXICATION LEVEL RISING!{RESET}'
-
-    return message
-
-
-def toxication_damage_message():
-
-    print(f'{RED_TEXT_BRIGHT}WARNING{RESET}: {LIGHT_BLUE_TEXT_BRIGHT}Toxicity level critical! -5 HP{RESET}')
-
-
-def hit_message(damage, who):
-
-    if who == 'enemy':
-        print(f'Hit! The enemy dealt {damage} damage.')
-
-    if who == 'player':
-        print(f'Hit! You dealt {damage} damage.')
-
-
-def exit_interactions():
-
+    Returns:
+        None: Функция выполняет прямой вывод текстовых вариантов в консоль.
+    """
     print('1 - Use keycard')
     print('2 - Kick door down')
     print('3 - Leave')
