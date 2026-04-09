@@ -344,7 +344,21 @@ def player_hp_in_percent(hp: int) -> tuple[str, str]:
     return hp_in_percent, hp_bar
 
 
-def show_dungeon_map(dungeon, player_data):
+def show_dungeon_map(dungeon: list[list[int]], player_data: list) -> None:
+    """
+    Визуализирует текущую карту подземелья с легендой и статусом игрока.
+
+    Функция отрисовывает игровое поле (сетку), заменяя числовые значения тайлов
+    на цветные символы. Справа от карты выводится легенда обозначений и
+    графическая шкала здоровья игрока.
+
+    Args:
+        dungeon (list[list[int]]): Двумерный массив, представляющий карту уровня.
+        player_data (list): Список характеристик игрока для отображения HP.
+
+    Returns:
+        None: Функция выполняет прямой вывод сформированного интерфейса в консоль.
+    """
     hp = player_hp_in_percent(player_data[ENTITY_HP])
     legend = [
         f"{PLAYER_ICON}@ {RESET}- YOU",
