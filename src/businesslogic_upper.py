@@ -3,25 +3,20 @@ from src.businesslogic_lower import *
 from src.constants import *
 from src.entities import *
 
-def create_dungeon():
+def create_dungeon() -> list[list[int]]:
     """
-    Генерирует двумерную карту подземелья, интегрируя геометрию уровня и игровые объекты.
+    Генерирует процедурное подземелье, используя пошаговый алгоритм наполнения.
 
-    Функция пошагово формирует структуру:
-    1. Создает сетку стен и размещает выход - (`EXIT_TILE`).
-    2. Генерирует проходимые пути и размещает игрока - (`PLAYER_TILE`).
-    3. Случайно распределяет врагов, ловушки, сундуки и ключи на доступных участках пола.
+    Порядок работы:
+    1. Инициализация пустой сетки и размещение выхода.
+    2. Прокладка геометрии коридоров и установка игрока.
+    3. Последовательный спавн объектов с контролем наложения (forbidden tiles):
+       - Сундуки (приоритет: тупики и стены).
+       - Ловушки (исключая сундуки).
+       - Враги (исключая сундуки и ловушки).
+       - Ключи (приоритет: позиции за спиной врагов).
 
-    Зависимости от констант:
-    - Размеры: `DUNGEON_HEIGHT`, `DUNGEON_WIDTH`.
-    - Тайлы: `WALL_TILE`, `FLOOR_TILE`, `PLAYER_TILE`, `EXIT_TILE`, `ENEMY_TILE`, `TRAP_TILE`, `CHEST_TILE`, `KEY_TILE`.
-    - Лимиты: `MIN_ENEMY`/`MAX_ENEMY`, `MIN_TRAPS`/`MAX_TRAPS`, `MIN_CHESTS`/`MAX_CHESTS`, `AMT_KEY`.
-
-    Внешние вызовы:
-    - `generate_passes()`: расчет координат проходов.
-    - `generate_possible_tiles_for_...()`: фильтрация пустых клеток для спавна объектов.
-
-    :return: list[list] — двумерный массив (сетка) игрового мира.
+    :return: list[list[int]] — двумерный массив (сетка), представляющий игровой мир.
     """
 
     dungeon_map = initialize_empty_dungeon(DUNGEON_HEIGHT, DUNGEON_WIDTH, WALL_TILE)
@@ -29,13 +24,13 @@ def create_dungeon():
 
     apply_passes(dungeon_map, generate_passes(), FLOOR_TILE, PLAYER_TILE)
 
-    spawn_objects(dungeon_map, CHEST_TILE, random.randint(MIN_CHESTS, MAX_CHESTS),
+    spawn_objects(dungeon_map, tile_type=CHEST_TILE, count=random.randint(MIN_CHESTS, MAX_CHESTS),
                   near_wall=True)
 
-    spawn_objects(dungeon_map, TRAP_TILE, random.randint(MIN_TRAPS, MAX_TRAPS),
+    spawn_objects(dungeon_map, tile_type=TRAP_TILE, count=random.randint(MIN_TRAPS, MAX_TRAPS),
                   forbidden={CHEST_TILE})
 
-    spawn_objects(dungeon_map, ENEMY_TILE, random.randint(MIN_ENEMY, MAX_ENEMY),
+    spawn_objects(dungeon_map, tile_type=ENEMY_TILE, count=random.randint(MIN_ENEMY, MAX_ENEMY),
                   forbidden={CHEST_TILE, TRAP_TILE})
 
     spawn_objects(dungeon_map, KEY_TILE, AMT_KEY,
