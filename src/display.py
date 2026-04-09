@@ -755,7 +755,17 @@ def loot_message(loot: int) -> None:
         print('Search complete. Zero items found.')
 
 
-def key_card_options_menu():
+def key_card_options_menu() -> None:
+    """
+    Выводит диалоговое окно подтверждения использования ключ-карты.
+
+    Используется в сценарии взаимодействия с дверью выхода (EXFILL), когда
+    система обнаруживает наличие ключа в инвентаре игрока. Предоставляет
+    выбор: активировать терминал двери или сохранить ключ.
+
+    Returns:
+        None: Функция выполняет прямой вывод текста в консоль.
+    """
     print('You have a keycard. Use it?')
     print('1 - Yes')
     print('2 - No')
