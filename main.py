@@ -1,3 +1,4 @@
+from typing import Any, Tuple, Dict, List, Optional, Union
 from src.core import *
 from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
@@ -6,25 +7,37 @@ from src.entities import create_default_player
 from src.localization import MAIN_MENU
 
 
-def main_menu():
-    in_main_menu = True
-    player_nick = 'Operator'
+def main_menu() -> Union[Tuple[List[List[Any]], Dict[Any, Any]], Dict[str, Any]]:
+    """
+    Управляет логикой главного меню: запуск новой игры, загрузка или выход.
+
+    Returns:
+        Union[Tuple[List[List[Any]], Dict[Any, Any]], Dict[str, Any]]:
+            Возвращает либо кортеж (карта, игрок) для новой игры,
+            либо словарь с данными загруженного сохранения.
+    """
+    in_main_menu: bool = True
+    player_nick: str = 'Operator'
+
     while in_main_menu:
         clear_display()
         draw_main_menu()
-        prompt = MAIN_MENU['player_input'].format(PLAYER_NAME=player_nick)
-        choice = input(prompt).strip()
+
+        prompt: str = MAIN_MENU['player_input'].format(PLAYER_NAME=player_nick)
+        choice: str = input(prompt).strip()
 
         if choice.lower() in NEW_GAME_COMMANDS:
-            dungeon = create_tutorial_dungeon()
-            default_player = create_default_player()
+            dungeon: List[List[Any]] = create_tutorial_dungeon()
+            default_player: Dict[Any, Any] = create_default_player()
             return dungeon, default_player
 
         elif choice.lower() in LOAD_GAME_COMMANDS:
-            saved_data = load_game()
+            saved_data: Optional[Dict[str, Any]] = load_game()
             if saved_data:
-                prompt = MAIN_MENU['decrypting_successful'].format(MAIN_CHARACTER_NAME = MAIN_CHARACTER_NAME)
-                print(prompt)
+                msg: str = MAIN_MENU['decrypting_successful'].format(
+                    MAIN_CHARACTER_NAME=MAIN_CHARACTER_NAME
+                )
+                print(msg)
                 enter_continue()
                 return saved_data
             else:
@@ -41,11 +54,22 @@ def main_menu():
             sys.exit()
 
 
-def game_loop(player_data, first_dungeon):
-    is_fight = False
-    game_loop_is_run = True
-    exfill = False
-    dungeon = first_dungeon
+def game_loop(player_data: Dict[Any, Any], first_dungeon: List[List[Any]]) -> str:
+    """
+    Основной игровой цикл, переключающий состояния между исследованием и боем.
+
+    Args:
+        player_data (Dict[Any, Any]): Ссылка на словарь с характеристиками игрока.
+        first_dungeon (List[List[Any]]): Текущая карта подземелья.
+
+    Returns:
+        str: Код завершения цикла (например, EXIT_TO_MAIN_MENU).
+    """
+    is_fight: bool = False
+    game_loop_is_run: bool = True
+    exfill: bool = False
+    dungeon: List[List[Any]] = first_dungeon
+
     while game_loop_is_run:
         while not is_fight:
             if exfill:
@@ -59,44 +83,51 @@ def game_loop(player_data, first_dungeon):
 
             if state_of_adventuring == EXFILL:
                 exfill = True
-                pass
+                continue
 
             if state_of_adventuring == EXIT:
-                exit(0)
+                sys.exit(0)
 
             if state_of_adventuring == RETURN_TO_MAIN_MENU:
                 return EXIT_TO_MAIN_MENU
 
         fight(player_data)
+
         if player_data[ENTITY_HP] <= 0:
-            art = game_over()
+            art: str = game_over()
             flush_input()
             clear_display()
             slow_print(art, 0.01)
             flush_input()
             enter_continue()
-
             break
+
         dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
 
 
 if __name__ == '__main__':
-    game_is_run = True
-    start_message_already_show = False
+    game_is_run: bool = True
+    start_message_already_show: bool = False
+
     while game_is_run:
-        first_level, player, = main_menu()
+        result = main_menu()
+
+        if isinstance(result, tuple):
+            first_level, player = result
+        else:
+            first_level = result["dungeon"]
+            player = result["player"]
+
         if not start_message_already_show:
             print(skip_message())
-            skip = input('>>').lower()
+            skip: str = input('>>').lower()
             if skip in SKIP_PROLOGUE_COMMANDS_NO:
                 clear_display()
                 start_message()
-
                 flush_input()
                 enter_continue()
-
                 start_message_already_show = True
 
-        exit_data = game_loop(player, first_level)
+        exit_data: str = game_loop(player, first_level)
         if exit_data == EXIT_TO_MAIN_MENU:
             continue
