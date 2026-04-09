@@ -137,19 +137,40 @@ def glitch_chars() -> list[str]:
     return chars
 
 
-def glitch_effect(text, color=RED_TEXT_BRIGHT, speed=0.03):
-    chars = glitch_chars()
+def glitch_effect(text: str, color: str = RED_TEXT_BRIGHT, speed: float = 0.03) -> None:
+    """
+    Выводит текст с эффектом мерцающих цифровых помех (глитчей).
+
+    Каждый символ текста выводится последовательно. С небольшим шансом (2%)
+    вместо или рядом с оригинальным символом может появиться случайный символ
+    из пула glitch_chars, создавая визуальный эффект поврежденных данных
+    или нестабильного соединения.
+
+    Args:
+        text (str): Текст, который должен подвергнуться эффекту.
+        color (str): ANSI-код цвета текста. По умолчанию RED_TEXT_BRIGHT.
+        speed (float): Базовая скорость анимации (задержка между кадрами).
+
+    Returns:
+        None: Функция выполняет прямой анимированный вывод в консоль.
+    """
+    chars: list[str] = glitch_chars()
+
     print(color, end='')
+
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
         time.sleep(speed)
+
         if random.random() < 0.02:
             sys.stdout.write(random.choice(chars))
         else:
             sys.stdout.write(char)
+
         sys.stdout.flush()
         time.sleep(speed)
+
     print(RESET)
 
 
