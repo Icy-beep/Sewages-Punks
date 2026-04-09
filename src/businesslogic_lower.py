@@ -1,14 +1,36 @@
 import msvcrt
 import random
-from src.constants import *
 from src.entities import *
+from typing import List
 
-def generate_i_path():
+
+def generate_i_path() -> int:
+    """
+    Генерирует случайное числовое значение для индекса пути или уровня сложности.
+
+    Используется в механике генерации окружения или при расчете
+    количества итераций для анимаций сканирования.
+
+    Returns:
+        int: Случайное целое число в диапазоне от 3 до 8 включительно.
+    """
     generate_i_pass_1 = random.randint(3, 8)
 
     return generate_i_pass_1
 
-def generate_passes():
+
+def generate_passes() -> List[List[int]]:
+    """
+    Генерирует список индексов проходов для каждой стены в секторе.
+
+    Для каждой стены (количество которых определяется константой HOW_MUCH_WALLS_WHERE_PASS)
+    создается от 1 до 2 уникальных точек прохода. Индексы проходов
+    выбираются случайным образом с помощью функции generate_i_path.
+
+    Returns:
+        List[List[int]]: Список списков, где каждый вложенный список содержит
+            уникальные целые числа (индексы проходов) для конкретной стены.
+    """
     passes = []
 
     for _ in range(HOW_MUCH_WALLS_WHERE_PASS):
@@ -139,7 +161,19 @@ def spawn_objects(dungeon_map: list[list[int]], tile_type: int, count: int,
 
 
 def search_player_position(location: list[list[int]]) -> list[int] | None:
+    """
+    Выполняет поиск текущих координат игрока на карте уровня.
 
+    Сканирует двумерный массив (сетку) локации. При обнаружении тайла,
+    соответствующего константе PLAYER_TILE, фиксирует его координаты.
+
+    Args:
+        location (list[list[int]]): Двумерный массив, представляющий карту сектора.
+
+    Returns:
+        list[int] | None: Список из двух элементов [x, y], если игрок найден.
+            Возвращает None, если маркер PLAYER_TILE отсутствует на карте.
+    """
     rows = len(location)
     columns = len(location[0])
 
@@ -154,27 +188,49 @@ def search_player_position(location: list[list[int]]) -> list[int] | None:
 
     return None
 
-def choose_enemy():
-     import random
 
-     choosing = random.randint(1, 4)
+def choose_enemy() -> list:
+    """
+    Выбирает случайного противника из пула доступных врагов.
 
-     if choosing == 1:
-         enemy = punk[:]
+    Функция генерирует случайное число для определения типа врага и
+    возвращает копию его базовых характеристик, чтобы изменения в бою
+    не затронули оригинальные шаблоны.
 
-     if choosing == 2:
-         enemy = synth_hound[:]
+    Returns:
+        list: Список с характеристиками врага (имя, HP, урон и т.д.).
+    """
+    choosing: int = random.randint(1, 4)
+    enemy: list = []
 
-     if choosing == 3:
-         enemy = glitch_butcher[:]
+    if choosing == 1:
+        enemy = punk[:]
 
-     if choosing == 4:
-         enemy = psy_coder[:]
+    elif choosing == 2:
+        enemy = synth_hound[:]
 
-     return enemy
+    elif choosing == 3:
+        enemy = glitch_butcher[:]
+
+    elif choosing == 4:
+        enemy = psy_coder[:]
+
+    return enemy
 
 
-def get_user_command():
+def get_user_command() -> str | None:
+    """
+    Считывает нажатие клавиши пользователем без необходимости нажатия ENTER.
+
+    Специфическая функция для Windows (msvcrt), которая перехватывает ввод.
+    Обрабатывает специальный код для клавиши ESC и декодирует байтовый ввод в строку.
+
+    Returns:
+        str | None:
+            - "PAUSE", если нажата клавиша ESC (b'\x1b').
+            - Декодированный символ в нижнем регистре (str).
+            - None, если символ не удалось декодировать (например, спецклавиши).
+    """
     char = msvcrt.getch()
     if char == b'\x1b':
         return "PAUSE"
