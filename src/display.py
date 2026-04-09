@@ -231,8 +231,21 @@ def blood_pressure_failure() -> None:
     winsound.Beep(380, 3000)
 
 
-def game_over():
+def game_over() -> str:
+    """
+    Запускает комплексную интерактивную сцену завершения игры (Game Over).
+
+    Сцена включает в себя:
+    - Глитч-эффекты и предсмертный диалог персонажа.
+    - Симуляцию остановки жизнеобеспечения (blood_pressure_failure).
+    - Визуализацию цифрового шума и разрыва PSY-соединения.
+    - Интерактивные вставки для игрока (попытка восстановления связи).
+
+    Returns:
+        str: Массивная ASCII-арт строка с надписью 'MISSION FAILED'.
+    """
     clear_display()
+
     glitch_effect(f"\n{RED_TEXT_BRIGHT}[!] CRITICAL HARDWARE FAILURE DETECTED [!]{RESET}")
     print(f"{DARK_GRAY}{'· ' * 30}{RESET}")
     time.sleep(0.6)
@@ -246,7 +259,7 @@ def game_over():
     blood_pressure_failure()
 
     for _ in range(3):
-        noise = "".join(random.choice(["░", "▒", "▓", "█", " "]) for _ in range(50))
+        noise: str = "".join(random.choice(["░", "▒", "▓", "█", " "]) for _ in range(50))
         slow_print(f"{DARK_GRAY}{noise}{RESET}", 0.01)
         time.sleep(0.1)
 
@@ -256,13 +269,15 @@ def game_over():
 
     time.sleep(1.0)
     slow_print(f"\n{MAGENTA_TEXT_BRIGHT}LOCATION: {RESET}[VOID] {MAGENTA_TEXT_BRIGHT}// MEMORY_DUMP: {RESET}0x00000000")
-
     slow_print(f"\n{MAGENTA_TEXT_BRIGHT}CONNECTION CLOSED BY PEER...{RESET}")
+
     sys.stdout.flush()
     time.sleep(2.0)
+
     slow_print("\n( Press [ENTER] to try restore PSY connect )")
     flush_input()
     input()
+
     slow_print("\n[LOG]: Restoring PSY connect ...")
     slow_print("\n[SYSTEM]: PSY connect cannot be restored")
     slow_print("\n[SYSTEM]: Please restart PSY link")
@@ -273,7 +288,7 @@ def game_over():
 
     print(f"\n")
 
-    game_over_art = f"""{RED_TEXT_BRIGHT}
+    game_over_art: str = f"""{RED_TEXT_BRIGHT}
 ███╗   ███╗██╗███████╗███████╗██╗ ██████╗ ███╗   ██╗    ███████╗ █████╗ ██╗██╗     ███████╗██████╗ 
 ████╗ ████║██║██╔════╝██╔════╝██║██╔═══██╗████╗  ██║    ██╔════╝██╔══██╗██║██║     ██╔════╝██╔══██╗
 ██╔████╔██║██║███████╗███████╗██║██║   ██║██╔██╗ ██║    █████╗  ███████║██║██║     █████╗  ██║  ██║
@@ -281,8 +296,8 @@ def game_over():
 ██║ ╚═╝ ██║██║███████║███████║██║╚██████╔╝██║ ╚████║    ██║     ██║  ██║██║███████╗███████╗██████╔╝
 ╚═╝     ╚═╝╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝{RESET} 
 """
-
     return game_over_art
+
 
 def player_miss():
     message = 'So close, but a miss!'
