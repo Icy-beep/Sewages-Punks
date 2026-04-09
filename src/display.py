@@ -534,7 +534,13 @@ def trap_inputs() -> None:
     print(MAGENTA_TEXT_BRIGHT + '2 - Run through' + RESET)
 
 
-def start_fight_message(enemy) -> str:
+def start_fight_message(enemy: list) -> str:
+    """
+    Формирует стилизованное приветственное сообщение перед началом сражения.
+
+    На основе имени противника подбирает соответствующую текстовую строку.
+    Сообщение обрамлено декоративными элементами и окрашено в ярко-голубой цвет
+    в стиле терминала Moon City.
 
     blue_text_bright = LIGHT_BLUE_TEXT_BRIGHT
     if enemy[0] == NAME_ENEMY_PUNK:
