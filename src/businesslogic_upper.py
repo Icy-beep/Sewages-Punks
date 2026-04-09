@@ -1,6 +1,7 @@
 from src.display import *
 from src.businesslogic_lower import *
 from src.entities import *
+from src.localization import MESSAGES
 
 def create_dungeon() -> list[list[int]]:
     """
@@ -104,7 +105,7 @@ def handle_trap(location: list[list[int]], player_data: list, position: list[int
     """
     x, y = position
     clear_display()
-    print(TRAP_FORWARD_MESSAGE)
+    print(MESSAGES.traps.detected)
 
     while True:
         trap_inputs()
@@ -117,22 +118,22 @@ def handle_trap(location: list[list[int]], player_data: list, position: list[int
             if defuse_trap(player_data):
                 player_data[PLAYER_ITEM_DEFUSAL_KIT] -= 1
                 clear_display()
-                print(TRAP_DEFUSED_MESSAGE)
+                print(MESSAGES.traps.defused)
                 enter_continue()
                 location[x][y] = FLOOR_TILE
                 return
             else:
                 clear_display()
-                print(YOU_DONT_HAVE_DEFKIT_MESSAGE)
+                print(MESSAGES.traps.no_defkit)
                 enter_continue()
 
         elif user_input == '2':
             if defuse_trap_run():
                 clear_display()
-                print(TRAP_ACTIVATED_MESSAGE)
+                print(MESSAGES.traps.defused)
             else:
                 clear_display()
-                print(TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE)
+                print(MESSAGES.traps.damage)
                 player_data[ENTITY_HP] -= 5
 
             enter_continue()
@@ -157,7 +158,7 @@ def handle_exit(player_data: list) -> bool:
             - False, если игрок решил отойти от двери и продолжить исследование.
     """
     clear_display()
-    print(YOU_TRY_OPEN_DOR_MESSAGE)
+    print(MESSAGES.exploration.door_try_open)
     enter_continue()
 
     while True:
@@ -177,7 +178,7 @@ def handle_exit(player_data: list) -> bool:
 
                     if choice == '1':
                         clear_display()
-                        print(CARD_READER_MESSAGE)
+                        print(MESSAGES.exploration.card_reader_success)
                         enter_continue()
                         return True
 
@@ -186,12 +187,12 @@ def handle_exit(player_data: list) -> bool:
 
         elif user_input == '2':
             clear_display()
-            print(KICK_THE_DOOR_MESSAGE)
+            print(MESSAGES.exploration.door_kick)
             enter_continue()
 
         elif user_input == '3':
             clear_display()
-            print(STEP_OUT_THE_DOOR_MESSAGE)
+            print(MESSAGES.exploration.door_step_out)
             return False
 
     return False
@@ -248,7 +249,7 @@ def handle_key_pickup(location: list[list[int]], player_data: list, position: li
     x, y = position
 
     clear_display()
-    print(YOU_FOUND_KEY_CARD_MESSAGE)
+    print(MESSAGES.exploration.key_found)
 
     player_data[PLAYER_ITEM_KEY] += 1
 
