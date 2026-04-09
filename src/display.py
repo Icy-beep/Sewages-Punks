@@ -4,6 +4,7 @@ import sys
 import random
 import msvcrt
 import winsound
+import re
 
 from src.constants import *
 
@@ -152,6 +153,7 @@ def blood_pressure_failure():
 
 
 def game_over():
+    clear_display()
     glitch_effect(f"\n{RED_TEXT_BRIGHT}[!] CRITICAL HARDWARE FAILURE DETECTED [!]{RESET}")
     print(f"{DARK_GRAY}{'· ' * 30}{RESET}")
     time.sleep(0.6)
@@ -291,58 +293,52 @@ def initiative_throw_message():
 
 
 def throw_animation(player_data, enemy_data):
-    chars = "0123456789@#$%&*+=-/<>ABCDEF"
-    width = 50
-    height = 5
-    duration = 25
+    RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
+    chars = "0123456789ABCDEF!@#$%"
+    duration = 20
 
-    green = GREEN_TEXT_BRIGHT
-    red = RED_TEXT_BRIGHT
-    light_blue = LIGHT_BLUE_TEXT_BRIGHT
-    hide = HIDE_CURSOR
-    show = SHOW_CURSOR
-
-    print(hide)
-
+    print(HIDE_CURSOR)
     try:
+        print(f"{MAGENTA}INITIATIVE_SCANNER{RESET} // {CYAN}PSY_LINK...{RESET}\n")
+
         for step in range(duration):
-            output = []
+            p_val = f"{player_data[ENTITY_INITIATIVE]:>2}" if step > 14 else "".join(
+                random.choice(chars) for _ in range(2))
+            e_val = f"{enemy_data[ENTITY_INITIATIVE]:>2}" if step > 14 else "".join(
+                random.choice(chars) for _ in range(2))
 
-            output.append(f"{green}--- YOUR INITIATIVE SECTOR ---{RESET}")
-            for y in range(height):
-                line = "".join(random.choice(chars) for _ in range(width))
-                if y == height // 2:
-                    val = str(player_data[ENTITY_INITIATIVE]) if step > 15 else str(random.randint(10, 99))
-                    line = f"{light_blue}{line[:20]}{green}[ {val} ]{light_blue}{line[26:]}{RESET}"
-                else:
-                    line = f"{light_blue}{line}{RESET}"
-                output.append(line)
+            p_slot = f"{CYAN}[ {p_val} ]{RESET} ELGEIA_LATENCY_TEST"
+            e_slot = f"{MAGENTA}[ {e_val} ]{RESET} HOSTILE_PING_RATE"
 
-            output.append("")
+            noise = "".join(random.choice(".· ") for _ in range(10))
 
-            output.append(f"{red}--- ENEMY INITIATIVE SECTOR ---{RESET}")
-            for y in range(height):
-                line = "".join(random.choice(chars) for _ in range(width))
-                if y == height // 2:
-                    val = str(enemy_data[ENTITY_INITIATIVE]) if step > 15 else str(random.randint(10, 99))
-                    line = f"{light_blue}{line[:20]}{red}[ {val} ]{light_blue}{line[26:]}{RESET}"
-                else:
-                    line = f"{light_blue}{line}{RESET}"
-                output.append(line)
-
-            sys.stdout.write("\n".join(output) + f"\033[{height * 2 + 4}A\r")
+            sys.stdout.write(f"\r{p_slot} {noise} | {e_slot} {noise}")
             sys.stdout.flush()
-            time.sleep(0.06)
+            time.sleep(0.08)
 
-        print("\n" * (height * 2 + 5))
+        print("\n\n" + "—" * 60)
 
         if player_data[ENTITY_INITIATIVE] >= enemy_data[ENTITY_INITIATIVE]:
-            print(f"{green}>>> {player_data[ENTITY_NAME]} ACTS FIRST!{RESET}\n")
+            print(f"{CYAN}SUCCESS:{RESET} CONNECTION_PRIORITY_GRANTED [ELGEIA_STRIKES_FIRST]")
         else:
-            print(f"{red}>>> {enemy_data[ENTITY_NAME]} AMBUSH!{RESET}\n")
+            print(f"{MAGENTA}WARNING:{RESET} SYSTEM_INTERRUPTION [ENEMY_AMBUSH_DETECTED]")
+        print("—" * 60)
 
     finally:
-        print(show)
+        print(SHOW_CURSOR)
+
+def enemy_defeated_message(enemy_data):
+    RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
+
+    if enemy_data[ENTITY_HP] <= 0:
+        print(f"\n{CYAN}>>> TARGET_ELIMINATED{RESET}")
+        print(f"{CYAN}>>> STATUS:{RESET} SUCCESSFUL_EXTRACTION")
+        print(f"{CYAN}>>> LOG:{RESET} Data shards recovered from {enemy_data[ENTITY_NAME]}.")
+        print(f"————————————————————————————————————————————————————————————————————")
+
+        enter_continue()
+        return True
+    return False
 
 
 def trap_inputs():
@@ -380,58 +376,51 @@ def start_fight_message(enemy) -> str:
     return ''
 
 
-def show_battle_information(player, enemy):
-    clear_display()
-
-    bar_width = 20
-    scan_speed = 0.01
-    scan_iterations = 12
-
-    p_hp = max(0, player[ENTITY_HP])
-    p_max = 100
-    tox = player[ENTITY_TOXICITY]
-    max_tox = 4
-
-    e_hp = max(0, enemy[ENTITY_HP])
-    e_max = 100
-
-    print("┌" + "─" * 45 + "┐")
-
-    for _ in range(scan_iterations):
-        fake = "".join(random.choice("0123456789ABCDEF") for _ in range(3))
-        sys.stdout.write(f"\r│ {PLAYER_HP_FONT}YOUR VITALS:  [ {'#' * 10} ] {fake}  ")
-        sys.stdout.flush()
-        time.sleep(scan_speed)
-
-    p_hp_fill = int((p_hp / p_max) * bar_width)
-    p_bar = ("█" * p_hp_fill).ljust(bar_width, "░")
-    sys.stdout.write(f"\r│ {PLAYER_HP_FONT}YOUR VITALS:  [{p_bar}] {p_hp}/{p_max} HP \n")
-
-    tox_fill = int((tox / max_tox) * bar_width)
-    t_bar = ("█" * tox_fill).ljust(bar_width, "·")
-    sys.stdout.write(f"│ {MAGENTA_TEXT_BRIGHT}INTOXICATION: [{t_bar}] {tox}/{max_tox}    \n")
-
-    print("│" + " " * 45 + "│")
-
-    for _ in range(scan_iterations):
-        fake = "".join(random.choice("0123456789ABCDEF") for _ in range(3))
-        sys.stdout.write(f"\r│ {ENEMY_HP_FONT}ENEMY VITALS: [ {'#' * 10} ] {fake}  ")
-        sys.stdout.flush()
-        time.sleep(scan_speed)
-
-    e_hp_fill = int((e_hp / e_max) * bar_width)
-    e_bar = ("█" * e_hp_fill).ljust(bar_width, "░")
-    sys.stdout.write(f"\r│ {ENEMY_HP_FONT}ENEMY VITALS: [{e_bar}] {e_hp}/{e_max} HP \n")
-
-    print("└" + "─" * 45 + "┘")
-    print()
+def clean_len(text):
+    return len(re.sub(r'\x1b\[[0-9;]*m', '', text))
 
 
-def show_combat_legend():
-    print('a - Attack')
-    print('d - Defend')
-    print('i - Scan')
-    print('h - Heal')
+def draw_combat_interface(player, enemy, heals, logs, turn):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
+
+    status = "OPERATOR_ACTION" if turn == "player" else "ENEMY_PHASE"
+    print(f"{MAGENTA}PSY - LINK{RESET} // {CYAN}COMBAT MOD{RESET} [STATUS: {MAGENTA}{status}{RESET}]")
+    print(f"{MAGENTA}" + ".  " * 20 + f"{RESET}\n")
+
+    legend = [
+        f"{CYAN}[ A ]{RESET} STRIKE_TARGET",
+        f"{CYAN}[ D ]{RESET} EVASIVE_MANEUVER",
+        f"{CYAN}[ H ]{RESET} REGEN_PROTOCOL ({heals} left)",
+        "",
+    ]
+
+    def get_bar(curr, m, w, color):
+        fill = int((max(0, curr) / m) * w)
+        return f"{color}{'■' * fill}{RESET}{'·' * (w - fill)}"
+
+    p_bar = get_bar(player[ENTITY_HP], 100, 15, PLAYER_HP_FONT)
+    t_bar = get_bar(player[ENTITY_TOXICITY], 4, 15, MAGENTA)
+    e_bar = get_bar(enemy[ENTITY_HP], 100, 15, ENEMY_HP_FONT)
+
+    stats = [
+        f"USER_VITALS:   [{p_bar}] {player[ENTITY_HP]:>3}/100 HP",
+        f"INTOXICATION:  [{t_bar}] {player[ENTITY_TOXICITY]:>3}/4 TOX",
+        "————————————————————————————————————————",
+        f"TARGET_LINK:   [{e_bar}] {enemy[ENTITY_HP]:>3}/100 HP ({enemy[ENTITY_NAME]})"
+    ]
+
+    for i in range(max(len(legend), len(stats))):
+        l, r = (legend[i] if i < len(legend) else ""), (stats[i] if i < len(stats) else "")
+        print(f"{l}{' ' * (30 - clean_len(l))}{r}")
+
+    print(f"\n{MAGENTA}LOG_SYSTEM:{RESET}")
+    display_log = (logs[-3:] + [""] * 3)[:3]
+    for line in display_log:
+        print(f" > {line}")
+
+    print(f"{CYAN}{'—' * 70}{RESET}")
+    print(f"{MAGENTA}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
 
 
 def show_enemy_hp(enemy_data):
@@ -460,7 +449,6 @@ def enter_continue():
 
 
 def clear_display():
-
     os.system('cls')
 
 

@@ -48,159 +48,67 @@ def adventuring(dungeon_map, player_data):
 
 
 def fight(player_data):
-
-    is_fight = True
     player_data[ENTITY_TOXICITY] = 0
-    count_of_use_heal = 0
     enemy_data = create_enemy()
+    heals_left = 4
+    dodge_active = False
+    combat_log = ["Connection established.", f"Target: {enemy_data[ENTITY_NAME]} detected."]
+
     clear_display()
-    print(start_fight_message(enemy_data))
+    print(f"\n{MAGENTA_TEXT_BRIGHT}ENCOUNTER_LOG:{RESET} {enemy_data[ENTITY_NAME]} has entered the sector.\n")
     enter_continue()
 
-    initiative_throw_message()
     player_data, enemy_data = initiative_throw(player_data, enemy_data)
     throw_animation(player_data, enemy_data)
     enter_continue()
-    clear_display()
 
-    count_of_heal = 4
+    current_turn = "player" if player_data[ENTITY_INITIATIVE] >= enemy_data[ENTITY_INITIATIVE] else "enemy"
 
-    enemy_step = False
-    player_step = False
+    while True:
+        if player_data[ENTITY_HP] <= 0:
+            return False
 
-    enemy_win = False
-    player_win = False
+        if enemy_data[ENTITY_HP] <= 0:
+            draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
+            enemy_defeated_message(enemy_data)
+            return True
 
-    if player_data[ENTITY_INITIATIVE] > enemy_data[ENTITY_INITIATIVE]:
-        player_step = True
-    else:
-        enemy_step = True
+        draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
 
-    while is_fight:
+        if current_turn == "player":
+            action = input().lower()
 
-        if player_win or enemy_win:
-            break
-
-        if player_step:
-            print(message_about_step(enemy = 0, player = 1))
-
-            show_combat_legend()
-            user_input = input('>>')
-
-            if user_input not in COMBAT_COMMANDS:
-                clear_display()
+            if action == 'h':
+                msg, success = execute_player_heal(player_data, heals_left)
+                combat_log.append(msg)
+                if success:
+                    heals_left -= 1
                 continue
 
-            if user_input == 'a':
+            elif action == 'a':
+                combat_log.append(execute_player_attack(player_data, enemy_data))
+                current_turn = "enemy"
+            elif action == 'd':
+                dodge_active = True
+                combat_log.append("Evasive maneuvers active. Dodge chance UP.")
+                current_turn = "enemy"
 
-                damage = player_data[ENTITY_DAMAGE]
-                damage = randomise_damage(damage)
+            else:
+                continue
 
-                is_miss = try_ruin_attack_for_player(player_data)
+            time.sleep(0.4)
 
-                if is_miss:
-                    clear_display()
-                    print(player_miss())
-                    enter_continue()
-                    clear_display()
-                    player_step = False
-                    enemy_step = True
-                    continue
-
-
-                enemy_data[ENTITY_HP] -= damage
-
-                clear_display()
-                hit_message(damage, 'player')
-                show_enemy_hp(enemy_data)
-                enter_continue()
-                clear_display()
-
-                if enemy_data[ENTITY_HP] <= 0:
-                    player_win = True
-
-            if user_input == 'd':
+        else:
+            time.sleep(1)
+            orig_miss = enemy_data[ENTITY_MISS_CHANCE]
+            if dodge_active:
                 enemy_data[ENTITY_MISS_CHANCE] += 0.4
 
-                clear_display()
-                print(PLAYER_TRY_DODGE_MESSAGE)
-                enter_continue()
-                clear_display()
+            combat_log.append(execute_enemy_attack(enemy_data, player_data))
 
-            if user_input == 'h':
-                if count_of_heal > 0:
-
-                    player_data[ENTITY_HP] = min(100, player_data[ENTITY_HP] + 10)
-                    count_of_heal -= 1
-                    count_of_use_heal += 1
-
-                    print(heal_message())
-                    show_player_hp(player_data)
-
-                    if count_of_use_heal >= 1:
-                        player_data[ENTITY_TOXICITY] += 1
-                        print(toxication_message())
-
-                        if player_data[ENTITY_TOXICITY] > 4:
-                            player_data[ENTITY_HP] -= 5
-                            toxication_damage_message()
-                            show_player_hp(player_data)
-
-                    enter_continue()
-                    clear_display()
-
-                else:
-                    print(empty_heal_message())
-                    enter_continue()
-                    clear_display()
-
-                continue
-
-            if user_input == 'i':
-                show_battle_information(player_data, enemy_data)
-                enter_continue()
-
-                continue
-
-
-            player_step = False
-            enemy_step = True
-
-        if enemy_step:
-            if enemy_data[ENTITY_HP] <= 0:
-                continue
-
-            who = ENEMY_WORD_VARIABLE
-            print(message_about_step(player = 0, enemy = 1))
-
-            damage = enemy_data[ENTITY_DAMAGE]
-            damage = randomise_damage(damage)
-
-            is_miss = try_ruin_attack_for_enemy(enemy_data)
-
-            if is_miss:
-                print(ENEMY_MISS_MESSAGE)
-                enter_continue()
-                clear_display()
-                enemy_step = False
-                player_step = True
-                continue
-
-            player_data[ENTITY_HP] -= damage
-            hit_message(damage, who)
-            show_player_hp(player_data)
-            enter_continue()
-            clear_display()
-
-            if player_data[ENTITY_HP] <= 0:
-                print(ENEMY_WIN_MESSAGE)
-                enter_continue()
-                enemy_win = True
-
-
-
-            enemy_step = False
-            player_step = True
+            enemy_data[ENTITY_MISS_CHANCE] = orig_miss
+            dodge_active = False
+            current_turn = "player"
 
 
 def handle_pause_menu(player_data, dungeon_map):
@@ -228,6 +136,41 @@ def handle_pause_menu(player_data, dungeon_map):
 
         if choice not in IN_GAME_MENU_COMMANDS:
             print(f"    {RED_TEXT_BRIGHT}INVALID COMMAND. RE-ENTER.{RESET}")
+
+
+def execute_player_attack(player, enemy):
+    if try_ruin_attack_for_player(player):
+        return f"{RED_TEXT_BRIGHT}MISS!{RESET} Attack failed."
+    else:
+        dmg = randomise_damage(player[ENTITY_DAMAGE])
+        enemy[ENTITY_HP] -= dmg
+        return f"Strike successful. {dmg} damage dealt to {enemy[ENTITY_NAME]}."
+
+
+def execute_player_heal(player, heals_left):
+    if heals_left <= 0:
+        return f"{RED_TEXT_BRIGHT}ERROR!{RESET} No nanites left.", False
+
+    player[ENTITY_HP] = min(100, player[ENTITY_HP] + 10)
+    player[ENTITY_TOXICITY] += 1
+
+    msg = f"Regen active. +10 HP. Toxicity: {player[ENTITY_TOXICITY]}/4."
+
+    if player[ENTITY_TOXICITY] > 4:
+        player[ENTITY_HP] -= 8
+        player[ENTITY_TOXICITY] -= 1
+        msg += f" {RED_TEXT_BRIGHT}TOXIC OVERLOAD!{RESET} -8 HP."
+
+    return msg, True
+
+
+def execute_enemy_attack(enemy, player):
+    if random.random() < enemy[ENTITY_MISS_CHANCE]:
+        return f"{enemy[ENTITY_NAME]} {LIGHT_BLUE_TEXT_BRIGHT}MISSED{RESET} their attack."
+    else:
+        dmg = randomise_damage(enemy[ENTITY_DAMAGE])
+        player[ENTITY_HP] -= dmg
+        return f"{enemy[ENTITY_NAME]} struck for {RED_TEXT_BRIGHT}{dmg}{RESET} damage."
 
 
 def get_unique_filename(base_name):

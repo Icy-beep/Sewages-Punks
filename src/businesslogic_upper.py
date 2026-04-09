@@ -237,8 +237,6 @@ def initiative_throw(player_data, enemy_data):
     return player_data, enemy_data
 
 def randomise_damage(damage):
-    import random
-
     left_border = -2
     right_border = 2
 
@@ -248,8 +246,6 @@ def randomise_damage(damage):
     return damage
 
 def try_ruin_attack_for_player(player_data):
-    import random
-
     throw = random.random()
 
     if throw < player_data[ENTITY_MISS_CHANCE]:
@@ -258,8 +254,6 @@ def try_ruin_attack_for_player(player_data):
     return False
 
 def try_ruin_attack_for_enemy(enemy_data):
-    import random
-
     throw = random.random()
 
     if throw < enemy_data[ENTITY_MISS_CHANCE]:
@@ -275,8 +269,6 @@ def defuse_trap(player_data):
         return False
 
 def defuse_trap_run():
-    import random
-
     chance = BASE_CHANCE - 0.70
 
     if random.random() < chance:
@@ -285,8 +277,6 @@ def defuse_trap_run():
         return False
 
 def open_chest():
-    import random
-
     item = random.randint(0, 1)
 
     return item
