@@ -771,7 +771,17 @@ def key_card_options_menu() -> None:
     print('2 - No')
 
 
-def draw_main_menu():
+def draw_main_menu() -> None:
+    """
+    Отрисовывает главное меню игры в терминале.
+
+    Функция выводит стилизованный ASCII-логотип "MOON-CITY", подзаголовок
+    "SEWAGES & PUNKS" и список доступных опций (Новая игра, Загрузка,
+    Настройки, Выход) с использованием цветовых кодов ANSI.
+
+    Returns:
+        None: Функция только выводит данные в стандартный поток вывода.
+    """
     c_main = LIGHT_BLUE_TEXT_BRIGHT
     c_accent = MAGENTA_TEXT_BRIGHT
     c_red = RED_TEXT_BRIGHT
