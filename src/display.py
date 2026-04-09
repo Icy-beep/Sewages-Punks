@@ -736,6 +736,12 @@ def exit_interactions() -> None:
 
 def loot_message(loot):
 
+    Args:
+        loot (int): Идентификатор предмета (используются константы ITEM_DEFUSAL_KIT или ITEM_NOTHING).
+
+    Returns:
+        None: Функция выполняет прямой вывод текста в консоль.
+    """
     if loot == ITEM_DEFUSAL_KIT:
         print('New item: Trap Disarming Kit.')
 
