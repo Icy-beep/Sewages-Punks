@@ -408,7 +408,16 @@ def show_dungeon_map(dungeon: list[list[int]], player_data: list) -> None:
     print(footer)
 
 
-def show_movement_legend():
+def show_movement_legend() -> None:
+    """
+    Отображает справочную информацию по управлению в режиме исследования.
+
+    Выводит список клавиш для перемещения персонажа по карте и клавишу
+    вызова внутриигрового меню паузы.
+
+    Returns:
+        None: Функция выполняет прямой вывод текста в консоль.
+    """
     print(WHITE_TEXT_REGULAR + 'Controls' + RESET)
     print(WHITE_TEXT_REGULAR + 'UP - w' + RESET)
     print(WHITE_TEXT_REGULAR + 'LEFT - a' + RESET)
