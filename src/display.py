@@ -440,7 +440,22 @@ def initiative_throw_message() -> None:
     print(MAGENTA_TEXT_BRIGHT + 'Calculating initiative...' + RESET)
 
 
-def throw_animation(player_data, enemy_data):
+def throw_animation(player_data: list, enemy_data: list) -> None:
+    """
+    Визуализирует процесс определения инициативы через стилизованную анимацию PSY-линка.
+
+    Имитирует сканирование сетевых задержек (Latency Test) и пинга противника.
+    В процессе анимации выводятся случайные символы, которые к финалу сменяются
+    реальными значениями инициативы. В конце выводится вердикт о том, кто
+    получил приоритет в нанесении первого удара.
+
+    Args:
+        player_data (list): Список характеристик игрока (включая ENTITY_INITIATIVE).
+        enemy_data (list): Список характеристик противника (включая ENTITY_INITIATIVE).
+
+    Returns:
+        None: Функция выполняет анимированный вывод в консоль с управлением курсором.
+    """
     RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
     chars = "0123456789ABCDEF!@#$%"
     duration = 20
