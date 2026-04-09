@@ -1,6 +1,6 @@
 import json
 import datetime
-from typing import Callable, Any
+from typing import Callable, Any, Tuple, Dict
 from src.businesslogic_upper import *
 from src.display import *
 from src.constants import *
@@ -12,7 +12,21 @@ INTERACTIONS: dict[Any, Callable[..., Any]] = {
 }
 
 
-def adventuring(dungeon_map, player_data):
+def adventuring(dungeon_map: list[list[Any]], player_data: dict[str, Any]) -> (
+        None | tuple[str, list[int]] | tuple[str, int]):
+    """
+    Основной игровой цикл исследования подземелья.
+
+    Управляет отображением карты, обработкой перемещения игрока, взаимодействием
+    с объектами и переходами между игровыми состояниями (бой, пауза, выход).
+
+    Args:
+        dungeon_map (list[list[Any]]): Двумерный массив, представляющий сетку карты.
+        player_data (dict[str, Any]): Словарь с данными и характеристиками игрока.
+
+    Returns:
+        Tuple[str, Any]: Кортеж, содержащий флаг состояния (события) и текущую позицию игрока или код возврата.
+    """
     while True:
         clear_display()
         show_dungeon_map(dungeon_map, player_data)
@@ -44,7 +58,20 @@ def adventuring(dungeon_map, player_data):
                 return FIGHT, new_position
 
 
-def fight(player_data):
+def fight(player_data: Dict[str, Any]) -> bool | None:
+    """
+    Управляет процессом пошагового боя между игроком и противником.
+
+    Функция инициализирует врага, рассчитывает инициативу и обрабатывает цикл
+    сражения, включая выбор действий игроком (атака, лечение, уклонение)
+    и автоматические ходы противника.
+
+    Args:
+        player_data (Dict[str, Any]): Словарь с текущими характеристиками игрока.
+
+    Returns:
+        bool: True, если игрок победил; False, если игрок погиб.
+    """
     player_data[ENTITY_TOXICITY] = 0
     enemy_data = create_enemy()
     heals_left = 4
@@ -135,7 +162,21 @@ def handle_pause_menu(player_data, dungeon_map):
             print(f"    {RED_TEXT_BRIGHT}INVALID COMMAND. RE-ENTER.{RESET}")
 
 
-def execute_player_attack(player, enemy):
+def execute_player_attack(player: Dict[str, Any], enemy: Dict[str, Any]) -> str:
+    """
+    Выполняет расчет и проведение атаки игрока по противнику.
+
+    Проверяет вероятность промаха через внешнюю функцию и, в случае успеха,
+    рассчитывает случайный урон на основе характеристик игрока, вычитая его
+    из здоровья врага.
+
+    Args:
+        player (Dict[str, Any]): Данные игрока, включая базовый урон.
+        enemy (Dict[str, Any]): Данные противника, включая текущее здоровье и имя.
+
+    Returns:
+        str: Сообщение о результате атаки (промах или нанесенный урон) для боевого лога.
+    """
     if try_ruin_attack_for_player(player):
         return f"{RED_TEXT_BRIGHT}MISS!{RESET} Attack failed."
     else:
@@ -144,7 +185,22 @@ def execute_player_attack(player, enemy):
         return f"Strike successful. {dmg} damage dealt to {enemy[ENTITY_NAME]}."
 
 
-def execute_player_heal(player, heals_left):
+def execute_player_heal(player: Dict[str, Any], heals_left: int) -> Tuple[str, bool]:
+    """
+    Выполняет попытку восстановления здоровья игрока с использованием нанитов.
+
+    Каждое использование увеличивает уровень токсичности. При превышении порога
+    токсичности (4) игрок получает штрафной урон от перегрузки системы.
+
+    Args:
+        player (Dict[str, Any]): Словарь с данными игрока (HP, токсичность).
+        heals_left (int): Текущее количество доступных зарядов лечения.
+
+    Returns:
+        Tuple[str, bool]: Кортеж, содержащий:
+            - str: Сообщение о результате действия для лога.
+            - bool: Статус успеха операции (True, если лечение применено).
+    """
     if heals_left <= 0:
         return f"{RED_TEXT_BRIGHT}ERROR!{RESET} No nanites left.", False
 
@@ -161,7 +217,20 @@ def execute_player_heal(player, heals_left):
     return msg, True
 
 
-def execute_enemy_attack(enemy, player):
+def execute_enemy_attack(enemy: Dict[str, Any], player: Dict[str, Any]) -> str:
+    """
+    Выполняет расчет и проведение атаки противника по игроку.
+
+    Сначала проверяется шанс промаха противника. Если атака успешна,
+    рассчитывается случайный урон, который вычитается из здоровья игрока.
+
+    Args:
+        enemy (Dict[str, Any]): Данные противника (имя, урон, шанс промаха).
+        player (Dict[str, Any]): Данные игрока (здоровье).
+
+    Returns:
+        str: Сообщение о результате атаки для боевого лога.
+    """
     if random.random() < enemy[ENTITY_MISS_CHANCE]:
         return f"{enemy[ENTITY_NAME]} {LIGHT_BLUE_TEXT_BRIGHT}MISSED{RESET} their attack."
     else:
@@ -170,7 +239,19 @@ def execute_enemy_attack(enemy, player):
         return f"{enemy[ENTITY_NAME]} struck for {RED_TEXT_BRIGHT}{dmg}{RESET} damage."
 
 
-def get_unique_filename(base_name):
+def get_unique_filename(base_name: str) -> str:
+    """
+    Генерирует уникальное имя файла для сохранения, предотвращая перезапись существующих данных.
+
+    Если файл с базовым именем уже существует, функция добавляет порядковый номер
+    (например, base_name_1, base_name_2) до тех пор, пока не найдет свободное имя.
+
+    Args:
+        base_name (str): Желаемое имя файла (без расширения).
+
+    Returns:
+        str: Полный путь к уникальному файлу с расширением .json.
+    """
     filename = os.path.join(SAVE_DIR, f"{base_name}.json")
     counter = 1
 
@@ -182,7 +263,21 @@ def get_unique_filename(base_name):
     return filename
 
 
-def save_game(player_data, dungeon):
+def save_game(player_data: Dict[Any, Any], dungeon: Any) -> bool:
+    """
+    Выполняет экспорт текущего состояния игрока и подземелья в JSON-файл.
+
+    Функция создает директорию сохранений, если она отсутствует, запрашивает имя
+    у пользователя, очищает его от недопустимых символов, добавляет метку времени
+    и записывает данные в файл.
+
+    Args:
+        player_data (Dict[Any, Any]): Данные и характеристики игрока.
+        dungeon (Any): Текущее состояние карты или объекта подземелья.
+
+    Returns:
+        bool: True, если сохранение прошло успешно, иначе False.
+    """
     if not os.path.exists(SAVE_DIR):
         os.makedirs(SAVE_DIR)
 
@@ -248,29 +343,3 @@ def load_game():
         print(f"{RED_TEXT_BRIGHT}[ ERROR: WRONG INDEX ]{RESET}")
 
     return None
-
-
-def get_player_nickname():
-    while True:
-        print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}[ SYSTEM ]:# Identify yourself.{RESET}")
-        nick = input(">> ").strip()
-        if not nick:
-            clear_display()
-            print(f"{RED_TEXT_BRIGHT}[ ERROR ]:# Identification failed. Input cannot be empty.{RESET}")
-        elif len(nick) > 16:
-            clear_display()
-            print(f"{RED_TEXT_BRIGHT}[ ERROR ]:# Identity too long (max 16 chars).{RESET}")
-        else:
-            clear_display()
-            print(f"{MAGENTA_TEXT_BRIGHT}[ SYSTEM ]:# Identity confirmed. Your nickname:{nick}{RESET}\n")
-            return nick
-
-
-
-
-
-
-
-
-
-
