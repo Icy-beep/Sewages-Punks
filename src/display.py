@@ -66,7 +66,18 @@ def slow_print(text: str, speed: float = 0.03) -> None:
     print()
 
 
-def start_message():
+def start_message() -> None:
+    """
+    Запускает вступительный сюжетный брифинг (пролог) игры.
+
+    Выводит серию стилизованных сообщений от персонажа Elgeia через PSY-link.
+    Использует эффект медленной печати (slow_print) и задержки для создания
+    атмосферы погружения. Обучает игрока значению символов на карте и
+    устанавливает цели миссии.
+
+    Returns:
+        None: Функция выполняет последовательный вывод текста в консоль.
+    """
     print(f"{DARK_GRAY}" + "• " * 30 + f"{RESET}\n")
 
     slow_print(f"{MAGENTA_TEXT_BRIGHT}[...] Initializing PSY-link synchronization... {WHITE_TEXT_BRIGHT}OK{RESET}", 0.05)
@@ -109,6 +120,7 @@ def start_message():
 
 def glitch_chars():
     return ['"', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '#', '$', '@', '!', '&', '?', '+', '-']
+
 
 def glitch_effect(text, color=RED_TEXT_BRIGHT, speed=0.03):
     chars = glitch_chars()
