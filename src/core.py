@@ -5,9 +5,7 @@ from src.businesslogic_upper import *
 from src.display import *
 from src.constants import *
 
-
-
-INTERACTIONS = {
+INTERACTIONS: dict[Any, Callable[..., Any]] = {
     CHEST_TILE: handle_chest,
     KEY_TILE: handle_key_pickup,
     TRAP_TILE: handle_trap,
