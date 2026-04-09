@@ -490,7 +490,23 @@ def throw_animation(player_data: list, enemy_data: list) -> None:
     finally:
         print(SHOW_CURSOR)
 
-def enemy_defeated_message(enemy_data):
+
+def enemy_defeated_message(enemy_data: list) -> bool:
+    """
+    Проверяет состояние противника и выводит финальный отчет при его устранении.
+
+    Если уровень здоровья врага падает до нуля или ниже, функция выводит
+    стилизованный терминальный лог о ликвидации цели и успешном сборе данных.
+    Используется как завершающий этап боевой сцены.
+
+    Args:
+        enemy_data (list): Список характеристик противника (имя, HP и т.д.).
+
+    Returns:
+        bool:
+            - True, если противник повержен и сообщение выведено.
+            - False, если противник все еще жив.
+    """
     RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
 
     if enemy_data[ENTITY_HP] <= 0:
