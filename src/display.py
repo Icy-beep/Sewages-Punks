@@ -524,6 +524,12 @@ def trap_inputs() -> None:
     """
     Выводит в консоль список доступных команд при обнаружении ловушки.
 
+    Игрок может выбрать между попыткой разминирования (требует наличия DEFUSAL_KIT)
+    или попыткой проскочить ловушку на удачу.
+
+    Returns:
+        None: Функция выполняет прямой вывод текста в консоль.
+    """
     print(MAGENTA_TEXT_BRIGHT + '1 - Disarming' + RESET)
     print(MAGENTA_TEXT_BRIGHT + '2 - Run through' + RESET)
 
