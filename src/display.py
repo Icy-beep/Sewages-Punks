@@ -719,17 +719,9 @@ def clear_display() -> None:
     os.system('cls')
 
 
-def show_player_hp(player_data):
-    import random
-    import string
-
-    chars = string.ascii_letters + string.digits + string.punctuation
-
-    for i in range(500):
-        fake_value = "".join(random.choice(chars) for _ in range(3))
-        print(f'\r{PLAYER_HP_FONT}Your vitals: {fake_value}', end='')
-
-    print(f'\r{PLAYER_HP_FONT}Your vitals: {player_data[ENTITY_HP]}     ')
+def exit_interactions() -> None:
+    """
+    Выводит список доступных действий при взаимодействии с точкой эвакуации (дверью выхода).
 
 
 def heal_message():
