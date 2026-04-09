@@ -427,7 +427,9 @@ def show_movement_legend() -> None:
     print('MENU - ESC')
 
 
-def initiative_throw_message():
+def initiative_throw_message() -> None:
+    """
+    Выводит системное сообщение о начале процесса расчета инициативы.
 
     print(MAGENTA_TEXT_BRIGHT + 'Calculating initiative...' + RESET)
 
