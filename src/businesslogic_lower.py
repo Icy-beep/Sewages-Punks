@@ -1,3 +1,4 @@
+import msvcrt
 import random
 from src.constants import *
 from src.entities import *
@@ -62,7 +63,7 @@ def apply_passes(dungeon_map: list[list[int]], passes: list[list[int]],
             dungeon_map[i][j] = floor_tile
 
     for idx, columns in enumerate(passes):
-        row = (idx + 1) * 2.
+        row = (idx + 1) * 2
         if row < len(dungeon_map):
             for col in columns:
                 if col < len(dungeon_map[row]):
@@ -171,5 +172,15 @@ def choose_enemy():
          enemy = psy_coder[:]
 
      return enemy
+
+
+def get_user_command():
+    char = msvcrt.getch()
+    if char == b'\x1b':
+        return "PAUSE"
+    try:
+        return char.decode('utf-8').lower()
+    except UnicodeDecodeError:
+        return None
 
 

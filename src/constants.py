@@ -137,7 +137,17 @@ SAVE = ['s', 'ы']
 LOAD = ['l', 'д']
 QUIT_TO_MAIN_MENU = ['q', 'й']
 IN_GAME_MENU_COMMANDS = [RESUME, SAVE, LOAD, QUIT_TO_MAIN_MENU]
+PAUSE = "PAUSE"
 
 DEFAULT_SAVE_NAME = "savegame"
 SAVE_DIR = "saves"
 SAVE_PATH = "saves/"
+
+CONTINUE_GAME = 'continue'
+
+MOVE_MAP = {
+    COMMAND_MOVE_UP:    (-1, 0),
+    COMMAND_MOVE_DOWN:  (1, 0),
+    COMMAND_MOVE_LEFT:  (0, -1),
+    COMMAND_MOVE_RIGHT: (0, 1),
+}

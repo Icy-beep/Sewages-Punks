@@ -1,4 +1,6 @@
 import random
+
+from src.display import *
 from src.businesslogic_lower import *
 from src.constants import *
 from src.entities import *
@@ -79,6 +81,112 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
     location[new_position[x_coord]][new_position[y_coord]] = PLAYER_TILE
 
     return new_position
+
+
+def handle_trap(location, player_data, position):
+    x, y = position
+    clear_display()
+    print(TRAP_FORWARD_MESSAGE)
+
+    while True:
+        trap_inputs()
+        user_input = input('>>')
+
+        if user_input not in TRAP_COMMANDS:
+            continue
+
+        if user_input == '1':  # Разминировать
+            if defuse_trap(player_data):
+                player_data[PLAYER_ITEM_DEFUSAL_KIT] -= 1
+                clear_display()
+                print(TRAP_DEFUSED_MESSAGE)
+                enter_continue()
+                location[x][y] = FLOOR_TILE
+                return  # Выходим из функции, ловушка обезврежена
+            else:
+                clear_display()
+                print(YOU_DONT_HAVE_DEFKIT_MESSAGE)
+                enter_continue()
+                # Не выходим из цикла, даем выбрать другой вариант
+
+        if user_input == '2':  # Пробежать
+            if defuse_trap_run():  # Шанс успеха
+                clear_display()
+                print(TRAP_ACTIVATED_MESSAGE)
+            else:
+                clear_display()
+                print(TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE)
+                player_data[ENTITY_HP] -= 5
+
+            enter_continue()
+            location[x][y] = FLOOR_TILE
+            return
+
+
+def handle_exit(player_data):
+    clear_display()
+    print(YOU_TRY_OPEN_DOR_MESSAGE)
+    enter_continue()
+
+    while True:
+        clear_display()
+        exit_interactions()
+        user_input = input('>>')
+
+        if user_input not in DOOR_INTERACTION_COMMANDS:
+            continue
+
+        if user_input == '1': # Использовать ключ
+            if player_data[PLAYER_ITEM_KEY] >= 1:
+                while True:
+                    clear_display()
+                    key_card_options_menu()
+                    choice = input('>>')
+                    if choice == '1':
+                        clear_display()
+                        print(CARD_READER_MESSAGE)
+                        enter_continue()
+                        return True # СИГНАЛ НА ВЫХОД (EXFILL)
+                    if choice == '2':
+                        break # Возврат к выбору у двери
+            else:
+                # Тут можно добавить сообщение "У вас нет ключа"
+                pass
+
+        if user_input == '2': # Выбить дверь
+            clear_display()
+            print(KICK_THE_DOOR_MESSAGE)
+            enter_continue()
+
+        if user_input == '3': # Отойти
+            clear_display()
+            print(STEP_OUT_THE_DOOR_MESSAGE)
+            return False # Игрок остается в игре
+
+
+def handle_chest(location, player_data, position):
+    x, y = position
+    item = open_chest()
+    clear_display()
+    loot_message(item)
+
+    if item == ITEM_DEFUSAL_KIT:
+        player_data[PLAYER_ITEM_DEFUSAL_KIT] += 1
+
+    enter_continue()
+    location[x][y] = FLOOR_TILE
+
+
+def handle_key_pickup(location, player_data, position):
+    x, y = position
+    clear_display()
+    print(YOU_FOUND_KEY_CARD_MESSAGE)
+
+    player_data[PLAYER_ITEM_KEY] += 1
+    location[x][y] = FLOOR_TILE
+
+    enter_continue()
+
 
 def try_start_fight(location, new_position) -> bool:
 
