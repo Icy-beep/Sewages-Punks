@@ -520,7 +520,9 @@ def enemy_defeated_message(enemy_data: list) -> bool:
     return False
 
 
-def trap_inputs():
+def trap_inputs() -> None:
+    """
+    Выводит в консоль список доступных команд при обнаружении ловушки.
 
     print(MAGENTA_TEXT_BRIGHT + '1 - Disarming' + RESET)
     print(MAGENTA_TEXT_BRIGHT + '2 - Run through' + RESET)
