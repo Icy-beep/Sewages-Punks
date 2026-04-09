@@ -902,7 +902,6 @@ def show_ingame_menu() -> None:
     """
     c_main = LIGHT_BLUE_TEXT_BRIGHT
     c_accent = MAGENTA_TEXT_BRIGHT
-    c_warn = RED_TEXT_BRIGHT
     c_reset = RESET
 
     clear_display()

@@ -1,7 +1,3 @@
-import sys
-import os
-import msvcrt
-
 from src.core import *
 from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
