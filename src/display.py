@@ -5,47 +5,66 @@ import random
 import msvcrt
 import winsound
 import re
-
 from src.constants import *
 
-INPUT_PLAYER_NAME_MESSAGE = r'Enter your name'
-YOU_TRY_OPEN_DOR_MESSAGE = r'You try open dor'
-CARD_READER_MESSAGE = r'You ran the keycard across the scanner. The device emitted a satisfying chime of access granted, and the door groaned open with a faint metallic screech'
-DOOR_INTERACTION_MESSAGE = r"You move away from the entrance or exit... it's a matter of perspective."
-KICK_THE_DOOR_MESSAGE = r"You kick the door. The bang echoes through the sewers, but the door won't budge."
-STEP_OUT_THE_DOOR_MESSAGE = r"You move away from the entrance or exit... it's a matter of perspective."
-YOU_FOUND_KEY_CARD_MESSAGE = r'You found a keycard'
-TRAP_FORWARD_MESSAGE = r"There's a trap right in front of you."
-TRAP_DEFUSED_MESSAGE = r"Trap neutralized."
-YOU_DONT_HAVE_DEFKIT_MESSAGE = r"Required tools not detected. You need a disarm kit to proceed."
-TRAP_ACTIVATED_MESSAGE = r"You dashed through, and the trap triggered behind your back."
-TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE = r"Failed to evade. Trap triggered. Damage taken: -5 HP"
-PLAYER_TRY_DODGE_MESSAGE = f"{LIGHT_BLUE_TEXT_BRIGHT}Evasion attempt successful. Enemy accuracy decreased.{RESET}"
-ENEMY_MISS_MESSAGE = r"The shot went wide."
-ENEMY_WIN_MESSAGE = r"You have been defeated."
 
-PLAYER_WORD_VARIABLE = 'player'
-ENEMY_WORD_VARIABLE = 'enemy'
+def flush_input() -> None:
+    """
+    Полностью очищает буфер ввода консоли.
 
-def flush_input():
+    Считывает и отбрасывает все символы, которые были нажаты пользователем
+    во время анимаций или пауз. Это предотвращает автоматическое срабатывание
+    команд, случайно накопленных в очереди ввода.
+
+    Returns:
+        None: Функция выполняет очистку системного буфера msvcrt.
+    """
     while msvcrt.kbhit():
         msvcrt.getch()
 
 
-def skip_message():
-    message = (f'{LIGHT_BLUE_TEXT_BRIGHT}Skip the brief?\n'
-               f'[ Y ] Yes\n'
-               f'[ N ] No\n'
-               f'{RED_TEXT_BRIGHT}Any other key will skip the brief.{RESET}')
+def skip_message() -> str:
+    """
+    Формирует стилизованное сообщение с предложением пропустить вступительный брифинг.
+
+    Сообщение оформлено в цветовой гамме Moon City OS и информирует игрока,
+    что для продолжения чтения нужно нажать 'N', в то время как любая
+    другая клавиша (включая 'Y') приведет к пропуску пролога.
+
+    Returns:
+        str: Многострочная строка с форматированием ANSI-цветами.
+    """
+    message: str = (
+        f'{LIGHT_BLUE_TEXT_BRIGHT}Skip the brief?\n'
+        f'[ Y ] Yes\n'
+        f'[ N ] No\n'
+        f'{RED_TEXT_BRIGHT}Any other key will skip the brief.{RESET}'
+    )
 
     return message
 
-def slow_print(text, speed=0.03):
+
+def slow_print(text: str, speed: float = 0.03) -> None:
+    """
+    Выводит текст в консоль посимвольно с заданной задержкой.
+
+    Создает эффект постепенного появления текста (как в старых терминалах).
+    После вывода всей строки автоматически переходит на новую строку.
+
+    Args:
+        text (str): Строка текста, которую необходимо напечатать.
+        speed (float): Задержка в секундах между появлением каждого символа.
+            По умолчанию 0.03.
+
+    Returns:
+        None: Функция выполняет прямой вывод в поток sys.stdout.
+    """
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
         time.sleep(speed)
     print()
+
 
 def start_message():
     print(f"{DARK_GRAY}" + "• " * 30 + f"{RESET}\n")
@@ -610,6 +629,7 @@ def show_setting_stub():
     time.sleep(0.5)
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
+    flush_input()
     input(f"\n{c_accent}Press [ENTER] to go back to the terminal...{c_reset}")
 
 
