@@ -20,7 +20,7 @@ TRAP_DEFUSED_MESSAGE = r"Trap neutralized."
 YOU_DONT_HAVE_DEFKIT_MESSAGE = r"Required tools not detected. You need a disarm kit to proceed."
 TRAP_ACTIVATED_MESSAGE = r"You dashed through, and the trap triggered behind your back."
 TRAP_DAMAGED_PLAYER_IF_HE_RUN_MESSAGE = r"Failed to evade. Trap triggered. Damage taken: -5 HP"
-PLAYER_TRY_DODGE_MESSAGE = f"{BLUE_TEXT_BRIGHT}Evasion attempt successful. Enemy accuracy decreased.{RESET}"
+PLAYER_TRY_DODGE_MESSAGE = f"{LIGHT_BLUE_TEXT_BRIGHT}Evasion attempt successful. Enemy accuracy decreased.{RESET}"
 ENEMY_MISS_MESSAGE = r"The shot went wide."
 ENEMY_WIN_MESSAGE = r"You have been defeated."
 
@@ -349,26 +349,27 @@ def trap_inputs():
 
 def start_fight_message(enemy) -> str:
 
+    blue_text_bright = LIGHT_BLUE_TEXT_BRIGHT
     if enemy[0] == NAME_ENEMY_PUNK:
-        return (f'{BLUE_TEXT_BRIGHT}'
+        return (f'{blue_text_bright}'
                 f'......................'
                 f'You are entering a fight with a Punk'
                 f'......................{RESET}')
 
     if enemy[0] == NAME_ENEMY_SYNTH_HOUND:
-        return (f'{BLUE_TEXT_BRIGHT}'
+        return (f'{blue_text_bright}'
                 f'......................'
                 f'You are entering a fight with a Synth - Hound'
                 f'......................{RESET}')
 
     if enemy[0] == NAME_ENEMY_GLITCH_BUTCHER:
-        return (f'{BLUE_TEXT_BRIGHT}'
+        return (f'{blue_text_bright}'
                 f'......................'
                 f'You are entering a fight with the Ripper'
                 f'......................{RESET}')
 
     if enemy[0] == NAME_ENEMY_PSY_CODER:
-        return (f'{BLUE_TEXT_BRIGHT}'
+        return (f'{blue_text_bright}'
                 f'......................'
                 f'You are entering a fight with Psy - Coder'
                 f'......................{RESET}')

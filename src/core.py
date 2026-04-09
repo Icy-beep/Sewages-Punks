@@ -239,7 +239,7 @@ def load_game():
         mtime = os.path.getmtime(path)
         date_str = datetime.datetime.fromtimestamp(mtime).strftime('%d.%m %H:%M')
 
-        print(f"  {i}. {file.ljust(25)} | {BLUE_TEXT_BRIGHT}{date_str}{RESET}")
+        print(f"  {i}. {file.ljust(25)} | {LIGHT_BLUE_TEXT_BRIGHT}{date_str}{RESET}")
 
     try:
         choice = int(input(f"\n{MAGENTA_TEXT_BRIGHT}CHOOSE THE INDEX > {RESET}")) - 1

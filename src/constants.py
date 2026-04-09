@@ -42,6 +42,7 @@ PLAYER_ITEM_KEY = 7
 
 # --- ПРЕДМЕТЫ ---
 ITEM_DEFUSAL_KIT = 1
+ITEM_NOTHING = 0
 
 # --- ИМЕНА ---
 MAIN_CHARACTER_NAME = 'Elgeia'
@@ -90,6 +91,7 @@ LOAD_GAME_COMMANDS = ['l', 'load', 'load game', 'loadgame']
 SETTING_GAME_COMMANDS = ['s', 'save', 'save game', 'savegame']
 EXIT_GAME_COMMANDS = ['e', 'exit', 'exit game', 'exitgame']
 SKIP_PROLOGUE_COMMANDS_NO = ['no', 'n']
+IN_GAME_MENU_COMMANDS = ['r', 'l', 's', 'q']
 
 # Пауза
 RESUME = ['r', 'к']
@@ -103,6 +105,7 @@ EXIT = 'exit'
 EXFILL = 'exfill'
 RETURN_TO_MAIN_MENU = 'return to main menu'
 EXIT_TO_MAIN_MENU = 'exit to main menu'
+CONTINUE_GAME = 'continue'
 
 # --- СОХРАНЕНИЯ ---
 SAVE_DIR = "saves"
