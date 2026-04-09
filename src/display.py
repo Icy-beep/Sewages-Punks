@@ -684,7 +684,9 @@ def show_enemy_hp(enemy_data: list) -> None:
     print(f'\r{ENEMY_HP_FONT}Enemy vitals: {enemy_data[ENTITY_HP]}     ')
 
 
-def enter_continue():
+def enter_continue() -> None:
+    """
+    Приостанавливает выполнение программы до нажатия клавиши ENTER.
 
     showing = True
     while showing:
