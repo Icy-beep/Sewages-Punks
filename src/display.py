@@ -174,11 +174,24 @@ def glitch_effect(text: str, color: str = RED_TEXT_BRIGHT, speed: float = 0.03) 
     print(RESET)
 
 
-def blood_pressure_failure():
+def blood_pressure_failure() -> None:
+    """
+    Симулирует процесс отказа биосенсоров и падения артериального давления игрока.
+
+    Визуализирует показатели систолического и диастолического давления в реальном времени.
+    Включает в себя:
+    - Динамическую шкалу ЭКГ, которая меняет форму при критических значениях.
+    - Звуковое сопровождение (Beep), частота и интервал которого зависят от 'пульса'.
+    - Автоматическую остановку при достижении нулевых показателей (Flatline) с
+      финальным непрерывным звуковым сигналом.
+
+    Returns:
+        None: Функция выполняет прямой вывод в консоль и управление системным динамиком.
+    """
     slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[BIOSENSOR] : Monitoring arterial pressure...{RESET}")
 
-    sys_p = 90
-    dia_p = 60
+    sys_p: int = 90
+    dia_p: int = 60
 
     while sys_p > 0 or dia_p > 0:
         sys_p -= random.randint(5, 12)
@@ -200,12 +213,11 @@ def blood_pressure_failure():
         sys.stdout.write(f"\r{color}[BP_STATUS]: {sys_p:02d}/{dia_p:02d} mmHg | ECG: {wave} {RESET}")
         sys.stdout.flush()
 
-
         if sys_p > 0:
-            freq = int(400 + (sys_p * 4.5))
+            freq: int = int(400 + (sys_p * 4.5))
             winsound.Beep(freq, 150)
 
-            sleep_time = 0.2 + (1.5 / (sys_p + 1))
+            sleep_time: float = 0.2 + (1.5 / (sys_p + 1))
             time.sleep(min(sleep_time, 1.2))
         else:
             break
