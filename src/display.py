@@ -299,10 +299,20 @@ def game_over() -> str:
     return game_over_art
 
 
-def player_miss():
-    message = 'So close, but a miss!'
+def player_miss() -> str:
+    """
+    Формирует текстовое сообщение об неудачной атаке игрока.
+
+    Используется в боевой системе для информирования пользователя о том,
+    что расчет шанса попадания (try_ruin_attack_for_player) вернул промах.
+
+    Returns:
+        str: Строка с текстом 'So close, but a miss!'.
+    """
+    message: str = 'So close, but a miss!'
 
     return message
+
 
 def player_hp_in_percent(hp):
     current_hp = hp
