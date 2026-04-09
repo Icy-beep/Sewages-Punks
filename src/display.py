@@ -314,19 +314,32 @@ def player_miss() -> str:
     return message
 
 
-def player_hp_in_percent(hp):
-    current_hp = hp
-    max_hp = 100
+def player_hp_in_percent(hp: int) -> tuple[str, str]:
+    """
+    Рассчитывает процент здоровья и формирует графическую шкалу (Progress Bar).
 
-    hp_percent = (current_hp / max_hp) * 100
+    Преобразует числовое значение HP в строковый процент и создает
+    визуальную полоску здоровья из 20 сегментов для отображения в интерфейсе.
 
-    hp_in_percent = f"HP: {hp_percent:.0f}%"
+    Args:
+        hp (int): Текущее количество единиц здоровья игрока.
 
-    bar_length = 20
-    filled_length = int(bar_length * current_hp // max_hp)
-    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+    Returns:
+        tuple[str, str]: Кортеж из двух строк:
+            - Первая: Текстовое представление процента (например, "HP: 75%").
+            - Вторая: Графическая шкала в скобках (например, "[██████████----------] 75%").
+    """
+    current_hp: int = hp
+    max_hp: int = 100
 
-    hp_bar = f"[{bar}] {hp_percent:.0f}%"
+    hp_percent: float = (current_hp / max_hp) * 100
+    hp_in_percent: str = f"HP: {hp_percent:.0f}%"
+
+    bar_length: int = 20
+    filled_length: int = int(bar_length * current_hp // max_hp)
+
+    bar: str = '█' * filled_length + '-' * (bar_length - filled_length)
+    hp_bar: str = f"[{bar}] {hp_percent:.0f}%"
 
     return hp_in_percent, hp_bar
 
