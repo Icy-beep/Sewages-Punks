@@ -542,6 +542,13 @@ def start_fight_message(enemy: list) -> str:
     Сообщение обрамлено декоративными элементами и окрашено в ярко-голубой цвет
     в стиле терминала Moon City.
 
+    Args:
+        enemy (list): Список характеристик противника, где индекс 0 — это имя.
+
+    Returns:
+        str: Отформатированная строка сообщения для вывода в консоль.
+            Возвращает пустую строку, если тип врага не распознан.
+    """
     blue_text_bright = LIGHT_BLUE_TEXT_BRIGHT
     if enemy[0] == NAME_ENEMY_PUNK:
         return (f'{blue_text_bright}'
