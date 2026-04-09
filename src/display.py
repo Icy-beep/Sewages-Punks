@@ -595,7 +595,27 @@ def clean_len(text: str) -> int:
     return len(re.sub(r'\x1b\[[0-9;]*m', '', text))
 
 
-def draw_combat_interface(player, enemy, heals, logs, turn):
+def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str], turn: str) -> None:
+    """
+    Отрисовывает полный боевой интерфейс в стиле PSY-LINK терминала.
+
+    Функция очищает экран и выводит:
+    - Заголовок со статусом текущей фазы боя.
+    - Левую колонку с доступными командами управления.
+    - Правую колонку с визуальными шкалами здоровья (HP) и интоксикации.
+    - Системный лог последних трех событий боя.
+    - Индикатор ожидания ввода игрока.
+
+    Args:
+        player (list): Список характеристик игрока.
+        enemy (list): Список характеристик текущего противника.
+        heals (int): Количество оставшихся зарядов лечения.
+        logs (list[str]): История событий боя для вывода в LOG_SYSTEM.
+        turn (str): Текущий ход ("player" или "enemy") для заголовка.
+
+    Returns:
+        None: Функция выполняет прямой вывод сформированного интерфейса в консоль.
+    """
     os.system('cls' if os.name == 'nt' else 'clear')
     RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
 
