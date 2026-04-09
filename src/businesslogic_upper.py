@@ -1,8 +1,5 @@
-import random
-
 from src.display import *
 from src.businesslogic_lower import *
-from src.constants import *
 from src.entities import *
 
 def create_dungeon() -> list[list[int]]:
@@ -41,41 +38,46 @@ def create_dungeon() -> list[list[int]]:
 
     return dungeon_map
 
-def movement_player(location: list[list[int]], command: str) -> list[int]:
 
-    position = search_player_position(location)
-    old_position = position
-    new_position = position[:]
+def movement_player(location: list[list[int]], command: str) -> list[int]:
+    """
+    Обрабатывает логику перемещения игрока по карте.
+
+    Вычисляет новые координаты на основе команды. Если целевая клетка
+    проходима (FLOOR_TILE), обновляет карту, перемещая маркер игрока.
+    Если на пути препятствие или интерактивный объект (стена, враг, сундук),
+    позиция на карте не меняется, но возвращаются координаты препятствия
+    для последующей обработки.
+
+    Args:
+        location (list[list[int]]): Двумерный массив (карта) текущей локации.
+        command (str): Команда направления (из констант COMMAND_MOVE_...).
+
+    Returns:
+        list[int]: Новые координаты игрока [x, y] после попытки движения.
+    """
+    position: list[int] = search_player_position(location)
+    old_position: list[int] = position
+    new_position: list[int] = position[:]
 
     if command == COMMAND_MOVE_UP:
         new_position[x_coord] -= 1
-    if command == COMMAND_MOVE_LEFT:
+    elif command == COMMAND_MOVE_LEFT:
         new_position[y_coord] -= 1
-    if command == COMMAND_MOVE_DOWN:
+    elif command == COMMAND_MOVE_DOWN:
         new_position[x_coord] += 1
-    if command == COMMAND_MOVE_RIGHT:
+    elif command == COMMAND_MOVE_RIGHT:
         new_position[y_coord] += 1
 
-    target_tile = location[new_position[x_coord]][new_position[y_coord]]
+    target_tile: int = location[new_position[x_coord]][new_position[y_coord]]
 
-    if target_tile == WALL_TILE:
+    blocking_tiles: list[int] = [
+        WALL_TILE, ENEMY_TILE, TRAP_TILE,
+        CHEST_TILE, KEY_TILE, EXIT_TILE
+    ]
+
+    if target_tile in blocking_tiles:
         return new_position
-
-    if target_tile == ENEMY_TILE:
-        return new_position
-
-    if target_tile == TRAP_TILE:
-        return new_position
-
-    if target_tile == CHEST_TILE:
-        return new_position
-
-    if target_tile == KEY_TILE:
-        return new_position
-
-    if target_tile == EXIT_TILE:
-        return new_position
-
 
     location[old_position[x_coord]][old_position[y_coord]] = FLOOR_TILE
     location[new_position[x_coord]][new_position[y_coord]] = PLAYER_TILE
@@ -83,34 +85,49 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
     return new_position
 
 
-def handle_trap(location, player_data, position):
+def handle_trap(location: list[list[int]], player_data: list, position: list[int] | tuple[int, int]) -> None:
+    """
+    Обрабатывает взаимодействие игрока с ловушкой.
+
+    Предоставляет игроку выбор: попытаться разминировать ловушку при наличии набора
+    инструментов (DEFUSAL_KIT) или попытаться пробежать сквозь неё.
+    В зависимости от выбора и удачи игрок может обезвредить ловушку,
+    получить урон или успешно проскочить.
+
+    Args:
+        location (list[list[int]]): Двумерный массив текущей карты уровня.
+        player_data (list): Список данных игрока (HP, инвентарь и т.д.).
+        position (list[int] | tuple[int, int]): Координаты ловушки [x, y] на карте.
+
+    Returns:
+        None: Функция модифицирует данные игрока и карту на месте.
+    """
     x, y = position
     clear_display()
     print(TRAP_FORWARD_MESSAGE)
 
     while True:
         trap_inputs()
-        user_input = input('>>')
+        user_input: str = input('>>').strip()
 
         if user_input not in TRAP_COMMANDS:
             continue
 
-        if user_input == '1':  # Разминировать
+        if user_input == '1':
             if defuse_trap(player_data):
                 player_data[PLAYER_ITEM_DEFUSAL_KIT] -= 1
                 clear_display()
                 print(TRAP_DEFUSED_MESSAGE)
                 enter_continue()
                 location[x][y] = FLOOR_TILE
-                return  # Выходим из функции, ловушка обезврежена
+                return
             else:
                 clear_display()
                 print(YOU_DONT_HAVE_DEFKIT_MESSAGE)
                 enter_continue()
-                # Не выходим из цикла, даем выбрать другой вариант
 
-        if user_input == '2':  # Пробежать
-            if defuse_trap_run():  # Шанс успеха
+        elif user_input == '2':
+            if defuse_trap_run():
                 clear_display()
                 print(TRAP_ACTIVATED_MESSAGE)
             else:
@@ -123,7 +140,22 @@ def handle_trap(location, player_data, position):
             return
 
 
-def handle_exit(player_data):
+def handle_exit(player_data: list) -> bool:
+    """
+    Управляет процессом взаимодействия игрока с дверью выхода из сектора.
+
+    Предоставляет игроку меню действий: использование ключ-карты, попытка
+    силового взлома или отступление. Функция проверяет наличие ключа в инвентаре
+    и обрабатывает логику успешного выхода (эвакуации).
+
+    Args:
+        player_data (list): Список данных игрока, содержащий инвентарь и характеристики.
+
+    Returns:
+        bool:
+            - True, если игрок успешно использовал ключ и покидает уровень (EXFILL).
+            - False, если игрок решил отойти от двери и продолжить исследование.
+    """
     clear_display()
     print(YOU_TRY_OPEN_DOR_MESSAGE)
     enter_continue()
@@ -131,42 +163,60 @@ def handle_exit(player_data):
     while True:
         clear_display()
         exit_interactions()
-        user_input = input('>>')
+        user_input: str = input('>>').strip()
 
         if user_input not in DOOR_INTERACTION_COMMANDS:
             continue
 
-        if user_input == '1': # Использовать ключ
+        if user_input == '1':
             if player_data[PLAYER_ITEM_KEY] >= 1:
                 while True:
                     clear_display()
                     key_card_options_menu()
-                    choice = input('>>')
+                    choice: str = input('>>').strip()
+
                     if choice == '1':
                         clear_display()
                         print(CARD_READER_MESSAGE)
                         enter_continue()
-                        return True # СИГНАЛ НА ВЫХОД (EXFILL)
-                    if choice == '2':
-                        break # Возврат к выбору у двери
-            else:
-                # Тут можно добавить сообщение "У вас нет ключа"
-                pass
+                        return True
 
-        if user_input == '2': # Выбить дверь
+                    if choice == '2':
+                        break
+
+        elif user_input == '2':
             clear_display()
             print(KICK_THE_DOOR_MESSAGE)
             enter_continue()
 
-        if user_input == '3': # Отойти
+        elif user_input == '3':
             clear_display()
             print(STEP_OUT_THE_DOOR_MESSAGE)
-            return False # Игрок остается в игре
+            return False
+
+    return False
 
 
-def handle_chest(location, player_data, position):
+def handle_chest(location: list[list[int]], player_data: list, position: list[int] | tuple[int, int]) -> None:
+    """
+    Обрабатывает логику открытия сундука и получения добычи.
+
+    Функция определяет содержимое сундука через генератор лута, выводит
+    соответствующее сообщение и обновляет инвентарь игрока. После взаимодействия
+    сундук удаляется с карты, заменяясь на тайл пола.
+
+    Args:
+        location (list[list[int]]): Двумерный массив (карта) текущей локации.
+        player_data (list): Список характеристик и инвентаря игрока.
+        position (list[int] | tuple[int, int]): Координаты сундука [x, y] на карте.
+
+    Returns:
+        None: Функция вносит изменения непосредственно в объекты игрока и карты.
+    """
     x, y = position
-    item = open_chest()
+
+    item: str = open_chest()
+
     clear_display()
     loot_message(item)
 
@@ -174,50 +224,110 @@ def handle_chest(location, player_data, position):
         player_data[PLAYER_ITEM_DEFUSAL_KIT] += 1
 
     enter_continue()
+
     location[x][y] = FLOOR_TILE
 
 
-def handle_key_pickup(location, player_data, position):
+def handle_key_pickup(location: list[list[int]], player_data: list, position: list[int] | tuple[int, int]) -> None:
+    """
+    Обрабатывает подбор ключ-карты игроком.
+
+    Функция оповещает игрока о находке, увеличивает счетчик ключей в инвентаре
+    и удаляет объект ключа с карты, заменяя его на тайл пола.
+
+    Args:
+        location (list[list[int]]): Двумерный массив (карта) текущей локации.
+        player_data (list): Список характеристик и инвентаря игрока.
+        position (list[int] | tuple[int, int]): Координаты ключа [x, y] на карте.
+
+    Returns:
+        None: Функция модифицирует данные игрока и карту на месте.
+    """
+    x: int
+    y: int
     x, y = position
+
     clear_display()
     print(YOU_FOUND_KEY_CARD_MESSAGE)
 
     player_data[PLAYER_ITEM_KEY] += 1
+
     location[x][y] = FLOOR_TILE
 
     enter_continue()
 
 
-def try_start_fight(location, new_position) -> bool:
+def try_start_fight(location: list[list[int]], new_position: list[int] | tuple[int, int]) -> bool:
+    """
+    Проверяет, приведет ли перемещение в указанную точку к началу сражения.
 
-    if_fight = False
+    Функция анализирует тип тайла по заданным координатам. Если в целевой
+    клетке находится противник (ENEMY_TILE), функция подает сигнал
+    для инициации боевого режима.
+
+    Args:
+        location (list[list[int]]): Двумерный массив текущей карты уровня.
+        new_position (list[int] | tuple[int, int]): Координаты [x, y],
+            которые игрок пытается занять.
+
+    Returns:
+        bool:
+            - True, если на целевой позиции обнаружен враг (ENEMY_TILE).
+            - False, если враг отсутствует.
+    """
+    if_fight: bool = False
 
     if location[new_position[0]][new_position[1]] == ENEMY_TILE:
         if_fight = True
 
     return if_fight
 
-def create_enemy():
 
-    enemy = choose_enemy()
+def create_enemy() -> list:
+    """
+    Создает независимый экземпляр противника для текущего сражения.
 
-    copy_of_enemy = enemy[:]
+    Функция выбирает шаблон врага и создает его поверхностную копию.
+    Это необходимо, чтобы изменения характеристик (например, HP) во время боя
+    не перезаписывали базовые значения (пресеты) в глобальных переменных.
+
+    Returns:
+        list: Список с характеристиками конкретного экземпляра врага.
+    """
+    enemy: list = choose_enemy()
+
+    copy_of_enemy: list = enemy[:]
 
     return copy_of_enemy
 
-def initiative_throw(player_data, enemy_data):
-    import random
-    left_border = 0
-    right_border = 5
 
-    throw_is_good = False
+def initiative_throw(player_data: list, enemy_data: list) -> tuple[list, list]:
+    """
+    Выполняет расчет инициативы для определения очередности ходов в бою.
+
+    К базовым показателям инициативы игрока и врага добавляется случайное значение (бросок кубика).
+    Результат ограничивается максимальным значением 10. Цикл повторяется до тех пор,
+    пока значения инициативы не станут различными, чтобы исключить одновременный ход.
+
+    Args:
+        player_data (list): Список характеристик игрока.
+        enemy_data (list): Список характеристик противника.
+
+    Returns:
+        tuple[list, list]: Кортеж, содержащий обновленные данные игрока и врага
+            с установленными значениями инициативы для текущего боя.
+    """
+    left_border: int = 0
+    right_border: int = 5
+    throw_is_good: bool = False
 
     while not throw_is_good:
-        player_initiative = player_data[ENTITY_INITIATIVE]
-        enemy_initiative = enemy_data[ENTITY_INITIATIVE]
 
-        player_throw = random.randint(left_border, right_border)
-        enemy_throw = random.randint(left_border, right_border)
+        player_initiative: int = player_data[ENTITY_INITIATIVE]
+        enemy_initiative: int = enemy_data[ENTITY_INITIATIVE]
+
+        player_throw: int = random.randint(left_border, right_border)
+        enemy_throw: int = random.randint(left_border, right_border)
 
         player_initiative += player_throw
         enemy_initiative += enemy_throw
@@ -228,7 +338,7 @@ def initiative_throw(player_data, enemy_data):
         if enemy_initiative > 10:
             enemy_initiative = 10
 
-        if player_initiative > enemy_initiative or enemy_initiative > player_initiative:
+        if player_initiative != enemy_initiative:
             throw_is_good = True
 
     player_data[ENTITY_INITIATIVE] = player_initiative
@@ -236,48 +346,131 @@ def initiative_throw(player_data, enemy_data):
 
     return player_data, enemy_data
 
-def randomise_damage(damage):
-    left_border = -2
-    right_border = 2
 
-    random_damage = random.randint(left_border, right_border)
+def randomise_damage(damage: int) -> int:
+    """
+    Добавляет случайный разброс к базовому значению урона.
+
+    Используется для создания вариативности в бою, чтобы атаки не наносили
+    всегда одинаковое количество повреждений. Базовое значение корректируется
+    в диапазоне от -2 до +2 единиц.
+
+    Args:
+        damage (int): Базовый показатель урона персонажа или врага.
+
+    Returns:
+        int: Итоговое значение урона с учетом случайного модификатора.
+    """
+    left_border: int = -2
+    right_border: int = 2
+
+    random_damage: int = random.randint(left_border, right_border)
 
     damage += random_damage
-    return damage
 
-def try_ruin_attack_for_player(player_data):
-    throw = random.random()
+    return max(1, damage)
+
+
+def try_ruin_attack_for_player(player_data: list) -> bool:
+    """
+    Проверяет, промахнется ли игрок при попытке атаки.
+
+    Генерирует случайное число с плавающей запятой от 0.0 до 1.0 и сравнивает его
+    с базовым шансом промаха персонажа (ENTITY_MISS_CHANCE).
+
+    Args:
+        player_data (list): Список характеристик игрока.
+
+    Returns:
+        bool:
+            - True, если атака сорвана (промах).
+            - False, если атака прошла успешно.
+    """
+    throw: float = random.random()
 
     if throw < player_data[ENTITY_MISS_CHANCE]:
         return True
 
     return False
 
-def try_ruin_attack_for_enemy(enemy_data):
-    throw = random.random()
+
+def try_ruin_attack_for_enemy(enemy_data: list) -> bool:
+    """
+    Выполняет расчет вероятности промаха для текущей атаки противника.
+
+    Сравнивает случайное число с индивидуальным показателем шанса промаха врага.
+    Используется для определения, нанесет ли враг урон в текущем ходу.
+
+    Args:
+        enemy_data (list): Список характеристик противника, содержащий ENTITY_MISS_CHANCE.
+
+    Returns:
+        bool:
+            - True, если враг промахнулся.
+            - False, если атака достигла цели.
+    """
+    throw: float = random.random()
 
     if throw < enemy_data[ENTITY_MISS_CHANCE]:
         return True
 
     return False
 
-def defuse_trap(player_data):
 
+def defuse_trap(player_data: list) -> bool:
+    """
+    Проверяет наличие в инвентаре игрока набора для разминирования (DEFUSAL_KIT).
+
+    Функция используется перед началом процесса разминирования ловушки,
+    чтобы подтвердить наличие необходимых ресурсов в данных игрока.
+
+    Args:
+        player_data (list): Список данных игрока, включая количество предметов.
+
+    Returns:
+        bool:
+            - True, если в инвентаре есть хотя бы один набор для разминирования.
+            - False, если инструменты отсутствуют.
+    """
     if player_data[PLAYER_ITEM_DEFUSAL_KIT] >= 1:
         return True
-    else:
-        return False
 
-def defuse_trap_run():
-    chance = BASE_CHANCE - 0.70
+    return False
+
+
+def defuse_trap_run() -> bool:
+    """
+    Рассчитывает шанс игрока успешно проскочить сквозь ловушку без получения урона.
+
+    Использует базовый системный шанс (BASE_CHANCE), уменьшенный на фиксированный
+    штраф сложности (0.70). Если случайное число оказывается меньше итогового
+    значения, попытка считается успешной.
+
+    Returns:
+        bool:
+            - True, если игроку удалось успешно проскочить (ловушка не сработала).
+            - False, если попытка неудачна (игрок получает урон).
+    """
+    chance: float = BASE_CHANCE - 0.70
 
     if random.random() < chance:
         return True
-    else:
-        return False
 
-def open_chest():
-    item = random.randint(0, 1)
+    return False
+
+
+def open_chest() -> int:
+    """
+    Определяет содержимое сундука при взаимодействии.
+
+    Генерирует случайный числовой идентификатор предмета.
+    Используется для случайного распределения наград между инструментами
+    разминирования (DEFUSAL_KIT) и другими типами лута.
+
+    Returns:
+        int: Идентификатор выпавшего предмета (0 или 1).
+    """
+    item: int = random.randint(0, 1)
 
     return item
 
