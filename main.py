@@ -1,4 +1,3 @@
-from typing import Any, Tuple, Dict, List, Optional, Union
 from src.core import *
 from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
@@ -7,14 +6,14 @@ from src.entities import create_default_player
 from src.localization import MAIN_MENU
 
 
-def main_menu() -> Union[Tuple[List[List[Any]], Dict[Any, Any]], Dict[str, Any]]:
+def main_menu() -> dict | tuple[list[list[int]], list[int | float | str]] | None:
     """
     Управляет логикой главного меню: запуск новой игры, загрузка или выход.
 
     Returns:
-        Union[Tuple[List[List[Any]], Dict[Any, Any]], Dict[str, Any]]:
-            Возвращает либо кортеж (карта, игрок) для новой игры,
-            либо словарь с данными загруженного сохранения.
+        dict | tuple[list[list[int]], list[int | float | str]] | None:
+            Кортеж (карта, игрок) для новой игры,
+            словарь для сохранения или None при выходе.
     """
     in_main_menu: bool = True
     player_nick: str = 'Operator'
@@ -27,12 +26,12 @@ def main_menu() -> Union[Tuple[List[List[Any]], Dict[Any, Any]], Dict[str, Any]]
         choice: str = input(prompt).strip()
 
         if choice.lower() in NEW_GAME_COMMANDS:
-            dungeon: List[List[Any]] = create_tutorial_dungeon()
-            default_player: Dict[Any, Any] = create_default_player()
+            dungeon: list[list[int]] = create_tutorial_dungeon()
+            default_player: list[int | float | str] = create_default_player()
             return dungeon, default_player
 
         elif choice.lower() in LOAD_GAME_COMMANDS:
-            saved_data: Optional[Dict[str, Any]] = load_game()
+            saved_data: dict | None = load_game()
             if saved_data:
                 msg: str = MAIN_MENU['decrypting_successful'].format(
                     MAIN_CHARACTER_NAME=MAIN_CHARACTER_NAME
@@ -53,22 +52,24 @@ def main_menu() -> Union[Tuple[List[List[Any]], Dict[Any, Any]], Dict[str, Any]]
             time.sleep(0.2)
             sys.exit()
 
+    return None
 
-def game_loop(player_data: Dict[Any, Any], first_dungeon: List[List[Any]]) -> str:
+
+def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int]]) -> str:
     """
     Основной игровой цикл, переключающий состояния между исследованием и боем.
 
     Args:
-        player_data (Dict[Any, Any]): Ссылка на словарь с характеристиками игрока.
-        first_dungeon (List[List[Any]]): Текущая карта подземелья.
+        player_data: Словарь с характеристиками игрока.
+        first_dungeon: Матрица подземелья.
 
     Returns:
-        str: Код завершения цикла (например, EXIT_TO_MAIN_MENU).
+        str: Код завершения цикла.
     """
     is_fight: bool = False
     game_loop_is_run: bool = True
     exfill: bool = False
-    dungeon: List[List[Any]] = first_dungeon
+    dungeon: list[list[int]] = first_dungeon
 
     while game_loop_is_run:
         while not is_fight:
@@ -103,6 +104,8 @@ def game_loop(player_data: Dict[Any, Any], first_dungeon: List[List[Any]]) -> st
             break
 
         dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
+
+    return GAME_OVER
 
 
 if __name__ == '__main__':

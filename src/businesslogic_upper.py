@@ -216,7 +216,7 @@ def handle_chest(location: list[list[int]], player_data: list, position: list[in
     """
     x, y = position
 
-    item: str = open_chest()
+    item = open_chest()
 
     clear_display()
     loot_message(item)
@@ -302,7 +302,7 @@ def create_enemy() -> list:
     return copy_of_enemy
 
 
-def initiative_throw(player_data: list, enemy_data: list) -> tuple[list, list]:
+def initiative_throw(player_data: list, enemy_data: list) -> tuple[int, int]:
     """
     Выполняет расчет инициативы для определения очередности ходов в бою.
 
@@ -321,6 +321,8 @@ def initiative_throw(player_data: list, enemy_data: list) -> tuple[list, list]:
     left_border: int = 0
     right_border: int = 5
     throw_is_good: bool = False
+    player_initiative = 0
+    enemy_initiative = 0
 
     while not throw_is_good:
 
@@ -342,11 +344,7 @@ def initiative_throw(player_data: list, enemy_data: list) -> tuple[list, list]:
         if player_initiative != enemy_initiative:
             throw_is_good = True
 
-    player_data[ENTITY_INITIATIVE] = player_initiative
-    enemy_data[ENTITY_INITIATIVE] = enemy_initiative
-
-    return player_data, enemy_data
-
+    return player_initiative, enemy_initiative
 
 def randomise_damage(damage: int) -> int:
     """

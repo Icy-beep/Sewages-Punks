@@ -40,7 +40,7 @@ ENTITY_TOXICITY = 5
 PLAYER_ITEM_DEFUSAL_KIT = 6
 PLAYER_ITEM_KEY = 7
 
-# --- ПРЕДМЕТЫ ---
+# --- ИНДЕКСЫ ПРЕДМЕТОВ ---
 ITEM_DEFUSAL_KIT = 1
 ITEM_NOTHING = 0
 
@@ -62,7 +62,7 @@ LIGHT_BLUE_TEXT_BRIGHT = '\033[96m'
 WHITE_TEXT_REGULAR = '\033[37m'
 WHITE_TEXT_BRIGHT = '\033[97m'
 
-# Шрифты интерфейса
+# Цвета интерфейса
 PLAYER_HP_FONT = GREEN_TEXT_BRIGHT
 ENEMY_HP_FONT = RED_TEXT_BRIGHT
 
@@ -91,13 +91,14 @@ LOAD_GAME_COMMANDS = ['l', 'load', 'load game', 'loadgame']
 SETTING_GAME_COMMANDS = ['s', 'save', 'save game', 'savegame']
 EXIT_GAME_COMMANDS = ['e', 'exit', 'exit game', 'exitgame']
 SKIP_PROLOGUE_COMMANDS_NO = ['no', 'n']
-IN_GAME_MENU_COMMANDS = ['r', 'l', 's', 'q']
 
-# Пауза
+
+# Внутри игровое меню
 RESUME = ['r', 'к']
 SAVE = ['s', 'ы']
 LOAD = ['l', 'д']
 QUIT_TO_MAIN_MENU = ['q', 'й']
+IN_GAME_MENU_COMMANDS = ['r', 'l', 's', 'q']
 
 # --- СТАТУСЫ И СОСТОЯНИЯ ---
 FIGHT = 'is_fight'
@@ -106,6 +107,7 @@ EXFILL = 'exfill'
 RETURN_TO_MAIN_MENU = 'return to main menu'
 EXIT_TO_MAIN_MENU = 'exit to main menu'
 CONTINUE_GAME = 'continue'
+GAME_OVER = "GAME_OVER"
 
 # --- СОХРАНЕНИЯ ---
 SAVE_DIR = "saves"

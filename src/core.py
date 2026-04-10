@@ -12,7 +12,7 @@ INTERACTIONS: dict[Any, Callable[..., Any]] = {
 }
 
 
-def adventuring(dungeon_map: list[list[Any]], player_data: dict[str, Any]) -> (
+def adventuring(dungeon_map: list[list[Any]], player_data: list[int | float | str]) -> (
         None | tuple[str, list[int]] | tuple[str, int]):
     """
     Основной игровой цикл исследования подземелья.
@@ -22,7 +22,7 @@ def adventuring(dungeon_map: list[list[Any]], player_data: dict[str, Any]) -> (
 
     Args:
         dungeon_map (list[list[Any]]): Двумерный массив, представляющий сетку карты.
-        player_data (dict[str, Any]): Словарь с данными и характеристиками игрока.
+        player_data (list[int | float | str]): Список с данными и характеристиками игрока.
 
     Returns:
         Tuple[str, Any]: Кортеж, содержащий флаг состояния (события) и текущую позицию игрока или код возврата.
@@ -58,7 +58,7 @@ def adventuring(dungeon_map: list[list[Any]], player_data: dict[str, Any]) -> (
                 return FIGHT, new_position
 
 
-def fight(player_data: Dict[str, Any]) -> bool | None:
+def fight(player_data: list[int | float | str]) -> bool | None:
     """
     Управляет процессом пошагового боя между игроком и противником.
 
@@ -67,7 +67,7 @@ def fight(player_data: Dict[str, Any]) -> bool | None:
     и автоматические ходы противника.
 
     Args:
-        player_data (Dict[str, Any]): Словарь с текущими характеристиками игрока.
+        player_data list[int | float | str]: Список с текущими характеристиками игрока.
 
     Returns:
         bool: True, если игрок победил; False, если игрок погиб.
@@ -82,8 +82,8 @@ def fight(player_data: Dict[str, Any]) -> bool | None:
     print(f"\n{MAGENTA_TEXT_BRIGHT}ENCOUNTER_LOG:{RESET} {enemy_data[ENTITY_NAME]} has entered the sector.\n")
     enter_continue()
 
-    player_data, enemy_data = initiative_throw(player_data, enemy_data)
-    throw_animation(player_data, enemy_data)
+    player_initiative, enemy_initiative = initiative_throw(player_data, enemy_data)
+    throw_animation(player_initiative, enemy_initiative)
     enter_continue()
 
     current_turn = "player" if player_data[ENTITY_INITIATIVE] >= enemy_data[ENTITY_INITIATIVE] else "enemy"
@@ -135,10 +135,12 @@ def fight(player_data: Dict[str, Any]) -> bool | None:
             current_turn = "player"
 
 
-def handle_pause_menu(player_data, dungeon_map):
+def handle_pause_menu(player_data: list[int | float | str], dungeon_map: list[list[int]]):
     """
     Управляет меню паузы.
-    Возвращает CONTINUE_GAME или RETURN_TO_MAIN_MENU.
+    Args:
+        player_data: list[int | float | str]
+        dungeon_map: list[list[int]]
     """
     while True:
         show_ingame_menu()
@@ -162,7 +164,7 @@ def handle_pause_menu(player_data, dungeon_map):
             print(f"    {RED_TEXT_BRIGHT}INVALID COMMAND. RE-ENTER.{RESET}")
 
 
-def execute_player_attack(player: Dict[str, Any], enemy: Dict[str, Any]) -> str:
+def execute_player_attack(player: list[Any], enemy: list[Any]) -> str:
     """
     Выполняет расчет и проведение атаки игрока по противнику.
 
@@ -185,7 +187,7 @@ def execute_player_attack(player: Dict[str, Any], enemy: Dict[str, Any]) -> str:
         return f"Strike successful. {dmg} damage dealt to {enemy[ENTITY_NAME]}."
 
 
-def execute_player_heal(player: Dict[str, Any], heals_left: int) -> Tuple[str, bool]:
+def execute_player_heal(player: list[Any], heals_left: int) -> Tuple[str, bool]:
     """
     Выполняет попытку восстановления здоровья игрока с использованием нанитов.
 
@@ -217,7 +219,7 @@ def execute_player_heal(player: Dict[str, Any], heals_left: int) -> Tuple[str, b
     return msg, True
 
 
-def execute_enemy_attack(enemy: Dict[str, Any], player: Dict[str, Any]) -> str:
+def execute_enemy_attack(enemy: list[Any], player: list[Any]) -> str:
     """
     Выполняет расчет и проведение атаки противника по игроку.
 
@@ -263,7 +265,7 @@ def get_unique_filename(base_name: str) -> str:
     return filename
 
 
-def save_game(player_data: Dict[Any, Any], dungeon: Any) -> bool:
+def save_game(player_data: list[Any], dungeon: Any) -> bool:
     """
     Выполняет экспорт текущего состояния игрока и подземелья в JSON-файл.
 
