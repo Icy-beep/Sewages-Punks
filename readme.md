@@ -64,7 +64,7 @@
 
     Откройте терминал (или командную строку) и скачайте проект к себе на компьютер:
     
-    git clone https://github.com
+    git clone https://github.com/Icy-beep/Sewages-Punks
     
     Если у вас не установлен Git, вы можете просто скачать архив проекта кнопкой 
     Code -> Download ZIP и распаковать его.
@@ -78,17 +78,19 @@
 
 Шаг 3. Создание виртуального окружения
         
-    Рекомендуется использовать виртуальное окружение, чтобы зависимости проекта не конфликтовали с системными:
+    Рекомендуется использовать виртуальное окружение, 
+    чтобы зависимости проекта не конфликтовали с системными:
+
     
     Для Windows:
         
-        python -m venv venv
-        venv\Scripts\activate
+        1. python -m venv venv
+        2. venv\Scripts\activate
 
     Для Linux / macOS:
         
-        python3 -m venv venv
-        source venv/bin/activate
+        1. python3 -m venv venv
+        2. source venv/bin/activate
 
 
 Шаг 4. Запуск игры
@@ -96,11 +98,9 @@
     Запустите главный файл скрипта:
 
         Для Windows:
-
         python main.py
 
         Для Linux / macOS:
-
         python3 main.py
 
 </details>
