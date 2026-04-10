@@ -6,14 +6,14 @@ from src.entities import create_default_player
 from src.localization import MAIN_MENU
 
 
-def main_menu() -> dict | tuple[list[list[int]], list[int | float | str]] | None:
+def main_menu() -> dict | tuple[list, list] | None:
     """
     Управляет логикой главного меню: запуск новой игры, загрузка или выход.
 
     Returns:
-        dict | tuple[list[list[int]], list[int | float | str]] | None:
+        dict | tuple[list, list] | None:
             Кортеж (карта, игрок) для новой игры,
-            словарь для сохранения или None при выходе.
+            результат load_game() - словарь с data игрока и подземелья.
     """
     in_main_menu: bool = True
     player_nick: str = 'Operator'
@@ -48,9 +48,7 @@ def main_menu() -> dict | tuple[list[list[int]], list[int | float | str]] | None
             show_setting_stub()
 
         elif choice.lower() in EXIT_GAME_COMMANDS:
-            print(f"{RED_TEXT_BRIGHT}DISCONNECTING...{RESET}")
-            time.sleep(0.2)
-            sys.exit()
+            return None
 
     return None
 
@@ -60,16 +58,18 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
     Основной игровой цикл, переключающий состояния между исследованием и боем.
 
     Args:
-        player_data: Словарь с характеристиками игрока.
+        player_data: Список с характеристиками игрока.
         first_dungeon: Матрица подземелья.
 
     Returns:
-        str: Код завершения цикла.
+        str: Код завершения цикла (например, GAME_OVER или EXIT_TO_MAIN_MENU).
     """
     is_fight: bool = False
     game_loop_is_run: bool = True
     exfill: bool = False
     dungeon: list[list[int]] = first_dungeon
+
+    new_position: list[int] = [0, 0]
 
     while game_loop_is_run:
         while not is_fight:
@@ -85,9 +85,6 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             if state_of_adventuring == EXFILL:
                 exfill = True
                 continue
-
-            if state_of_adventuring == EXIT:
-                sys.exit(0)
 
             if state_of_adventuring == RETURN_TO_MAIN_MENU:
                 return EXIT_TO_MAIN_MENU
@@ -114,6 +111,13 @@ if __name__ == '__main__':
 
     while game_is_run:
         result = main_menu()
+
+        if result is None:
+            print(f"{RED_TEXT_BRIGHT}DISCONNECTING", end=" ")
+            waiting_animation(0.6)
+            print(RESET)
+            clear_display()
+            break
 
         if isinstance(result, tuple):
             first_level, player = result

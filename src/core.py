@@ -5,7 +5,7 @@ from src.businesslogic_upper import *
 from src.display import *
 from src.constants import *
 
-INTERACTIONS: dict[Any, Callable[..., Any]] = {
+INTERACTIONS: Dict[Any, Callable[..., Any]] = {
     CHEST_TILE: handle_chest,
     KEY_TILE: handle_key_pickup,
     TRAP_TILE: handle_trap,
@@ -173,8 +173,8 @@ def execute_player_attack(player: list[Any], enemy: list[Any]) -> str:
     из здоровья врага.
 
     Args:
-        player (Dict[str, Any]): Данные игрока, включая базовый урон.
-        enemy (Dict[str, Any]): Данные противника, включая текущее здоровье и имя.
+        player (list[str, Any]): Данные игрока, включая базовый урон.
+        enemy (list[str, Any]): Данные противника, включая текущее здоровье и имя.
 
     Returns:
         str: Сообщение о результате атаки (промах или нанесенный урон) для боевого лога.
@@ -195,7 +195,7 @@ def execute_player_heal(player: list[Any], heals_left: int) -> Tuple[str, bool]:
     токсичности (4) игрок получает штрафной урон от перегрузки системы.
 
     Args:
-        player (Dict[str, Any]): Словарь с данными игрока (HP, токсичность).
+        player (list[str, Any]): Словарь с данными игрока (HP, токсичность).
         heals_left (int): Текущее количество доступных зарядов лечения.
 
     Returns:
@@ -227,8 +227,8 @@ def execute_enemy_attack(enemy: list[Any], player: list[Any]) -> str:
     рассчитывается случайный урон, который вычитается из здоровья игрока.
 
     Args:
-        enemy (Dict[str, Any]): Данные противника (имя, урон, шанс промаха).
-        player (Dict[str, Any]): Данные игрока (здоровье).
+        enemy (list[str, Any]): Данные противника (имя, урон, шанс промаха).
+        player (list[str, Any]): Данные игрока (здоровье).
 
     Returns:
         str: Сообщение о результате атаки для боевого лога.
@@ -274,7 +274,7 @@ def save_game(player_data: list[Any], dungeon: Any) -> bool:
     и записывает данные в файл.
 
     Args:
-        player_data (Dict[Any, Any]): Данные и характеристики игрока.
+        player_data (list[Any, Any]): Данные и характеристики игрока.
         dungeon (Any): Текущее состояние карты или объекта подземелья.
 
     Returns:

@@ -456,13 +456,12 @@ def throw_animation(player_initiative: int, enemy_initiative: int) -> None:
     Returns:
         None: Функция выполняет анимированный вывод в консоль с управлением курсором.
     """
-    CYAN, MAGENTA = LIGHT_BLUE_TEXT_BRIGHT, MAGENTA_TEXT_BRIGHT
     chars = "0123456789ABCDEF!@#$%"
     duration = 20
 
     print(HIDE_CURSOR)
     try:
-        print(f"{MAGENTA}INITIATIVE_SCANNER{RESET} // {CYAN}PSY_LINK...{RESET}\n")
+        print(f"{MAGENTA_TEXT_BRIGHT}INITIATIVE_SCANNER{RESET} // {LIGHT_BLUE_TEXT_BRIGHT}PSY_LINK...{RESET}\n")
 
         for step in range(duration):
             p_val = f"{player_initiative:>2}" if step > 14 else "".join(
@@ -470,8 +469,8 @@ def throw_animation(player_initiative: int, enemy_initiative: int) -> None:
             e_val = f"{enemy_initiative:>2}" if step > 14 else "".join(
                 random.choice(chars) for _ in range(2))
 
-            p_slot = f"{CYAN}[ {p_val} ]{RESET} ELGEIA_LATENCY_TEST"
-            e_slot = f"{MAGENTA}[ {e_val} ]{RESET} HOSTILE_PING_RATE"
+            p_slot = f"{LIGHT_BLUE_TEXT_BRIGHT}[ {p_val} ]{RESET} ELGEIA_LATENCY_TEST"
+            e_slot = f"{MAGENTA_TEXT_BRIGHT}[ {e_val} ]{RESET} HOSTILE_PING_RATE"
 
             noise = "".join(random.choice(".· ") for _ in range(10))
 
@@ -482,9 +481,9 @@ def throw_animation(player_initiative: int, enemy_initiative: int) -> None:
         print("\n\n" + "—" * 60)
 
         if player_initiative >= enemy_initiative:
-            print(f"{CYAN}SUCCESS:{RESET} CONNECTION_PRIORITY_GRANTED [ELGEIA_STRIKES_FIRST]")
+            print(f"{LIGHT_BLUE_TEXT_BRIGHT}SUCCESS:{RESET} CONNECTION_PRIORITY_GRANTED [ELGEIA_STRIKES_FIRST]")
         else:
-            print(f"{MAGENTA}WARNING:{RESET} SYSTEM_INTERRUPTION [ENEMY_AMBUSH_DETECTED]")
+            print(f"{MAGENTA_TEXT_BRIGHT}WARNING:{RESET} SYSTEM_INTERRUPTION [ENEMY_AMBUSH_DETECTED]")
         print("—" * 60)
 
     finally:
@@ -507,12 +506,10 @@ def enemy_defeated_message(enemy_data: list) -> bool:
             - True, если противник повержен и сообщение выведено.
             - False, если противник все еще жив.
     """
-    RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
-
     if enemy_data[ENTITY_HP] <= 0:
-        print(f"\n{CYAN}>>> TARGET_ELIMINATED{RESET}")
-        print(f"{CYAN}>>> STATUS:{RESET} SUCCESSFUL_EXTRACTION")
-        print(f"{CYAN}>>> LOG:{RESET} Data shards recovered from {enemy_data[ENTITY_NAME]}.")
+        print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}>>> TARGET_ELIMINATED{RESET}")
+        print(f"{LIGHT_BLUE_TEXT_BRIGHT}>>> STATUS:{RESET} SUCCESSFUL_EXTRACTION")
+        print(f"{LIGHT_BLUE_TEXT_BRIGHT}>>> LOG:{RESET} Data shards recovered from {enemy_data[ENTITY_NAME]}.")
         print(f"————————————————————————————————————————————————————————————————————")
 
         enter_continue()
@@ -617,16 +614,15 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
         None: Функция выполняет прямой вывод сформированного интерфейса в консоль.
     """
     os.system('cls' if os.name == 'nt' else 'clear')
-    RESET, CYAN, MAGENTA = '\033[0m', '\033[96m', '\033[95m'
 
     status = "OPERATOR_ACTION" if turn == "player" else "ENEMY_PHASE"
-    print(f"{MAGENTA}PSY - LINK{RESET} // {CYAN}COMBAT MOD{RESET} [STATUS: {MAGENTA}{status}{RESET}]")
-    print(f"{MAGENTA}" + ".  " * 20 + f"{RESET}\n")
+    print(f"{MAGENTA_TEXT_BRIGHT}PSY - LINK{RESET} // {LIGHT_BLUE_TEXT_BRIGHT}COMBAT MOD{RESET} [STATUS: {MAGENTA_TEXT_BRIGHT}{status}{RESET}]")
+    print(f"{MAGENTA_TEXT_BRIGHT}" + ".  " * 20 + f"{RESET}\n")
 
     legend = [
-        f"{CYAN}[ A ]{RESET} STRIKE_TARGET",
-        f"{CYAN}[ D ]{RESET} EVASIVE_MANEUVER",
-        f"{CYAN}[ H ]{RESET} REGEN_PROTOCOL ({heals} left)",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[ A ]{RESET} STRIKE_TARGET",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[ D ]{RESET} EVASIVE_MANEUVER",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[ H ]{RESET} REGEN_PROTOCOL ({heals} left)",
         "",
     ]
 
@@ -635,7 +631,7 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
         return f"{color}{'■' * fill}{RESET}{'·' * (w - fill)}"
 
     p_bar = get_bar(player[ENTITY_HP], 100, 15, PLAYER_HP_FONT)
-    t_bar = get_bar(player[ENTITY_TOXICITY], 4, 15, MAGENTA)
+    t_bar = get_bar(player[ENTITY_TOXICITY], 4, 15, MAGENTA_TEXT_BRIGHT)
     e_bar = get_bar(enemy[ENTITY_HP], 100, 15, ENEMY_HP_FONT)
 
     stats = [
@@ -649,13 +645,13 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
         l, r = (legend[i] if i < len(legend) else ""), (stats[i] if i < len(stats) else "")
         print(f"{l}{' ' * (30 - clean_len(l))}{r}")
 
-    print(f"\n{MAGENTA}LOG_SYSTEM:{RESET}")
+    print(f"\n{MAGENTA_TEXT_BRIGHT}LOG_SYSTEM:{RESET}")
     display_log = (logs[-3:] + [""] * 3)[:3]
     for line in display_log:
         print(f" > {line}")
 
-    print(f"{CYAN}{'—' * 70}{RESET}")
-    print(f"{MAGENTA}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}{'—' * 70}{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
 
 
 def show_enemy_hp(enemy_data: list) -> None:
