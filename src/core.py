@@ -56,7 +56,7 @@ def adventuring(dungeon_map: list[list[Any]], player_data: list[int | float | st
                 dungeon_map[new_position[0]][new_position[1]] = PLAYER_TILE
 
 
-def fight(player_data: list[int | float | str]) -> bool | None:
+def fight(player_data: list[int | float | str]) -> None | tuple[bool, list] | bool:
     """
     Управляет процессом пошагового боя между игроком и противником.
 
@@ -93,7 +93,7 @@ def fight(player_data: list[int | float | str]) -> bool | None:
         if enemy_data[ENTITY_HP] <= 0:
             draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
             enemy_defeated_message(enemy_data)
-            return True
+            return True, enemy_data
 
         draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
 
@@ -111,14 +111,16 @@ def fight(player_data: list[int | float | str]) -> bool | None:
                 combat_log.append(execute_player_attack(player_data, enemy_data))
                 current_turn = "enemy"
             elif action == 'd':
-                dodge_active = True
-                combat_log.append("Evasive maneuvers active. Dodge chance UP.")
-                current_turn = "enemy"
+                if dodge_active:
+                    combat_log.append("Evasive maneuvers already active!")
+                    continue
+                else:
+                    dodge_active = True
+                    combat_log.append("Evasive maneuvers active. Dodge chance UP.")
+                    continue
 
             else:
                 continue
-
-            time.sleep(0.4)
 
         else:
             time.sleep(1)
@@ -343,3 +345,11 @@ def load_game():
         print(f"{RED_TEXT_BRIGHT}[ ERROR: WRONG INDEX ]{RESET}")
 
     return None
+
+
+def calculate_sp_reward(enemy_data: list) -> int:
+    base_sp = 5
+    power_bonus = int(enemy_data[ENTITY_HP] * 0.1)
+    initiative_bonus = int(enemy_data[ENTITY_INITIATIVE] * 0.1)
+
+    return base_sp + power_bonus + initiative_bonus

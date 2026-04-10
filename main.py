@@ -90,7 +90,11 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             if state_of_adventuring == RETURN_TO_MAIN_MENU:
                 return EXIT_TO_MAIN_MENU
 
-        fight(player_data)
+        state, enemy_data = fight(player_data)
+
+        if player_data[ENTITY_HP] > 0:
+            sp_gain = calculate_sp_reward(enemy_data)
+            player_data[PLAYER_SKILL_POINTS] += sp_gain
 
         if player_data[ENTITY_HP] <= 0:
             art: str = game_over()

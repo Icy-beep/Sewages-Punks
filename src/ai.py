@@ -13,14 +13,12 @@ def get_path_to_target(start, target_tiles, dungeon_map, occupied_targets):
 
         if dungeon_map[curr_x][curr_y] in target_tiles:
             if [curr_x, curr_y] not in occupied_targets:
-                return path[0], [curr_x, curr_y]
+                return (path[0], [curr_x, curr_y]) if path else None
 
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nx, ny = curr_x + dx, curr_y + dy
 
-            if (0 <= nx < rows and 0 <= ny < cols and
-                    (nx, ny) not in visited):
-
+            if (0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited):
                 tile = dungeon_map[nx][ny]
 
                 if tile == FLOOR_TILE or tile in target_tiles:
@@ -45,9 +43,10 @@ def move_enemies(dungeon_map):
 
         if result:
             next_step, final_target = result
+            nx, ny = next_step
+
             occupied_targets.append(final_target)
 
-            nx, ny = next_step
             if dungeon_map[nx][ny] == FLOOR_TILE:
                 dungeon_map[ex][ey] = FLOOR_TILE
                 dungeon_map[nx][ny] = ENEMY_TILE
