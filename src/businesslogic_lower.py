@@ -232,6 +232,10 @@ def get_user_command() -> str | None:
             - None, если символ не удалось декодировать (например, спецклавиши).
     """
     char = msvcrt.getch()
+
+    while msvcrt.kbhit():
+        msvcrt.getch()
+
     if char == b'\x1b':
         return "PAUSE"
     try:

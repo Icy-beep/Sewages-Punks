@@ -72,8 +72,6 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
     exfill: bool = False
     dungeon: list[list[int]] = first_dungeon
 
-    new_position: list[int] = [0, 0]
-
     while game_loop_is_run:
         while not is_fight:
             if exfill:
@@ -92,7 +90,11 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             if state_of_adventuring == RETURN_TO_MAIN_MENU:
                 return EXIT_TO_MAIN_MENU
 
-        fight(player_data)
+        state, enemy_data = fight(player_data)
+
+        if player_data[ENTITY_HP] > 0:
+            sp_gain = calculate_sp_reward(enemy_data)
+            player_data[PLAYER_SKILL_POINTS] += sp_gain
 
         if player_data[ENTITY_HP] <= 0:
             art: str = game_over()
@@ -103,7 +105,9 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             enter_continue()
             break
 
-        dungeon[new_position[0]][new_position[1]] = FLOOR_TILE
+        old_pos = search_player_position(dungeon)  # Находим, где он СЕЙЧАС
+        dungeon[old_pos[0]][old_pos[1]] = FLOOR_TILE  # Стираем его там
+        dungeon[new_position[0]][new_position[1]] = PLAYER_TILE
 
     return GAME_OVER
 

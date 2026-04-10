@@ -3,7 +3,7 @@ import datetime
 from typing import Callable, Any, Tuple, Dict
 from src.businesslogic_upper import *
 from src.display import *
-from src.constants import *
+from src.ai import *
 
 INTERACTIONS: Dict[Any, Callable[..., Any]] = {
     CHEST_TILE: handle_chest,
@@ -11,22 +11,8 @@ INTERACTIONS: Dict[Any, Callable[..., Any]] = {
     TRAP_TILE: handle_trap,
 }
 
-
 def adventuring(dungeon_map: list[list[Any]], player_data: list[int | float | str]) -> (
         None | tuple[str, list[int]] | tuple[str, int]):
-    """
-    Основной игровой цикл исследования подземелья.
-
-    Управляет отображением карты, обработкой перемещения игрока, взаимодействием
-    с объектами и переходами между игровыми состояниями (бой, пауза, выход).
-
-    Args:
-        dungeon_map (list[list[Any]]): Двумерный массив, представляющий сетку карты.
-        player_data (list[int | float | str]): Список с данными и характеристиками игрока.
-
-    Returns:
-        Tuple[str, Any]: Кортеж, содержащий флаг состояния (события) и текущую позицию игрока или код возврата.
-    """
     while True:
         clear_display()
         show_dungeon_map(dungeon_map, player_data)
@@ -41,24 +27,36 @@ def adventuring(dungeon_map: list[list[Any]], player_data: list[int | float | st
             continue
 
         if command in MOVEMENT_COMMANDS:
+            old_pos = search_player_position(dungeon_map)
             new_position = movement_player(dungeon_map, command)
-            tile = dungeon_map[new_position[x_coord]][new_position[y_coord]]
-
-            if tile == WALL_TILE:
-                continue
-
-            handler = INTERACTIONS.get(tile)
-            if handler:
-                handler(dungeon_map, player_data, new_position)
-            elif tile == EXIT_TILE:
-                if handle_exit(player_data):
-                    return EXFILL, new_position
 
             if try_start_fight(dungeon_map, new_position):
                 return FIGHT, new_position
 
+            if new_position != old_pos:
+                move_enemies(dungeon_map)
 
-def fight(player_data: list[int | float | str]) -> bool | None:
+            enemy_pos = check_enemy_nearby(dungeon_map, new_position)
+            if enemy_pos:
+                return FIGHT, enemy_pos
+
+            tile = dungeon_map[new_position[0]][new_position[1]]
+
+            if tile == EXIT_TILE:
+                if handle_exit(player_data):
+                    return EXFILL, new_position
+
+            handler = INTERACTIONS.get(tile)
+            if handler:
+                old_p = search_player_position(dungeon_map)
+                dungeon_map[old_p[0]][old_p[1]] = FLOOR_TILE
+
+                handler(dungeon_map, player_data, new_position)
+
+                dungeon_map[new_position[0]][new_position[1]] = PLAYER_TILE
+
+
+def fight(player_data: list[int | float | str]) -> None | tuple[bool, list] | bool:
     """
     Управляет процессом пошагового боя между игроком и противником.
 
@@ -95,7 +93,7 @@ def fight(player_data: list[int | float | str]) -> bool | None:
         if enemy_data[ENTITY_HP] <= 0:
             draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
             enemy_defeated_message(enemy_data)
-            return True
+            return True, enemy_data
 
         draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
 
@@ -113,14 +111,16 @@ def fight(player_data: list[int | float | str]) -> bool | None:
                 combat_log.append(execute_player_attack(player_data, enemy_data))
                 current_turn = "enemy"
             elif action == 'd':
-                dodge_active = True
-                combat_log.append("Evasive maneuvers active. Dodge chance UP.")
-                current_turn = "enemy"
+                if dodge_active:
+                    combat_log.append("Evasive maneuvers already active!")
+                    continue
+                else:
+                    dodge_active = True
+                    combat_log.append("Evasive maneuvers active. Dodge chance UP.")
+                    continue
 
             else:
                 continue
-
-            time.sleep(0.4)
 
         else:
             time.sleep(1)
@@ -345,3 +345,11 @@ def load_game():
         print(f"{RED_TEXT_BRIGHT}[ ERROR: WRONG INDEX ]{RESET}")
 
     return None
+
+
+def calculate_sp_reward(enemy_data: list) -> int:
+    base_sp = 5
+    power_bonus = int(enemy_data[ENTITY_HP] * 0.1)
+    initiative_bonus = int(enemy_data[ENTITY_INITIATIVE] * 0.1)
+
+    return base_sp + power_bonus + initiative_bonus

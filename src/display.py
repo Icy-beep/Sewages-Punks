@@ -613,6 +613,8 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
     Returns:
         None: Функция выполняет прямой вывод сформированного интерфейса в консоль.
     """
+    log_height = 6
+
     os.system('cls' if os.name == 'nt' else 'clear')
 
     status = "OPERATOR_ACTION" if turn == "player" else "ENEMY_PHASE"
@@ -637,6 +639,7 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
     stats = [
         f"USER_VITALS:   [{p_bar}] {player[ENTITY_HP]:>3}/100 HP",
         f"INTOXICATION:  [{t_bar}] {player[ENTITY_TOXICITY]:>3}/4 TOX",
+        f"DATA_SHARDS:   {player[PLAYER_SKILL_POINTS]} DS",
         "————————————————————————————————————————",
         f"TARGET_LINK:   [{e_bar}] {enemy[ENTITY_HP]:>3}/100 HP ({enemy[ENTITY_NAME]})"
     ]
@@ -646,9 +649,13 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
         print(f"{l}{' ' * (30 - clean_len(l))}{r}")
 
     print(f"\n{MAGENTA_TEXT_BRIGHT}LOG_SYSTEM:{RESET}")
-    display_log = (logs[-3:] + [""] * 3)[:3]
+    display_log = logs[-log_height:]
+    while len(display_log) < log_height:
+        display_log.append("")
+
     for line in display_log:
-        print(f" > {line}")
+        prefix = " > " if line else " >"
+        print(f"{prefix}{line}")
 
     print(f"{LIGHT_BLUE_TEXT_BRIGHT}{'—' * 70}{RESET}")
     print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
@@ -812,7 +819,7 @@ def draw_main_menu() -> None:
 
         colored_desc = aligned_desc.replace("PSY", f"{c_red}PSY{c_reset}")
 
-        print(f"{indent}{c_main}[{key}]{c_reset} {colored_desc} {c_main}{info}{c_reset}")
+        print(f"{indent}{c_main}[ {key} ]{c_reset} {colored_desc} {c_main}{info}{c_reset}")
 
     print(f"\n{indent}{c_accent}___________________________________________________________________________{c_reset}")
 
