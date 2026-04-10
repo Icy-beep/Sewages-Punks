@@ -108,7 +108,8 @@
 </details>
 
 >[!TIP]
->[📥 Скачать .exe файл(Старая версия)](https://pixeldrain.com/u/uUn6ncTY)
+>[📥 Скачать .exe файл](https://pixeldrain.com/u/ArfuYE55)
 
 >[!TIP]
->[📥 Скачать .exe файл](https://pixeldrain.com/u/ArfuYE55)
+>[📥 Скачать .exe файл(Старая версия)](https://pixeldrain.com/u/uUn6ncTY)
+
