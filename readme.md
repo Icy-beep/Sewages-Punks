@@ -131,7 +131,7 @@
 ### 📥 Скачать
 
 >[!TIP]
->[📥 Скачать .exe файл(Стабильная версия)](https://pixeldrain.com/u/ArfuYE55)
+>[📥 Скачать .exe файл(Новейшая стабильная версия)](https://pixeldrain.com/u/RK7UAuWD)
 
 >[!TIP]
 >[📥 Скачать .exe файл(Старая версия)](https://pixeldrain.com/u/uUn6ncTY)
