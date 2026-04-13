@@ -641,7 +641,7 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
         f"INTOXICATION:  [{t_bar}] {player[ENTITY_TOXICITY]:>3}/4 TOX",
         f"DATA_SHARDS:   {player[PLAYER_SKILL_POINTS]} DS",
         "————————————————————————————————————————",
-        f"TARGET_LINK:   [{e_bar}] {enemy[ENTITY_HP]:>3}/100 HP ({enemy[ENTITY_NAME]})"
+        f"TARGET_VITALS:   [{e_bar}] {enemy[ENTITY_HP]:>3}/100 HP ({enemy[ENTITY_NAME]})"
     ]
 
     for i in range(max(len(legend), len(stats))):
