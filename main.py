@@ -67,10 +67,11 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
     Returns:
         str: Код завершения цикла (например, GAME_OVER или EXIT_TO_MAIN_MENU).
     """
-    is_fight: bool = False
-    game_loop_is_run: bool = True
-    exfill: bool = False
-    dungeon: list[list[int]] = first_dungeon
+    is_fight = False
+    game_loop_is_run = True
+    exfill = False
+    dungeon = first_dungeon
+    new_position = None
 
     while game_loop_is_run:
         while not is_fight:
@@ -97,7 +98,7 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             player_data[PLAYER_SKILL_POINTS] += sp_gain
 
         if player_data[ENTITY_HP] <= 0:
-            art: str = game_over()
+            art = game_over()
             flush_input()
             clear_display()
             slow_print(art, 0.01)

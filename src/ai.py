@@ -2,10 +2,29 @@ from collections import deque
 from src.constants import *
 
 
-def get_path_to_target(start, target_tiles, dungeon_map, occupied_targets):
+def get_path_to_target(start: list[int], target_tiles: list[int], dungeon_map: list[list[int]], occupied_targets: list[int]):
+    """
+        Находит кратчайший путь к ближайшей доступной целевой клетке с помощью алгоритма BFS.
+
+        Функция сканирует карту подземелья, начиная от стартовой позиции, в поиске клеток,
+        типы которых указаны в target_tiles. При этом игнорируются цели, координаты которых
+        уже содержатся в списке occupied_targets.
+
+        Args:
+            start (list[int]): Координаты начала поиска [x, y].
+            target_tiles (list[int]): Список ID тайлов, которые считаются целью (например, [EXIT, GOLD]).
+            dungeon_map (list[list[int]]): Двумерный массив (сетка), представляющий карту подземелья.
+            occupied_targets (list[int]): Список координат [x, y] целей, которые уже заняты другими агентами.
+
+        Returns:
+            tuple[list[int], list[int]] | None: Кортеж, где:
+                - Первый элемент: координаты следующего шага [nx, ny] для достижения цели.
+                - Второй элемент: координаты самой найденной цели [tx, ty].
+                Возвращает None, если путь не найден или если персонаж уже стоит на цели.
+    """
     rows = len(dungeon_map)
     cols = len(dungeon_map[0])
-    queue = deque([(start, [])])
+    queue = deque([(tuple(start), [])])
     visited = {tuple(start)}
 
     while queue:
@@ -18,7 +37,7 @@ def get_path_to_target(start, target_tiles, dungeon_map, occupied_targets):
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nx, ny = curr_x + dx, curr_y + dy
 
-            if (0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited):
+            if 0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited:
                 tile = dungeon_map[nx][ny]
 
                 if tile == FLOOR_TILE or tile in target_tiles:
@@ -27,13 +46,34 @@ def get_path_to_target(start, target_tiles, dungeon_map, occupied_targets):
     return None
 
 
-def move_enemies(dungeon_map):
-    """Двигает всех врагов к ближайшим СВОБОДНЫМ сундукам/ключам."""
+def move_enemies(dungeon_map: list[list[int]]):
+    """
+    Управляет перемещением всех врагов на карте к ближайшим доступным целям.
+
+    Функция сканирует карту для поиска всех врагов (ENEMY_TILE). Для каждого найденного
+    врага вычисляется кратчайший путь к ближайшему сундуку (CHEST_TILE) или ключу (KEY_TILE).
+    Чтобы враги не шли к одной и той же цели, используется список 'occupied_targets'.
+    Если путь найден и следующая клетка свободна (FLOOR_TILE), враг перемещается.
+
+    Логика работы:
+    1. Собирает координаты всех врагов на текущем шаге.
+    2. Для каждого врага ищет путь к ближайшей незанятой цели.
+    3. Резервирует конечную цель, чтобы другие враги её игнорировали.
+    4. Обновляет сетку 'dungeon_map', перемещая символ врага на одну клетку.
+
+    Args:
+        dungeon_map (list[list[int]]): Двумерный массив, представляющий игровую карту.
+            Модифицируется на месте при перемещении врагов.
+
+    Note:
+        Враги перемещаются только на клетки с типом FLOOR_TILE. Если путь к цели
+        заблокирован другим врагом или препятствием, текущий враг останется на месте.
+    """
     enemies = []
-    for r in range(len(dungeon_map)):
-        for c in range(len(dungeon_map[r])):
-            if dungeon_map[r][c] == ENEMY_TILE:
-                enemies.append((r, c))
+    for x in range(len(dungeon_map)):
+        for y in range(len(dungeon_map[x])):
+            if dungeon_map[x][y] == ENEMY_TILE:
+                enemies.append((x, y))
 
     targets = [CHEST_TILE, KEY_TILE]
     occupied_targets = []
@@ -52,8 +92,21 @@ def move_enemies(dungeon_map):
                 dungeon_map[nx][ny] = ENEMY_TILE
 
 
-def check_enemy_nearby(dungeon_map, pos):
-    """Ищет врага в соседних клетках и возвращает его координаты."""
+def check_enemy_nearby(dungeon_map: list[list[int]], pos: list[int]) -> list[int] | None:
+    """
+    Проверяет наличие врага в четырёх соседних клетках от заданной позиции.
+
+    Функция сканирует клетки сверху, снизу, слева и справа от указанной точки.
+    Если в одной из них обнаружен тайл врага (ENEMY_TILE), возвращаются его координаты.
+
+    Args:
+        dungeon_map (list[list[int]]): Двумерный массив, представляющий карту подземелья.
+        pos (list[int]): Координаты центральной точки (x, y) для проверки.
+
+    Returns:
+        list[int] | None: Координаты первого найденного врага [nx, ny] или None,
+            если врагов в соседних клетках нет.
+    """
     x, y = pos
     for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
         nx, ny = x + dx, y + dy
