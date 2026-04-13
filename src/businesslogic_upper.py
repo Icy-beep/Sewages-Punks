@@ -112,6 +112,7 @@ def handle_trap(location: list[list[int]], player_data: list, position: list[int
         user_input: str = input('>>').strip()
 
         if user_input not in TRAP_COMMANDS:
+            clear_display()
             continue
 
         if user_input == '1':
