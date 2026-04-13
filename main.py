@@ -1,6 +1,7 @@
 # (c) 2026 Safonov Nikita Sergeevich
 # Project: Sewages & Punks
 
+from src.audio_manager import init_audio, play_theme, stop_audio
 from src.core import *
 from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
@@ -18,6 +19,8 @@ def main_menu() -> dict | tuple[list, list] | None:
             Кортеж (карта, игрок) для новой игры,
             результат load_game() - словарь с data игрока и подземелья.
     """
+    play_theme(MENU_INTRO, MENU_LOOP)
+
     in_main_menu: bool = True
     player_nick: str = 'Operator'
 
@@ -67,6 +70,8 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
     Returns:
         str: Код завершения цикла (например, GAME_OVER или EXIT_TO_MAIN_MENU).
     """
+    play_theme(GAME_LOOP, fade_ms=1500)
+
     is_fight = False
     game_loop_is_run = True
     exfill = False
@@ -98,6 +103,7 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             player_data[PLAYER_SKILL_POINTS] += sp_gain
 
         if player_data[ENTITY_HP] <= 0:
+            stop_audio(500)
             art = game_over()
             flush_input()
             clear_display()
@@ -114,6 +120,8 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
 
 
 if __name__ == '__main__':
+    init_audio()
+
     game_is_run: bool = True
     start_message_already_show: bool = False
 
@@ -137,6 +145,7 @@ if __name__ == '__main__':
             print(skip_message())
             skip: str = input('>>').lower()
             if skip in SKIP_PROLOGUE_COMMANDS_NO:
+                play_theme(GAME_INTRO, fade_ms=1500)
                 clear_display()
                 start_message()
                 flush_input()
