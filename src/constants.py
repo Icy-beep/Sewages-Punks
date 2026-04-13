@@ -114,3 +114,9 @@ GAME_OVER = "GAME_OVER"
 SAVE_DIR = "saves"
 SAVE_PATH = "saves/"
 DEFAULT_SAVE_NAME = "savegame"
+
+# --- МУЗЫКА ---
+MENU_INTRO = "audio/main_menu_intro.mp3"
+MENU_LOOP = "audio/main_menu_loop.mp3"
+GAME_INTRO = "audio/intro_music.mp3"
+GAME_LOOP = "audio/gameplay_music_loop.mp3"
