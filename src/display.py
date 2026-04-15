@@ -5,6 +5,7 @@ import random
 import msvcrt
 import winsound
 import re
+from typing import Any
 from src.constants import *
 
 
@@ -188,7 +189,7 @@ def blood_pressure_failure() -> None:
     Returns:
         None: Функция выполняет прямой вывод в консоль и управление системным динамиком.
     """
-    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[BIOSENSOR] : Monitoring arterial pressure...{RESET}")
+    slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[ BIOSENSOR ] : Monitoring arterial pressure...{RESET}")
 
     sys_p: int = 90
     dia_p: int = 60
@@ -592,7 +593,7 @@ def clean_len(text: str) -> int:
     return len(re.sub(r'\x1b\[[0-9;]*m', '', text))
 
 
-def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str], turn: str) -> None:
+def draw_combat_interface(player: list, enemy: list, logs: list[str], turn: str) -> None:
     """
     Отрисовывает полный боевой интерфейс в стиле PSY-LINK терминала.
 
@@ -606,7 +607,6 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
     Args:
         player (list): Список характеристик игрока.
         enemy (list): Список характеристик текущего противника.
-        heals (int): Количество оставшихся зарядов лечения.
         logs (list[str]): История событий боя для вывода в LOG_SYSTEM.
         turn (str): Текущий ход ("player" или "enemy") для заголовка.
 
@@ -624,7 +624,7 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
     legend = [
         f"{LIGHT_BLUE_TEXT_BRIGHT}[ A ]{RESET} STRIKE_TARGET",
         f"{LIGHT_BLUE_TEXT_BRIGHT}[ D ]{RESET} EVASIVE_MANEUVER",
-        f"{LIGHT_BLUE_TEXT_BRIGHT}[ H ]{RESET} REGEN_PROTOCOL ({heals} left)",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[ H ]{RESET} USE_HEAL_INHALER ({player[PLAYER_ITEM_REGEN_INHALER]} left)",
         "",
     ]
 
@@ -659,6 +659,59 @@ def draw_combat_interface(player: list, enemy: list, heals: int, logs: list[str]
 
     print(f"{LIGHT_BLUE_TEXT_BRIGHT}{'—' * 70}{RESET}")
     print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
+
+
+def draw_inventory(player_data: list[Any], inventory_log: list[str]):
+    """
+    Отрисовывает инвентарь с ровными колонками.
+    """
+    _bar_width = 15
+
+    CMD_W = 20
+    LABEL_W = 14
+
+    def get_bar(current, maximum, color):
+        percent = max(0, min(current / maximum, 1))
+        filled = int(percent * _bar_width)
+        return f"[{color}{'█' * filled}{RESET}{'.' * (_bar_width - filled)}]"
+
+    # Шапка
+    print(f"\n{MAGENTA_TEXT_BRIGHT}PSY - LINK // INVENTORY MOD [STATUS: ACCESS_GRANTED]{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}{'.   ' * 13}.{RESET}\n")
+
+    hp_bar = get_bar(player_data[ENTITY_HP], 100, GREEN_TEXT_BRIGHT)
+    tox_bar = get_bar(player_data[ENTITY_TOXICITY], 4, WHITE_TEXT_BRIGHT)
+
+    hp_val = f"{int(player_data[ENTITY_HP])}/100 HP"
+    tox_val = f"{player_data[ENTITY_TOXICITY]}/4 TOX"
+
+    print(
+        f"[ {LIGHT_BLUE_TEXT_BRIGHT}R{RESET} ] {f'USE_HEAL_INHALER':<{CMD_W}} {f'USER_VITALS:':<{LABEL_W}} {hp_bar}  {hp_val}")
+    print(
+        f"[ {LIGHT_BLUE_TEXT_BRIGHT}I{RESET} ] {f'CLOSE_INVENTORY_MOD':<{CMD_W}} {f'INTOXICATION:':<{LABEL_W}} {tox_bar}  {tox_val}")
+
+    prefix = " " * 27
+
+    items = [
+        ("KEY_CARDS", player_data[PLAYER_ITEM_KEY]),
+        ("DEFUSAL_KITS", player_data[PLAYER_ITEM_DEFUSAL_KIT]),
+        ("REGEN_INHALERS", player_data[PLAYER_ITEM_REGEN_INHALER])
+    ]
+
+    for name, count in items:
+        print(f"{prefix}{name:<12} : {count:02} UNITS")
+
+    print(f"\n{MAGENTA_TEXT_BRIGHT}LOG_SYSTEM:{RESET}")
+    display_log = inventory_log[-5:]
+    while len(display_log) < 5:
+        display_log.insert(0, ">")
+
+    for entry in display_log:
+        print(f"{entry}")
+
+    line = f"{LIGHT_BLUE_TEXT_BRIGHT}{'-' * 65}{RESET}"
+    print(f"\n{line}")
+    print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED: {RESET}", end="", flush=True)
 
 
 def show_enemy_hp(enemy_data: list) -> None:
@@ -751,10 +804,16 @@ def loot_message(loot: int) -> None:
     Returns:
         None: Функция выполняет прямой вывод текста в консоль.
     """
-    if loot == ITEM_DEFUSAL_KIT:
+    if loot == ITEM_DETOX_INHALER:
+        print('New item: Detox inhaler.')
+
+    elif loot == ITEM_REGEN_INHALER:
+        print('New item: Regen inhaler.')
+
+    elif loot == ITEM_DEFUSAL_KIT:
         print('New item: Trap Disarming Kit.')
 
-    if loot == ITEM_NOTHING:
+    elif loot == ITEM_NOTHING:
         print('Search complete. Zero items found.')
 
 

@@ -6,7 +6,7 @@ Cleaned and organized version.
 # --- СИСТЕМНЫЕ НАСТРОЙКИ ---
 RESET = '\033[0m'
 ESC = b'\x1b'
-PAUSE = "PAUSE"
+I = b'\x69'
 HIDE_CURSOR = "\033[?25l"
 SHOW_CURSOR = "\033[?25h"
 
@@ -40,8 +40,12 @@ ENTITY_TOXICITY = 5
 PLAYER_ITEM_DEFUSAL_KIT = 6
 PLAYER_ITEM_KEY = 7
 PLAYER_SKILL_POINTS = 8
+PLAYER_ITEM_REGEN_INHALER = 9
+PLAYER_ITEM_DETOX_INHALER = 10
 
 # --- ИНДЕКСЫ ПРЕДМЕТОВ ---
+ITEM_DETOX_INHALER = 3
+ITEM_REGEN_INHALER = 2
 ITEM_DEFUSAL_KIT = 1
 ITEM_NOTHING = 0
 
@@ -93,13 +97,22 @@ SETTING_GAME_COMMANDS = ['s', 'save', 'save game', 'savegame']
 EXIT_GAME_COMMANDS = ['e', 'exit', 'exit game', 'exitgame']
 SKIP_PROLOGUE_COMMANDS_NO = ['no', 'n']
 
-
 # Внутри игровое меню
 RESUME = ['r', 'к']
 SAVE = ['s', 'ы']
 LOAD = ['l', 'д']
 QUIT_TO_MAIN_MENU = ['q', 'й']
 IN_GAME_MENU_COMMANDS = ['r', 'l', 's', 'q']
+PAUSE = "pause"
+
+# Константы для работы с инвентарём
+INVENTORY = "inventory"
+
+HEAL_FROM_INVENTORY = 'r'
+DETOX_FROM_INVENTORY = 'd'
+INVENTORY_ACTIONS = [HEAL_FROM_INVENTORY, DETOX_FROM_INVENTORY]
+EXIT_INVENTORY = ['inventory', 'i', 'inv', 'in', 'invent']
+INVENTORY_COMMANDS = [INVENTORY_ACTIONS, EXIT_INVENTORY]
 
 # --- СТАТУСЫ И СОСТОЯНИЯ ---
 FIGHT = 'is_fight'

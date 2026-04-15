@@ -20,6 +20,9 @@ def adventuring(dungeon_map: list[list[Any]], player_data: list[int | float | st
 
         command = get_user_command()
 
+        if command == INVENTORY:
+            handle_inventory_menu(player_data)
+
         if command == PAUSE:
             status = handle_pause_menu(player_data, dungeon_map)
             if status == RETURN_TO_MAIN_MENU:
@@ -72,7 +75,6 @@ def fight(player_data: list[int | float | str]) -> None | tuple[bool, list] | bo
     """
     player_data[ENTITY_TOXICITY] = 0
     enemy_data = create_enemy()
-    heals_left = 4
     dodge_active = False
     combat_log = ["Connection established.", f"Target: {enemy_data[ENTITY_NAME]} detected."]
 
@@ -91,20 +93,20 @@ def fight(player_data: list[int | float | str]) -> None | tuple[bool, list] | bo
             return False, enemy_data
 
         if enemy_data[ENTITY_HP] <= 0:
-            draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
+            draw_combat_interface(player_data, enemy_data, combat_log, current_turn)
             enemy_defeated_message(enemy_data)
             return True, enemy_data
 
-        draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
+        draw_combat_interface(player_data, enemy_data, combat_log, current_turn)
 
         if current_turn == "player":
             action = input().lower()
 
             if action == 'h':
-                msg, success = execute_player_heal(player_data, heals_left)
+                msg, success = execute_player_heal(player_data)
                 combat_log.append(msg)
                 if success:
-                    heals_left -= 1
+                    player_data[PLAYER_ITEM_REGEN_INHALER] -= 1
                 continue
 
             elif action == 'a':
@@ -164,6 +166,84 @@ def handle_pause_menu(player_data: list[int | float | str], dungeon_map: list[li
             print(f"    {RED_TEXT_BRIGHT}INVALID COMMAND. RE-ENTER.{RESET}")
 
 
+def handle_inventory_menu(player_data: list[int | float | str]):
+    """
+    Отображает инвентарь и характеристики игрока.
+    """
+    inventory_log = [
+        f"> {LIGHT_BLUE_TEXT_BRIGHT}Connection established.{RESET}",
+        f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: {LIGHT_BLUE_TEXT_BRIGHT}ACTIVE.{RESET}"
+    ]
+
+    needs_status_check = True
+
+    while True:
+        if needs_status_check:
+            if player_data[ENTITY_HP] < 20:
+                msg = f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: {RED_TEXT_BRIGHT}VITALS CRITICAL!{RESET}"
+            elif player_data[ENTITY_HP] <= 43:
+                msg = f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: {MAGENTA_TEXT_BRIGHT}Vitals low{RESET}"
+            elif player_data[ENTITY_HP] >= 50:
+                msg = f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: Vitals stabilized{RESET}"
+            elif player_data[ENTITY_HP] >= 70:
+                msg = f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: Vitals high{RESET}"
+            else:
+                msg = None
+
+            if msg and (not inventory_log or inventory_log[-1] != msg):
+                inventory_log.append(msg)
+
+            if player_data[ENTITY_TOXICITY] >= 3:
+                msg_tox = f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: {RED_TEXT_BRIGHT}Very high toxicity!{RESET}"
+            elif player_data[ENTITY_TOXICITY] >= 2:
+                msg_tox = f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: {MAGENTA_TEXT_BRIGHT}Toxicity high.{RESET}"
+            else:
+                msg_tox = None
+
+            if msg_tox and (not inventory_log or inventory_log[-1] != msg_tox):
+                inventory_log.append(msg_tox)
+
+            needs_status_check = False
+
+        clear_display()
+        draw_inventory(player_data, inventory_log)
+
+        choice = input(f"\n    {MAGENTA_TEXT_BRIGHT}> {RESET}").lower().strip()
+
+        if not choice or (choice not in INVENTORY_ACTIONS and choice not in EXIT_INVENTORY):
+            continue
+
+        if choice == DETOX_FROM_INVENTORY:
+            if player_data[PLAYER_ITEM_DETOX_INHALER] > 0:
+                if player_data[ENTITY_TOXICITY] > 0:
+                    player_data[PLAYER_ITEM_DETOX_INHALER] -= 1
+                    player_data[ENTITY_TOXICITY] = 0
+                    inventory_log.append(
+                        f"> {GREEN_TEXT_BRIGHT}BIOSENSORS: {LIGHT_BLUE_TEXT_BRIGHT}Toxins neutralized.{RESET}")
+                    needs_status_check = True
+                else:
+                    inventory_log.append(f"> {RED_TEXT_BRIGHT}BIOSENSORS: No toxins detected.{RESET}")
+            else:
+                inventory_log.append(f"> {RED_TEXT_BRIGHT}BIOSENSORS: No detox units found.{RESET}")
+            continue
+
+        if choice == HEAL_FROM_INVENTORY:
+            if player_data[PLAYER_ITEM_REGEN_INHALER] > 0:
+                msg, success = execute_player_heal(player_data)
+                if success:
+                    player_data[PLAYER_ITEM_REGEN_INHALER] -= 1
+                    inventory_log.append(f"> {msg}")
+                    needs_status_check = True
+                else:
+                    inventory_log.append(f"> {RED_TEXT_BRIGHT}BIOSENSORS: Vitals max level.{RESET}")
+            else:
+                inventory_log.append(f"> {RED_TEXT_BRIGHT}BIOSENSORS: No inhalers found.{RESET}")
+            continue
+
+        if choice in EXIT_INVENTORY:
+            break
+
+
 def execute_player_attack(player: list[Any], enemy: list[Any]) -> str:
     """
     Выполняет расчет и проведение атаки игрока по противнику.
@@ -187,7 +267,7 @@ def execute_player_attack(player: list[Any], enemy: list[Any]) -> str:
         return f"Strike successful. {dmg} damage dealt to {enemy[ENTITY_NAME]}."
 
 
-def execute_player_heal(player: list[Any], heals_left: int) -> Tuple[str, bool]:
+def execute_player_heal(player: list[Any]) -> Tuple[str, bool]:
     """
     Выполняет попытку восстановления здоровья игрока с использованием нанитов.
 
@@ -196,15 +276,14 @@ def execute_player_heal(player: list[Any], heals_left: int) -> Tuple[str, bool]:
 
     Args:
         player (list[str, Any]): Словарь с данными игрока (HP, токсичность).
-        heals_left (int): Текущее количество доступных зарядов лечения.
 
     Returns:
         Tuple[str, bool]: Кортеж, содержащий:
             - str: Сообщение о результате действия для лога.
             - bool: Статус успеха операции (True, если лечение применено).
     """
-    if heals_left <= 0:
-        return f"{RED_TEXT_BRIGHT}ERROR!{RESET} No nanites left.", False
+    if player[PLAYER_ITEM_REGEN_INHALER] <= 0:
+        return f"{RED_TEXT_BRIGHT}ERROR!{RESET} No inhaler uses left.", False
 
     player[ENTITY_HP] = min(100, player[ENTITY_HP] + 10)
     player[ENTITY_TOXICITY] += 1

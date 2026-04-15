@@ -181,6 +181,7 @@ def handle_exit(player_data: list) -> bool:
                         clear_display()
                         print(MESSAGES.exploration.card_reader_success)
                         enter_continue()
+                        player_data[PLAYER_ITEM_KEY] -= 1
                         return True
 
                     if choice == '2':
@@ -224,6 +225,12 @@ def handle_chest(location: list[list[int]], player_data: list, position: list[in
 
     if item == ITEM_DEFUSAL_KIT:
         player_data[PLAYER_ITEM_DEFUSAL_KIT] += 1
+
+    elif item == ITEM_REGEN_INHALER:
+        player_data[PLAYER_ITEM_REGEN_INHALER] += 1
+
+    elif item == ITEM_DETOX_INHALER:
+        player_data[PLAYER_ITEM_DETOX_INHALER] += 1
 
     enter_continue()
 
@@ -470,7 +477,7 @@ def open_chest() -> int:
     Returns:
         int: Идентификатор выпавшего предмета (0 или 1).
     """
-    item: int = random.randint(0, 1)
+    item: int = random.randint(0, 3)
 
     return item
 

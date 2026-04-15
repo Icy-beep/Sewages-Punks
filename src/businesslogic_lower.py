@@ -223,7 +223,7 @@ def get_user_command() -> str | None:
     Считывает нажатие клавиши пользователем без необходимости нажатия ENTER.
 
     Специфическая функция для Windows (msvcrt), которая перехватывает ввод.
-    Обрабатывает специальный код для клавиши ESC и декодирует байтовый ввод в строку.
+    Обрабатывает специальный код для клавиш и декодирует байтовый ввод в строку.
 
     Returns:
         str | None:
@@ -236,8 +236,10 @@ def get_user_command() -> str | None:
     while msvcrt.kbhit():
         msvcrt.getch()
 
-    if char == b'\x1b':
-        return "PAUSE"
+    if char == ESC:
+        return PAUSE
+    if char == I:
+        return INVENTORY
     try:
         return char.decode('utf-8').lower()
     except UnicodeDecodeError:
