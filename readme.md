@@ -134,10 +134,7 @@
 > **ВНИМАНИЕ!** В данный момент в .EXE файлах не работает музыка.
 
 >[!TIP]
->[📥 Скачать .exe файл(Новейшая стабильная версия)](https://pixeldrain.com/u/RK7UAuWD)
-
->[!TIP]
->[📥 Скачать .exe файл(Старая версия)](https://pixeldrain.com/u/uUn6ncTY)
+>[📥 Скачать .exe файл](https://pixeldrain.com/u/ED6T9wqK))
 
 
 ### 📄 Лицензия
