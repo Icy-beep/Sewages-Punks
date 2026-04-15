@@ -88,7 +88,7 @@ def fight(player_data: list[int | float | str]) -> None | tuple[bool, list] | bo
 
     while True:
         if player_data[ENTITY_HP] <= 0:
-            return False
+            return False, enemy_data
 
         if enemy_data[ENTITY_HP] <= 0:
             draw_combat_interface(player_data, enemy_data, heals_left, combat_log, current_turn)
