@@ -112,8 +112,8 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
             enter_continue()
             break
 
-        old_pos = search_player_position(dungeon)  # Находим, где он СЕЙЧАС
-        dungeon[old_pos[0]][old_pos[1]] = FLOOR_TILE  # Стираем его там
+        old_pos = search_player_position(dungeon)
+        dungeon[old_pos[0]][old_pos[1]] = FLOOR_TILE
         dungeon[new_position[0]][new_position[1]] = PLAYER_TILE
 
     return GAME_OVER
