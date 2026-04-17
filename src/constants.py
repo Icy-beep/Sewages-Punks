@@ -95,7 +95,7 @@ NEW_GAME_COMMANDS = ['n', 'new', 'new game', 'newgame']
 LOAD_GAME_COMMANDS = ['l', 'load', 'load game', 'loadgame']
 SETTING_GAME_COMMANDS = ['s', 'save', 'save game', 'savegame']
 EXIT_GAME_COMMANDS = ['e', 'exit', 'exit game', 'exitgame']
-SKIP_PROLOGUE_COMMANDS_NO = ['no', 'n']
+WATCH_PROLOGUE_COMMANDS = ['no', 'n']
 
 # Внутри игровое меню
 RESUME = ['r', 'к']

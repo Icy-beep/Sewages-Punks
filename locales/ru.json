@@ -1,0 +1,81 @@
+{
+  "menu.player_input": "\n{CYAN}[SYSTEM@{player_name}]:{RESET}",
+  "menu.decrypting_successful": "{GREEN}[РАСШИФРОВКА ЗАВЕРШЕНА: ОБЪЕКТ {main_char} ---> ВОССТАНОВЛЕН]{RESET}",
+  "menu.no_data_on_sector": "{RED}[ОШИБКА: НЕТ ДАННЫХ В СЕКТОРЕ{RESET}{CYAN} 0xxxx256]{RESET}",
+
+  "start_message.Initializing PSY-link": "{MAGENTA_TEXT_BRIGHT}[...] Инициализация синхронизации ПСИ-линка... {WHITE_TEXT_BRIGHT}OK{RESET}",
+  "start_message.Checking Elgeia's biometrics": "{MAGENTA_TEXT_BRIGHT}[...] Сканирование биометрических данных Элгеи... {WHITE_TEXT_BRIGHT}OK{RESET}",
+  "start_message.Langauge interpreter malfunctions": "{MAGENTA_TEXT_BRIGHT}{RED_TEXT_BRIGHT}[!] WARNING: Сбой языкового интерпретатора {RESET}",
+  "start_message.Default language set to": "{MAGENTA_TEXT_BRIGHT}{RED_TEXT_BRIGHT}[!] WARNING: Установлен язык по умолчанию: {random_language} {RESET}",
+
+
+  "settings.access_denied": "{CYAN}[ACCESS DENIED]{RESET}",
+  "settings.lang_select": "Select language / Выберите язык:\n[1] Русский\n[2] English\n> ",
+  "settings.lang_changed": "{GREEN}Language switched to: {lang_name}{RESET}",
+  "settings.fatal_error": "{RED}FATAL ERROR:{RESET} {CYAN}Settings module 'SYS_CONFIG_V.4.2' not found.",
+  "settings.encryption": "{CYAN}ENCRYPTION LEVEL:{RESET} {RED}MILITARY-GRADE (AES-512)",
+  "settings.status": "{CYAN}STATUS:{RESET} {CYAN}Operation suspended by Moon_City_Admin.",
+  "settings.reason": "{CYAN}REASON:{RESET} {CYAN}Illegal hardware signature {RED}[ID:██-███-VOID] {CYAN}detected.{RESET}",
+  "settings.admin_warning": "{RED} > > MOON_CITY_ADMIN: {RESET}",
+  "settings.press_enter": "{CYAN}Press [ENTER] to go back to the terminal...{RESET}",
+
+  "game.press_enter": "Press ENTER to proceed",
+  "game.disconnecting": "{RED}ОТКЛЮЧЕНИЕ{RESET}",
+  "game.skip_brief": "{CYAN}Посмотреть вступление?\n[ Y ] Да\n[ N ] Нет\n{RED}Нажмите любую клавишу, чтобы пропустить вступление.{RESET}",
+
+  "combat.encounter": "{CYAN}ENCOUNTER_LOG:{RESET} {enemy_name} has entered the sector.\n",
+  "combat.calculating_initiative": "{CYAN}Calculating initiative...{RESET}",
+  "combat.action_required": "{CYAN}ACTION_REQUIRED:{RESET}  >  ",
+  "combat.player_miss": "{RED}MISS!{RESET} Attack failed.",
+  "combat.player_hit": "Strike successful. {dmg} damage dealt to {enemy_name}.",
+  "combat.enemy_miss": "{enemy_name} {CYAN}MISSED{RESET} their attack.",
+  "combat.enemy_hit": "{enemy_name} struck for {RED}{dmg}{RESET} damage.",
+  "combat.target_eliminated": "{CYAN} > > > TARGET_ELIMINATED{RESET}",
+  "combat.extraction_success": "{CYAN} > > > STATUS:{RESET} SUCCESSFUL_EXTRACTION",
+
+  "inventory.title": "{CYAN}PSY-LINK // INVENTORY MOD [STATUS: ACCESS_GRANTED]{RESET}",
+  "inventory.heal_cmd": "[ {CYAN}R{RESET} ] USE_HEAL_INHALER ({count} left)",
+  "inventory.exit_cmd": "[ {CYAN}I{RESET} ] CLOSE_INVENTORY_MOD",
+  "inventory.no_inhaler": "{RED}BIOSENSORS: No inhalers found.{RESET}",
+  "inventory.vitals_max": "{RED}BIOSENSORS: Vitals max level.{RESET}",
+
+  "trap.detected": "There's a trap right in front of you.",
+  "trap.defuse": "Trap neutralized.",
+  "trap.no_kit": "Required tools not detected...",
+  "trap.evade": "You dashed through...",
+  "trap.damage": "Failed to evade. Damage taken: -5 HP",
+
+  "pause.title": "{CYAN}MOON CITY {RESET}// PSY_LINK_STATION [STATUS: PAUSED]",
+  "pause.resume": "{CYAN}[ R ]{RESET} RESUME_CONNECTION (Return to game)",
+  "pause.save": "{CYAN}[ S ]{RESET} SYNC_DATA (Save)",
+  "pause.load": "{CYAN}[ L ]{RESET} LOAD_LAST_FRAGMENT (Load)",
+  "pause.quit": "{CYAN}[ Q ]{RESET} DISCONNECT (Quit to main menu)",
+  "pause.waiting_input": "{CYAN}WAITING FOR INPUT... > {RESET}",
+
+  "save.as_prompt": "{CYAN}[ SAVE AS... ]{RESET}",
+  "save.input": "{CYAN} > > > {RESET}",
+  "save.success": "{GREEN}[ SYNCHRONIZE: {filename} WRITE SUCCESSFUL ]{RESET}",
+  "save.error": "{RED}[ SYNC INTERRUPTED: DATA LOSS DETECTED {error} ]{RESET}",
+
+  "load.title": "{CYAN}--- [ ACTIVE RESTORE POINTS ] ---{RESET}",
+  "load.choose": "{CYAN}CHOOSE THE INDEX  > {RESET}",
+  "load.error_none": "{RED}[ ERROR: DATA IS NONE IN THAT SECTOR ]{RESET}",
+  "load.error_index": "{RED}[ ERROR: WRONG INDEX ]{RESET}",
+  "load.success": "{GREEN}[ DATA OVERWRITTEN FROM RESTORE POINT ]{RESET}",
+
+  "game_over.mission_failed": "MISSION FAILED",
+  "game_over.critical_failure": "{RED}[!] CRITICAL HARDWARE FAILURE DETECTED [!]{RESET}",
+  "game_over.restore_attempt": "( Press [ENTER] to try restore PSY connect )",
+  "game_over.cannot_restore": "{CYAN}[SYSTEM]: PSY connect cannot be restored{RESET}",
+
+  "exploration.door_try": "You try open door",
+  "exploration.key_found": "You found a keycard",
+
+  "system.biosensor_critical": "{GREEN}BIOSENSORS: {RED}VITALS CRITICAL!{RESET}",
+  "system.biosensor_low": "{GREEN}BIOSENSORS: {CYAN}Vitals low{RESET}",
+  "system.biosensor_stable": "{GREEN}BIOSENSORS: Vitals stabilized{RESET}",
+  "system.toxicity_high": "{GREEN}BIOSENSORS: {RED}Very high toxicity!{RESET}",
+  "system.toxins_neutralized": "{GREEN}BIOSENSORS: {CYAN}Toxins neutralized.{RESET}",
+
+  "names.player_name": "Оператор"
+}

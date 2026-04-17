@@ -1,7 +1,6 @@
 from src.display import *
 from src.businesslogic_lower import *
 from src.entities import *
-from src.localization import MESSAGES
 
 def create_dungeon() -> list[list[int]]:
     """

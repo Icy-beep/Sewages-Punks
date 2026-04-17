@@ -7,6 +7,7 @@ import winsound
 import re
 from typing import Any
 from src.constants import *
+from src.i18n import *
 
 
 def flush_input() -> None:
@@ -35,12 +36,7 @@ def skip_message() -> str:
     Returns:
         str: Многострочная строка с форматированием ANSI-цветами.
     """
-    message: str = (
-        f'{LIGHT_BLUE_TEXT_BRIGHT}Skip the brief?\n'
-        f'[ Y ] Yes\n'
-        f'[ N ] No\n'
-        f'{RED_TEXT_BRIGHT}Any other key will skip the brief.{RESET}'
-    )
+    message: str = t("game.skip_brief")
 
     return message
 
@@ -81,10 +77,13 @@ def start_message() -> None:
     """
     print(f"{DARK_GRAY}" + "• " * 30 + f"{RESET}\n")
 
-    slow_print(f"{MAGENTA_TEXT_BRIGHT}[...] Initializing PSY-link synchronization... {WHITE_TEXT_BRIGHT}OK{RESET}", 0.05)
-    slow_print(f"{MAGENTA_TEXT_BRIGHT}[...] Checking Elgeia's biometrics... {WHITE_TEXT_BRIGHT}OK{RESET}", 0.05)
-    slow_print(f"{MAGENTA_TEXT_BRIGHT}{RED_TEXT_BRIGHT}[!] WARNING: Langauge interpreter malfunctions {RESET}", 0.05)
-    slow_print(f"{MAGENTA_TEXT_BRIGHT}{RED_TEXT_BRIGHT}[!] WARNING: Default language set to RUSSIAN {RESET}", 0.05)
+    slow_print(t("start_message.Initializing PSY-link"), 0.05)
+    slow_print(t("start_message.Checking Elgeia's biometrics"), 0.05)
+    slow_print(t("start_message.Langauge interpreter malfunctions"), 0.05)
+
+    _, lang_display_name = apply_random_system_language()
+
+    slow_print(t("start_message.Default language set to", random_language=lang_display_name), 0.05)
     print(f"{MAGENTA_TEXT_BRIGHT}" + "-" * 50 + f"{RESET}\n")
 
     slow_print(f"{LIGHT_BLUE_TEXT_BRIGHT}[SYSTEM@Elgeia]:#{WHITE_TEXT_BRIGHT} Оператор, приём. Коннект стабилен. Картинка обновляется.{RESET}")
@@ -948,7 +947,7 @@ def show_setting_stub() -> None:
     print(f"{c_main}-----------------------------------------------------------{c_reset}")
 
     flush_input()
-    input(f"\n{c_accent}Press [ENTER] to go back to the terminal...{c_reset}")
+    input(f"\n{c_accent}Press [ENTER] to continue...{c_reset}")
 
 
 def show_ingame_menu() -> None:

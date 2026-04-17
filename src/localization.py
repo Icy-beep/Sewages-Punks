@@ -1,3 +1,4 @@
+"""
 from types import SimpleNamespace
 from src.constants import *
 
@@ -33,3 +34,4 @@ MAIN_MENU = {
     'no_data_on_sector': RED_TEXT_BRIGHT + '[ERROR: NO DATA ON SECTOR' + RESET + MAGENTA_TEXT_BRIGHT + ' 0xxxx256]' + RESET
 
 }
+"""

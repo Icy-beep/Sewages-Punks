@@ -7,7 +7,7 @@ from pregen_levels.tutorial_level import create_tutorial_dungeon
 from src.display import draw_main_menu
 from src.constants import *
 from src.entities import create_default_player
-from src.localization import MAIN_MENU
+from src.i18n import *
 
 
 def main_menu() -> dict | tuple[list, list] | None:
@@ -22,14 +22,13 @@ def main_menu() -> dict | tuple[list, list] | None:
     play_theme(MENU_INTRO, MENU_LOOP)
 
     in_main_menu: bool = True
-    player_nick: str = 'Operator'
+    player_nick = t("names.player_name")
 
     while in_main_menu:
         clear_display()
         draw_main_menu()
 
-        prompt: str = MAIN_MENU['player_input'].format(PLAYER_NAME=player_nick)
-        choice: str = input(prompt).strip()
+        choice = input(t("menu.player_input", player_name=player_nick)).strip()
 
         if choice.lower() in NEW_GAME_COMMANDS:
             dungeon: list[list[int]] = create_tutorial_dungeon()
@@ -39,19 +38,26 @@ def main_menu() -> dict | tuple[list, list] | None:
         elif choice.lower() in LOAD_GAME_COMMANDS:
             saved_data: dict | None = load_game()
             if saved_data:
-                msg: str = MAIN_MENU['decrypting_successful'].format(
-                    MAIN_CHARACTER_NAME=MAIN_CHARACTER_NAME
-                )
+                msg: str = t("menu.decrypting_successful", main_char=MAIN_CHARACTER_NAME)
                 print(msg)
                 enter_continue()
                 return saved_data
             else:
-                print(MAIN_MENU['no_data_on_sector'])
+                print(t("menu.no_data_on_sector"))
                 enter_continue()
 
         elif choice.lower() in SETTING_GAME_COMMANDS:
             clear_display()
             show_setting_stub()
+            clear_display()
+            print(t("settings.lang_select"))
+            choice = input(">> ").strip()
+            if choice == "1":
+                set_language("ru")
+                print(t("settings.lang_changed", lang_name="Русский"))
+            elif choice == "2":
+                set_language("en")
+                print(t("settings.lang_changed", lang_name="English"))
 
         elif choice.lower() in EXIT_GAME_COMMANDS:
             return None
@@ -120,6 +126,7 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
 
 
 if __name__ == '__main__':
+    init("en")
     init_audio()
 
     game_is_run: bool = True
@@ -129,7 +136,7 @@ if __name__ == '__main__':
         result = main_menu()
 
         if result is None:
-            print(f"{RED_TEXT_BRIGHT}DISCONNECTING", end=" ")
+            print(t("game.disconnecting"), end=" ")
             waiting_animation(0.6)
             print(RESET)
             clear_display()
@@ -143,8 +150,8 @@ if __name__ == '__main__':
 
         if not start_message_already_show:
             print(skip_message())
-            skip: str = input('>>').lower()
-            if skip in SKIP_PROLOGUE_COMMANDS_NO:
+            watch_input: str = input('>>').lower()
+            if watch_input in WATCH_PROLOGUE_COMMANDS:
                 play_theme(GAME_INTRO, fade_ms=1500)
                 clear_display()
                 start_message()
