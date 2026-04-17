@@ -667,15 +667,14 @@ def draw_inventory(player_data: list[Any], inventory_log: list[str]):
     """
     _bar_width = 15
 
-    CMD_W = 20
-    LABEL_W = 14
+    cmd_w = 20
+    label_w = 14
 
     def get_bar(current, maximum, color):
         percent = max(0, min(current / maximum, 1))
         filled = int(percent * _bar_width)
         return f"[{color}{'█' * filled}{RESET}{'.' * (_bar_width - filled)}]"
 
-    # Шапка
     print(f"\n{MAGENTA_TEXT_BRIGHT}PSY - LINK // INVENTORY MOD [STATUS: ACCESS_GRANTED]{RESET}")
     print(f"{MAGENTA_TEXT_BRIGHT}{'.   ' * 13}.{RESET}\n")
 
@@ -686,16 +685,20 @@ def draw_inventory(player_data: list[Any], inventory_log: list[str]):
     tox_val = f"{player_data[ENTITY_TOXICITY]}/4 TOX"
 
     print(
-        f"[ {LIGHT_BLUE_TEXT_BRIGHT}R{RESET} ] {f'USE_HEAL_INHALER':<{CMD_W}} {f'USER_VITALS:':<{LABEL_W}} {hp_bar}  {hp_val}")
+        f"[ {LIGHT_BLUE_TEXT_BRIGHT}R{RESET} ] {f'USE_HEAL_INHALER':<{cmd_w}} {f'USER_VITALS:':<{label_w}} {hp_bar}  {hp_val}")
     print(
-        f"[ {LIGHT_BLUE_TEXT_BRIGHT}I{RESET} ] {f'CLOSE_INVENTORY_MOD':<{CMD_W}} {f'INTOXICATION:':<{LABEL_W}} {tox_bar}  {tox_val}")
+        f"[ {LIGHT_BLUE_TEXT_BRIGHT}D{RESET} ] {f'USE_DETOX_INHALER':<{cmd_w}}")
+    print(
+        f"[ {LIGHT_BLUE_TEXT_BRIGHT}I{RESET} ] {f'CLOSE_INVENTORY_MOD':<{cmd_w}} {f'INTOXICATION:':<{label_w}} {tox_bar}  {tox_val}")
 
     prefix = " " * 27
 
     items = [
         ("KEY_CARDS", player_data[PLAYER_ITEM_KEY]),
         ("DEFUSAL_KITS", player_data[PLAYER_ITEM_DEFUSAL_KIT]),
-        ("REGEN_INHALERS", player_data[PLAYER_ITEM_REGEN_INHALER])
+        ("REGEN_INHALERS", player_data[PLAYER_ITEM_REGEN_INHALER]),
+        ("DETOX_INHALERS", player_data[PLAYER_ITEM_DETOX_INHALER]),
+        ("DATA_SHARDS", player_data[PLAYER_SKILL_POINTS])
     ]
 
     for name, count in items:
