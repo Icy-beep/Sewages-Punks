@@ -17,6 +17,7 @@ y_coord = 1
 # --- ТАЙЛЫ И КАРТА ---
 PLAYER_TILE, ENEMY_TILE, EXIT_TILE, KEY_TILE = 0, 1, 2, 3
 CHEST_TILE, WALL_TILE, FLOOR_TILE, TRAP_TILE = 4, 5, 6, 7
+TERMINAL_TILE, TERMINAL_SYMBOL = 8, '▣'
 
 DUNGEON_HEIGHT = 11
 DUNGEON_WIDTH = 14
@@ -42,6 +43,14 @@ PLAYER_ITEM_KEY = 7
 PLAYER_SKILL_POINTS = 8
 PLAYER_ITEM_REGEN_INHALER = 9
 PLAYER_ITEM_DETOX_INHALER = 10
+# --- ПРОКАЧКА И НАВЫКИ ---
+PLAYER_LEVEL = 11        # Уровень персонажа
+PLAYER_XP = 12           # Текущий опыт
+PLAYER_XP_REQ = 13       # Сколько опыта нужно для след. уровня
+PLAYER_ENERGY = 14       # Текущая энергия (Мана)
+PLAYER_MAX_ENERGY = 15   # Максимальная энергия
+PLAYER_SKILLS = 16       # Список названий навыков (строки)
+PLAYER_MAX_HP = 17       # Максимум ХП
 
 # --- ИНДЕКСЫ ПРЕДМЕТОВ ---
 ITEM_DETOX_INHALER = 3
@@ -133,3 +142,94 @@ MENU_INTRO = "audio/main_menu_intro.mp3"
 MENU_LOOP = "audio/main_menu_loop.mp3"
 GAME_INTRO = "audio/intro_music.mp3"
 GAME_LOOP = "audio/gameplay_music_loop.mp3"
+
+# --- HACKING SYSTEM ---
+HACKING_SUCCESS_ZONES = 3  # Количество успешных попаданий для полного взлома
+HACKING_TOLERANCE = 2  # Допустимое отклонение от идеальной зоны
+
+# Типы взлома
+HACK_TIMING = "timing"
+HACK_SEQUENCE = "sequence"
+HACK_REACTION = "reaction"
+
+# --- БАЗА ДАННЫХ НАВЫКОВ ---
+# type: 'damage', 'heal', 'debuff'
+# fail_effect: что происходит при провале мини-игры
+SKILL_DATABASE = {
+    "NEURAL_SHOCK": {
+        "name": "NEURAL SHOCK",
+        "shard_cost": 20,
+        "energy_cost": 15,
+        "desc": "Взлом нейроимпланта врага",
+        "type": "damage",
+        "base_val": 25,
+        "fail_effect": "backfire", # Враг наносит урон игроку
+        "fail_val": 10
+    },
+    "SYSTEM_RESTORE": {
+        "name": "SYSTEM RESTORE",
+        "shard_cost": 30,
+        "energy_cost": 25,
+        "desc": "Аварийное восстановление HP",
+        "type": "heal",
+        "base_val": 30,
+        "fail_effect": "overload", # Игрок получает урон
+        "fail_val": 15
+    },
+    "OVERCLOCK": {
+        "name": "OVERCLOCK",
+        "shard_cost": 15,
+        "energy_cost": 10,
+        "desc": "Разгон атакующих систем",
+        "type": "buff",
+        "base_val": 15, # Бонус к урону на 1 ход
+        "fail_effect": "system_error", # Пропуск хода
+        "fail_val": 0
+    }
+}
+
+# Навыки-взломы
+HACK_SKILLS = {
+    "NEURAL_SHOCK": {
+        "name": "NEURAL SHOCK",
+        "shard_cost": 20,   # Цена покупки в терминале
+        "energy_cost": 15,  # Цена использования в бою (Энергия)
+        "desc": "Взлом нейроимпланта",
+        "hack_type": "timing", # Тип мини-игры
+        "stages": 3,
+        "success_damage": 25,
+        "partial_damage": 10,
+        "fail_damage": 0,
+        "fail_effect": "backfire", # Эффект при полном провале
+        "fail_value": 10     # Сила негативного эффекта (урон себе)
+    },
+    "SYSTEM_RESTORE": {
+        "name": "SYSTEM RESTORE",
+        "shard_cost": 30,
+        "energy_cost": 25,
+        "desc": "Аварийное восстановление HP",
+        "hack_type": "timing",
+        "stages": 4,
+        "success_heal": 35,
+        "partial_heal": 15,
+        "fail_heal": 5,
+        "fail_effect": "overload",
+        "fail_value": 10
+    },
+    "OVERCLOCK": {
+        "name": "OVERCLOCK",
+        "shard_cost": 15,
+        "energy_cost": 10,
+        "desc": "Разгон атакующих систем",
+        "hack_type": "reaction",
+        "stages": 5,
+        "success_bonus": 15,
+        "partial_bonus": 5,
+        "fail_bonus": 0,
+        "fail_effect": "skip_turn", # Пропуск хода
+        "fail_value": 0
+    }
+}
+
+# Команда на использование навыка
+SKILL_COMMAND = 'k'

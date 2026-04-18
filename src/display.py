@@ -366,6 +366,7 @@ def show_dungeon_map(dungeon: list[list[int]], player_data: list) -> None:
         f"{ENEMY_ICON}X {RESET}- ENEMY",
         f"{KEY_ICON}§ {RESET}- KEY CARD",
         f"{CHEST_ICON}$ {RESET}- LOOT",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}{TERMINAL_SYMBOL} {RESET}- TERMINAL ",
         f"{EXIT_ICON}Ω {RESET}- EXFILL",
         "",
         f"{WALL_ICON}█ {RESET}- WALL",
@@ -398,6 +399,8 @@ def show_dungeon_map(dungeon: list[list[int]], player_data: list) -> None:
                 print(WALL_ICON + '█' + RESET, end=' ')
             elif cell == 6:
                 print(FLOOR_ICON + '·' + RESET, end=' ')
+            elif cell == 8:
+                print(LIGHT_BLUE_TEXT_BRIGHT + TERMINAL_SYMBOL + RESET, end=' ')
             else:
                 print('  ', end='')
 
@@ -624,8 +627,8 @@ def draw_combat_interface(player: list, enemy: list, logs: list[str], turn: str)
     legend = [
         f"{LIGHT_BLUE_TEXT_BRIGHT}[ A ]{RESET} STRIKE_TARGET",
         f"{LIGHT_BLUE_TEXT_BRIGHT}[ D ]{RESET} EVASIVE_MANEUVER",
-        f"{LIGHT_BLUE_TEXT_BRIGHT}[ H ]{RESET} USE_HEAL_INHALER ({player[PLAYER_ITEM_REGEN_INHALER]} left)",
-        "",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[ H ]{RESET} USE_HEAL_INHALER",
+        f"{LIGHT_BLUE_TEXT_BRIGHT}[ K ]{RESET} HACK_PROTOCOL"
     ]
 
     def get_bar(curr, m, w, color):
@@ -636,12 +639,18 @@ def draw_combat_interface(player: list, enemy: list, logs: list[str], turn: str)
     t_bar = get_bar(player[ENTITY_TOXICITY], 4, 15, MAGENTA_TEXT_BRIGHT)
     e_bar = get_bar(enemy[ENTITY_HP], 100, 15, ENEMY_HP_FONT)
 
+    energy_percent = player[PLAYER_ENERGY] / player[PLAYER_MAX_ENERGY]
+    energy_fill = int(energy_percent * 15)
+    energy_bar = f"{LIGHT_BLUE_TEXT_BRIGHT}{'■' * energy_fill}{RESET}{'·' * (15 - energy_fill)}"
+
     stats = [
-        f"USER_VITALS:   [{p_bar}] {player[ENTITY_HP]:>3}/100 HP",
-        f"INTOXICATION:  [{t_bar}] {player[ENTITY_TOXICITY]:>3}/4 TOX",
-        f"DATA_SHARDS:   {player[PLAYER_SKILL_POINTS]} DS",
-        "————————————————————————————————————————",
-        f"TARGET_VITALS:   [{e_bar}] {enemy[ENTITY_HP]:>3}/100 HP ({enemy[ENTITY_NAME]})"
+        f"USER_VITALS:   [{p_bar}] {player[ENTITY_HP]: >3}/100 HP ",
+        f"PSY_ENERGY:    [{energy_bar}] {player[PLAYER_ENERGY]: >3}/{player[PLAYER_MAX_ENERGY]} PE",
+        f"INTOXICATION:  [{t_bar}] {player[ENTITY_TOXICITY]: >3}/4 TOX ",
+        f"DATA_SHARDS:   {player[PLAYER_SKILL_POINTS]} DS ",
+        f"LEVEL:         {player[PLAYER_LEVEL]} (XP: {player[PLAYER_XP]}/{player[PLAYER_XP_REQ]})",
+        "———————————————————————————————————————— ",
+        f"TARGET_VITALS:   [{e_bar}] {enemy[ENTITY_HP]: >3}/100 HP ({enemy[ENTITY_NAME]}) "
     ]
 
     for i in range(max(len(legend), len(stats))):
@@ -659,6 +668,19 @@ def draw_combat_interface(player: list, enemy: list, logs: list[str], turn: str)
 
     print(f"{LIGHT_BLUE_TEXT_BRIGHT}{'—' * 70}{RESET}")
     print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED:{RESET} > ", end="", flush=True)
+
+
+def draw_hacking_interface(skill_name: str, stage: int, total_stages: int) -> None:
+    """
+    Отрисовывает интерфейс взлома.
+    """
+    clear_display()
+    print(f"\n{MAGENTA_TEXT_BRIGHT}PSY-LINK // HACKING_PROTOCOL{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}Target: {skill_name}{RESET}")
+    print(f"{DARK_GRAY}{'—' * 60}{RESET}\n")
+
+    print(f"Progress: [{'█' * stage}{'░' * (total_stages - stage)}] {stage}/{total_stages}")
+    print()
 
 
 def draw_inventory(player_data: list[Any], inventory_log: list[str]):
@@ -993,3 +1015,56 @@ def show_ingame_menu() -> None:
     print(f"\n{c_main}    -------------------------------------------------------")
     print(f"    {c_accent}LOCATION: {c_reset}[NO DATA] // {c_accent}OS: {c_reset}MOON_CITY_OS_v.9")
     print(f"{c_main}    -------------------------------------------------------{c_reset}")
+
+
+def draw_hacking_screen(skill_name: str, zone_start: int, zone_end: int, cursor_pos: int) -> None:
+    """
+    Отрисовывает экран взлома.
+    """
+    clear_display()
+    print(f"\n{MAGENTA_TEXT_BRIGHT}PSY - LINK // HACKING_PROTOCOL{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}TARGET: {skill_name}{RESET}")
+    print(f"{DARK_GRAY}{'—' * 60}{RESET}\n")
+
+    print(f"{DARK_GRAY}Align the cursor with the GREEN ZONE and press [ SPACE ]{RESET}\n")
+
+    bar = ""
+    for i in range(50):
+        if zone_start <= i <= zone_end:
+            bar += f"{GREEN_TEXT_BRIGHT}█{RESET}"
+        elif i == cursor_pos:
+            bar += f"{RED_TEXT_BRIGHT}►{RESET}"
+        else:
+            bar += f"{DARK_GRAY}·{RESET}"
+
+    print(f"[{bar}]")
+
+
+def draw_terminal_menu(player_data: list) -> None:
+    """Отрисовывает интерфейс Black Market Terminal."""
+    clear_display()
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╔══════════════════════════════════════════╗{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}║   MOON_CITY_NET // BLACK_MARKET_NODE     ║{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╚══════════════════════════════════════════╝{RESET}\n")
+
+    shards = player_data[PLAYER_SKILL_POINTS]
+    print(f"{YELLOW_TEXT_BRIGHT}◉ DATA SHARDS BALANCE: {shards} DS{RESET}\n")
+    print(f"{MAGENTA_TEXT_BRIGHT}AVAILABLE AUGMENTATIONS:{RESET}")
+    print(f"{DARK_GRAY}{'─' * 42}{RESET}")
+
+    skills = list(SKILL_DATABASE.items())
+    for i, (skill_id, info) in enumerate(skills, 1):
+        owned = skill_id in player_data[PLAYER_SKILLS]
+        can_afford = shards >= info["shard_cost"]
+
+        status = f"{GREEN_TEXT_BRIGHT}[INSTALLED]{RESET}" if owned else \
+            f"{LIGHT_BLUE_TEXT_BRIGHT}[ {info['shard_cost']} DS ]{RESET}" if can_afford else \
+                f"{RED_TEXT_BRIGHT}[ {info['shard_cost']} DS ]{RESET}"
+
+        print(f"{LIGHT_BLUE_TEXT_BRIGHT} [{i}] {info['name']}{RESET}")
+        print(f"     {DARK_GRAY}> {info['desc']}{RESET}")
+        print(f"     Status: {status}\n")
+
+    print(f"{MAGENTA_TEXT_BRIGHT}[ 0 ] DISCONNECT & RETURN{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}{'─' * 42}{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED > {RESET}", end='', flush=True)

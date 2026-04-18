@@ -5,11 +5,6 @@ from src.businesslogic_upper import *
 from src.display import *
 from src.ai import *
 
-INTERACTIONS: Dict[Any, Callable[..., Any]] = {
-    CHEST_TILE: handle_chest,
-    KEY_TILE: handle_key_pickup,
-    TRAP_TILE: handle_trap,
-}
 
 def adventuring(dungeon_map: list[list[Any]], player_data: list[int | float | str]) -> (
         None | tuple[str, list[int]] | tuple[str, int]):
@@ -851,9 +846,106 @@ def load_game():
     return None
 
 
+def open_skill_shop(player_data: list) -> None:
+    clear_display()
+    print(f"\n{MAGENTA_TEXT_BRIGHT}PSY - LINK // DARKNET_MARKET{RESET}")
+    print(f"DATA SHARDS: {player_data[PLAYER_SKILL_POINTS]}")
+    print(f"{DARK_GRAY}{'—' * 60}{RESET}\n")
+
+    for name, info in SKILL_DATABASE.items():
+        is_owned = name in player_data[PLAYER_SKILLS]
+        status = "INSTALLED" if is_owned else f"BUY ({info['shard_cost']} DS)"
+        color = GREEN_TEXT_BRIGHT if is_owned else LIGHT_BLUE_TEXT_BRIGHT
+
+        print(f"[ {color}{name}{RESET} ]")
+        print(f"  {info['desc']}")
+        print(f"  Status: {status}\n")
+
+    print(f"[ 0 ] EXIT")
+    choice = input(f" > ")
+
+    if choice.isdigit() and int(choice) > 0:
+        skill_name = list(SKILL_DATABASE.keys())[int(choice) - 1]
+        info = SKILL_DATABASE[skill_name]
+
+        if skill_name in player_data[PLAYER_SKILLS]:
+            print("Already owned.")
+        elif player_data[PLAYER_SKILL_POINTS] >= info['shard_cost']:
+            player_data[PLAYER_SKILL_POINTS] -= info['shard_cost']
+            player_data[PLAYER_SKILLS].append(skill_name)
+            print(f"Installed: {skill_name}")
+        else:
+            print("Not enough shards.")
+
+        input("Press Enter...")
+
+
+def handle_terminal_interaction(dungeon_map: list[list[int]], player_data: list, pos: list[int]) -> None:
+    """Открывает магазин навыков при наступлении на терминал."""
+    while True:
+        draw_terminal_menu(player_data)
+        choice = input().strip()
+
+        if choice == '0':
+            return
+
+        try:
+            idx = int(choice) - 1
+            skills = list(SKILL_DATABASE.keys())
+            if 0 <= idx < len(skills):
+                skill_id = skills[idx]
+                info = SKILL_DATABASE[skill_id]
+
+                if skill_id in player_data[PLAYER_SKILLS]:
+                    print(f"\n{RED_TEXT_BRIGHT}[ERROR] PROGRAM ALREADY ACTIVE.{RESET}")
+                    time.sleep(1)
+                    continue
+
+                if player_data[PLAYER_SKILL_POINTS] >= info["shard_cost"]:
+                    player_data[PLAYER_SKILL_POINTS] -= info["shard_cost"]
+                    player_data[PLAYER_SKILLS].append(skill_id)
+                    print(f"\n{GREEN_TEXT_BRIGHT}[SUCCESS] {skill_id} DOWNLOADED & INSTALLED.{RESET}")
+                    time.sleep(1.5)
+                else:
+                    print(f"\n{RED_TEXT_BRIGHT}[ERROR] INSUFFICIENT DATA SHARDS.{RESET}")
+                    time.sleep(1)
+            else:
+                print(f"{RED_TEXT_BRIGHT}[ERROR] INVALID SELECTION.{RESET}")
+        except ValueError:
+            print(f"{RED_TEXT_BRIGHT}[ERROR] INPUT NOT RECOGNIZED.{RESET}")
+
+
+def gain_xp(player_data: list, amount: int) -> None:
+    """Начисляет опыт и проверяет повышение уровня."""
+    player_data[PLAYER_XP] += amount
+    print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}>> DATA UPLOADED: +{amount} XP{RESET}")
+    flush_input()
+    enter_continue()
+    if player_data[PLAYER_XP] >= player_data[PLAYER_XP_REQ]:
+        player_data[PLAYER_MAX_HP] += 10
+        player_data[PLAYER_MAX_ENERGY] += 5
+        player_data[ENTITY_HP] = player_data[PLAYER_MAX_HP]
+        player_data[PLAYER_ENERGY] = player_data[PLAYER_MAX_ENERGY]
+        player_data[PLAYER_XP] -= player_data[PLAYER_XP_REQ]
+        player_data[PLAYER_LEVEL] += 1
+        player_data[PLAYER_XP_REQ] = int(player_data[PLAYER_XP_REQ] * 1.5)
+        clear_display()
+        flush_input()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}*** BATTLE DATA DECODE: BATTLE LEVEL NOW = {player_data[PLAYER_LEVEL]} ***{RESET}")
+        enter_continue()
+
+
 def calculate_sp_reward(enemy_data: list) -> int:
     base_sp = 5
     power_bonus = int(enemy_data[ENTITY_HP] * 0.1)
     initiative_bonus = int(enemy_data[ENTITY_INITIATIVE] * 0.1)
 
     return base_sp + power_bonus + initiative_bonus
+
+
+INTERACTIONS: Dict[Any, Callable[..., Any]] = {
+    CHEST_TILE: handle_chest,
+    KEY_TILE: handle_key_pickup,
+    TRAP_TILE: handle_trap,
+    TERMINAL_TILE: handle_terminal_interaction
+}
