@@ -37,6 +37,9 @@ def create_dungeon() -> list[list[int]]:
                   forbidden={ENEMY_TILE, TRAP_TILE, CHEST_TILE},
                   behind_enemy=True)
 
+    spawn_objects(dungeon_map, TERMINAL_TILE, count=1,
+                  forbidden={ENEMY_TILE, TRAP_TILE, WALL_TILE})
+
     return dungeon_map
 
 
@@ -74,7 +77,8 @@ def movement_player(location: list[list[int]], command: str) -> list[int]:
 
     blocking_tiles: list[int] = [
         WALL_TILE, ENEMY_TILE, TRAP_TILE,
-        CHEST_TILE, KEY_TILE, EXIT_TILE
+        CHEST_TILE, KEY_TILE, EXIT_TILE,
+        TERMINAL_TILE
     ]
 
     if target_tile in blocking_tiles:

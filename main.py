@@ -101,6 +101,7 @@ def game_loop(player_data: list[int | float | str], first_dungeon: list[list[int
         if player_data[ENTITY_HP] > 0:
             sp_gain = calculate_sp_reward(enemy_data)
             player_data[PLAYER_SKILL_POINTS] += sp_gain
+            gain_xp(player_data, 40 + enemy_data[ENTITY_INITIATIVE])
 
         if player_data[ENTITY_HP] <= 0:
             stop_audio(500)

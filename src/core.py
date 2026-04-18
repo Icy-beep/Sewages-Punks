@@ -1,6 +1,6 @@
 import json
 import datetime
-from typing import Callable, Any, Tuple, Dict
+from typing import Callable, Tuple, Dict
 from src.businesslogic_upper import *
 from src.display import *
 from src.ai import *
@@ -114,18 +114,49 @@ def fight(player_data: list[int | float | str]) -> None | tuple[bool, list] | bo
                 current_turn = "enemy"
             elif action == 'd':
                 if dodge_active:
-                    combat_log.append("Evasive maneuvers already active!")
+                    combat_log.append(f"{RED_TEXT_BRIGHT}Evasive maneuvers already active!{RESET}")
                     continue
                 else:
                     dodge_active = True
                     combat_log.append("Evasive maneuvers active. Dodge chance UP.")
                     continue
+            elif action == 'k':
+                if not player_data[PLAYER_SKILLS]:
+                    combat_log.append(f"{RED_TEXT_BRIGHT}NO SKILLS INSTALLED!{RESET}")
+                    continue
+
+                clear_display()
+                print(f"\n{MAGENTA_TEXT_BRIGHT}SELECT SKILL:{RESET}")
+                for i, skill in enumerate(player_data[PLAYER_SKILLS], 1):
+                    print(f"  [{i}] {skill}")
+                print(f"  [0] CANCEL")
+
+                try:
+                    choice = input(f"\n{MAGENTA_TEXT_BRIGHT}> {RESET}").strip()
+
+                    if choice == '0':
+                        continue
+
+                    skill_index = int(choice) - 1
+
+                    if 0 <= skill_index < len(player_data[PLAYER_SKILLS]):
+                        selected_skill = player_data[PLAYER_SKILLS][skill_index]
+                        msg = execute_player_skill(player_data, enemy_data, selected_skill)
+                        combat_log.append(msg)
+                        current_turn = "enemy"
+                    else:
+                        combat_log.append(f"{RED_TEXT_BRIGHT}INVALID SELECTION!{RESET}")
+
+                except ValueError:
+                    combat_log.append(f"{RED_TEXT_BRIGHT}INVALID INPUT!{RESET}")
+
+                continue
 
             else:
                 continue
 
         else:
-            time.sleep(1)
+            time.sleep(0.4)
             orig_miss = enemy_data[ENTITY_MISS_CHANCE]
             if dodge_active:
                 enemy_data[ENTITY_MISS_CHANCE] += 0.4
