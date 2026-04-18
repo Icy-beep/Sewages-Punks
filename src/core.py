@@ -197,6 +197,400 @@ def handle_pause_menu(player_data: list[int | float | str], dungeon_map: list[li
             print(f"    {RED_TEXT_BRIGHT}INVALID COMMAND. RE-ENTER.{RESET}")
 
 
+def execute_player_skill(player: list, enemy: list, skill_id: str) -> str:
+    """
+    Выполняет активный навык через систему взлома.
+    """
+    if skill_id not in player[PLAYER_SKILLS]:
+        return f"{RED_TEXT_BRIGHT}ERROR: SKILL NOT INSTALLED.{RESET}"
+
+    if skill_id not in HACK_SKILLS:
+        return f"{RED_TEXT_BRIGHT}ERROR: UNKNOWN SKILL PROTOCOL.{RESET}"
+
+    skill_data = HACK_SKILLS[skill_id]
+
+    cost = skill_data["energy_cost"]
+
+    if player[PLAYER_ENERGY] < cost:
+        return f"{RED_TEXT_BRIGHT}ERROR: INSUFFICIENT PSY ENERGY (Need {cost}).{RESET}"
+
+    player[PLAYER_ENERGY] -= cost
+
+    full_success, message = hacking_mini_game(skill_id)
+
+    if skill_id == "NEURAL_SHOCK":
+        if full_success:
+            dmg = skill_data["success_damage"]
+        else:
+            dmg = skill_data["partial_damage"] if "partial" in message else skill_data["fail_damage"]
+
+        if dmg > 0:
+            enemy[ENTITY_HP] -= dmg
+            return f"{message}\n{LIGHT_BLUE_TEXT_BRIGHT}NEURAL_SHOCK: {dmg} damage inflicted.{RESET}"
+        else:
+            return apply_fail_effect(skill_data, player, enemy)
+
+    elif skill_id == "SYSTEM_RESTORE":
+        if full_success:
+            heal = skill_data["success_heal"]
+        else:
+            heal = skill_data["partial_heal"] if "partial" in message else skill_data["fail_heal"]
+
+        player[ENTITY_HP] = min(100, player[ENTITY_HP] + heal)
+
+        if heal <= skill_data["fail_heal"]:
+            return apply_fail_effect(skill_data, player, enemy)
+
+        return f"{message}\n{GREEN_TEXT_BRIGHT}SYSTEM_RESTORE: {heal} HP restored.{RESET}"
+
+    elif skill_id == "OVERCLOCK":
+        if full_success:
+            bonus = skill_data["success_bonus"]
+        else:
+            bonus = skill_data["partial_bonus"] if "partial" in message else skill_data["fail_bonus"]
+
+        player[ENTITY_DAMAGE] += bonus
+        dmg = randomise_damage(player[ENTITY_DAMAGE])
+        enemy[ENTITY_HP] -= dmg
+        player[ENTITY_DAMAGE] -= bonus
+
+        if bonus == 0:
+            return apply_fail_effect(skill_data, player, enemy)
+
+        return f"{message}\n{YELLOW_TEXT_BRIGHT}OVERCLOCK: Systems boosted. {dmg} damage.{RESET}"
+
+    return f"{message}\n{RED_TEXT_BRIGHT}Skill effect not implemented.{RESET}"
+
+
+def hacking_mini_game(skill_name: str) -> tuple[bool, str]:
+    """
+    Запускает мини-игру взлома для навыка.
+    Returns: (успех_полный, сообщение)
+    """
+    if skill_name not in HACK_SKILLS:
+        return False, "Unknown hack protocol."
+
+    skill_data = HACK_SKILLS[skill_name]
+    hack_type = skill_data["hack_type"]
+
+    clear_display()
+    print(f"\n{MAGENTA_TEXT_BRIGHT}PSY-LINK // HACKING_PROTOCOL_INITIATED{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}Target: {skill_name}{RESET}")
+    print(f"{DARK_GRAY}{'—' * 60}{RESET}\n")
+
+    time.sleep(1)
+
+    if hack_type == HACK_TIMING:
+        return timing_hack(skill_data)
+    elif hack_type == HACK_SEQUENCE:
+        return sequence_hack(skill_data)
+    elif hack_type == HACK_REACTION:
+        return reaction_hack(skill_data)
+
+    return False, "Hack protocol error."
+
+
+def timing_hack(skill_data: dict) -> tuple[bool, str]:
+    """
+    Мини-игра: нажатие в нужный момент.
+    Индикатор движется, игрок должен нажать ПРОБЕЛ в зелёной зоне.
+    """
+    stages = skill_data["stages"]
+    successful_hits = 0
+    bar_width = 40
+    zone_size = 8
+
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}BYPASSING FIREWALL...{RESET}")
+    print(f"{DARK_GRAY}Press SPACE when indicator is in GREEN zone{RESET}\n")
+
+    enter_continue()
+
+    for stage in range(1, stages + 1):
+        clear_display()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}FIREWALL LAYER {stage}/{stages}{RESET}")
+        print(f"{DARK_GRAY}{'—' * 60}{RESET}\n")
+
+
+        zone_start = random.randint(5, bar_width - zone_size - 5)
+        zone_end = zone_start + zone_size
+
+        position = 0
+        direction = 1
+        speed = 0.05 + (stage * 0.01)
+
+        print(f"Layer security: {'█' * stage}{'░' * (4 - stage)}\n")
+
+
+        while True:
+            sys.stdout.write('\r' + ' ' * (bar_width + 20) + '\r')
+
+            bar = ''
+            for i in range(bar_width):
+                if i == position:
+                    bar += f"{RED_TEXT_BRIGHT}►{RESET}"
+                elif zone_start <= i <= zone_end:
+                    bar += f"{GREEN_TEXT_BRIGHT}█{RESET}"
+                else:
+                    bar += f"{DARK_GRAY}·{RESET}"
+
+            sys.stdout.write(f"[{bar}]")
+            sys.stdout.flush()
+
+            if msvcrt.kbhit():
+                key = msvcrt.getch()
+                if key == b' ':
+                    if zone_start <= position <= zone_end:
+                        successful_hits += 1
+                        sys.stdout.write(f"\r{GREEN_TEXT_BRIGHT} ACCESS GRANTED! {RESET}\n")
+                        time.sleep(0.5)
+                    else:
+                        sys.stdout.write(f"\r{RED_TEXT_BRIGHT} ACCESS DENIED! {RESET}\n")
+                        time.sleep(0.5)
+                    break
+
+            position += direction
+            if position >= bar_width - 1 or position <= 0:
+                direction *= -1
+
+            time.sleep(speed)
+
+        sys.stdout.write('\n')
+        time.sleep(0.3)
+
+    success_rate = successful_hits / stages
+
+    if success_rate >= 0.7:
+        return True, f"Hack successful: {successful_hits}/{stages} layers breached."
+    elif success_rate >= 0.4:
+        return False, f"Partial success: {successful_hits}/{stages} layers breached."
+    else:
+        return False, f"Hack failed: {successful_hits}/{stages} layers breached."
+
+
+def sequence_hack(skill_data: dict) -> tuple[bool, str]:
+    """
+    Мини-игра: запоминание последовательности.
+    Показываем последовательность цифр/символов, игрок повторяет.
+    """
+    stages = skill_data["stages"]
+    sequence_length = 4
+    correct_inputs = 0
+
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}DECRYPTING SECURITY CODE...{RESET}")
+    print(f"{DARK_GRAY}Memorize and repeat the sequence{RESET}\n")
+
+    enter_continue()
+
+    for stage in range(1, stages + 1):
+        clear_display()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}ENCRYPTION LAYER {stage}/{stages}{RESET}\n")
+
+        sequence = [str(random.randint(0, 9)) for _ in range(sequence_length)]
+
+        print(f"{LIGHT_BLUE_TEXT_BRIGHT}Sequence:{RESET} ", end='', flush=True)
+        for num in sequence:
+            print(f"{GREEN_TEXT_BRIGHT}{num}{RESET} ", end='', flush=True)
+            time.sleep(0.4)
+
+        time.sleep(1)
+        clear_display()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}Layer {stage}/{stages}{RESET}")
+        print(f"{DARK_GRAY}Enter the sequence:{RESET} ", end='')
+
+        user_input = input().strip()
+
+        if user_input == ''.join(sequence):
+            correct_inputs += 1
+            print(f"{GREEN_TEXT_BRIGHT}Correct!{RESET}")
+        else:
+            print(f"{RED_TEXT_BRIGHT}Incorrect!{RESET} Expected: {''.join(sequence)}")
+
+        time.sleep(1)
+        sequence_length += 1
+
+    success_rate = correct_inputs / stages
+
+    if success_rate >= 0.7:
+        return True, f"Decryption complete: {correct_inputs}/{stages} correct."
+    elif success_rate >= 0.4:
+        return False, f"Partial decryption: {correct_inputs}/{stages} correct."
+    else:
+        return False, f"Decryption failed: {correct_inputs}/{stages} correct."
+
+
+def reaction_hack(skill_data: dict) -> tuple[bool, str]:
+    """
+    Мини-игра: реакция.
+    Нажать клавишу когда появится сигнал.
+    """
+    stages = skill_data["stages"]
+    successful_reactions = 0
+
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}SYSTEM OVERCLOCK PROTOCOL{RESET}")
+    print(f"{DARK_GRAY}Press SPACE when you see [SIGNAL]{RESET}\n")
+
+    enter_continue()
+
+    for stage in range(1, stages + 1):
+        clear_display()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}PULSE SYNC {stage}/{stages}{RESET}\n")
+        delay = random.uniform(1.0, 3.0)
+        time.sleep(delay)
+
+        start_time = time.time()
+
+        clear_display()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}PULSE SYNC {stage}/{stages}{RESET}\n")
+        print(f"{GREEN_TEXT_BRIGHT}[SIGNAL]{RESET}")
+        print(f"{DARK_GRAY}PRESS SPACE NOW!{RESET}")
+
+        while True:
+            if msvcrt.kbhit():
+                key = msvcrt.getch()
+                if key == b' ':
+                    reaction_time = (time.time() - start_time) * 1000
+
+                    if reaction_time < 300:
+                        successful_reactions += 1
+                        print(f"\n{GREEN_TEXT_BRIGHT}PERFECT! {reaction_time:.0f}ms{RESET}")
+                    elif reaction_time < 500:
+                        successful_reactions += 0.5
+                        print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}GOOD! {reaction_time:.0f}ms{RESET}")
+                    else:
+                        print(f"\n{RED_TEXT_BRIGHT}TOO SLOW! {reaction_time:.0f}ms{RESET}")
+                    break
+
+            if time.time() - start_time > 1.0:
+                print(f"\n{RED_TEXT_BRIGHT}TIMEOUT!{RESET}")
+                break
+
+        time.sleep(1)
+
+    success_rate = successful_reactions / stages
+
+    if success_rate >= 0.7:
+        return True, f"Sync complete: {successful_reactions:.0f}/{stages} successful."
+    elif success_rate >= 0.4:
+        return False, f"Partial sync: {successful_reactions:.0f}/{stages} successful."
+    else:
+        return False, f"Sync failed: {successful_reactions:.0f}/{stages} successful."
+
+
+def run_timing_hack(stages: int = 3) -> str:
+    """Мини-игра: нажатие ПРОБЕЛА в зелёной зоне."""
+    import msvcrt
+    bar_width = 40
+    zone_size = 8
+    hits = 0
+
+    clear_display()
+    print(f"\n{LIGHT_BLUE_TEXT_BRIGHT}INITIATING HACK PROTOCOL...{RESET}")
+    time.sleep(0.8)
+
+    for stage in range(1, stages + 1):
+        clear_display()
+        print(f"\n{MAGENTA_TEXT_BRIGHT}FIREWALL LAYER {stage}/{stages}{RESET}")
+        print(f"{DARK_GRAY}Press [SPACE] when cursor is in GREEN zone{RESET}\n")
+
+        zone_start = random.randint(5, bar_width - zone_size - 5)
+        zone_end = zone_start + zone_size
+        pos = 0
+        direction = 1
+        speed = 0.04 + (stage * 0.01)
+
+        while True:
+            sys.stdout.write('\r' + ' ' * (bar_width + 10) + '\r')
+            bar = ''
+            for i in range(bar_width):
+                if i == pos:
+                    bar += f"{RED_TEXT_BRIGHT}►{RESET}"
+                elif zone_start <= i <= zone_end:
+                    bar += f"{GREEN_TEXT_BRIGHT}█{RESET}"
+                else:
+                    bar += f"{DARK_GRAY}·{RESET}"
+            sys.stdout.write(f"[{bar}]")
+            sys.stdout.flush()
+
+            if msvcrt.kbhit() and msvcrt.getch() == b' ':
+                if zone_start <= pos <= zone_end: hits += 1
+                break
+
+            pos += direction
+            if pos >= bar_width - 1 or pos <= 0: direction *= -1
+            time.sleep(speed)
+        time.sleep(0.4)
+
+    success_rate = hits / stages
+    if success_rate >= 0.7: return "success"
+    if success_rate >= 0.4: return "partial"
+    return "fail"
+
+
+def apply_fail_effect(skill_data: dict, player: list, enemy: list) -> str:
+    """
+    Обрабатывает негативные последствия провала мини-игры.
+    """
+    fail_effect = skill_data.get("fail_effect", "none")
+    fail_value = skill_data.get("fail_value", 0)
+
+    if fail_effect == "backfire":
+        player[ENTITY_HP] -= fail_value
+        return f"{RED_TEXT_BRIGHT}HACK FAILED! NEURAL FEEDBACK! {fail_value} DMG taken.{RESET}"
+
+    elif fail_effect == "overload":
+        player[ENTITY_HP] -= fail_value
+        return f"{RED_TEXT_BRIGHT}HACK FAILED! SYSTEM OVERLOAD! {fail_value} DMG taken.{RESET}"
+
+    elif fail_effect == "skip_turn":
+        return f"{RED_TEXT_BRIGHT}HACK FAILED! SYSTEM CRASH. TURN ENDED.{RESET}"
+
+    else:
+        return f"{RED_TEXT_BRIGHT}HACK FAILED. Signal lost.{RESET}"
+
+
+def apply_skill_effect(skill_name: str, db: dict, result: str, player: list, enemy: list) -> str | None:
+    """
+    Применяет эффект в зависимости от результата мини-игры.
+    """
+    base_val = db['base_val']
+
+    if result == 'success':
+        if db['type'] == 'damage':
+            enemy[ENTITY_HP] -= base_val
+            return f"{GREEN_TEXT_BRIGHT}HACK SUCCESSFUL! {base_val} DMG dealt via {skill_name}.{RESET}"
+        elif db['type'] == 'heal':
+            player[ENTITY_HP] = min(100, player[ENTITY_HP] + base_val)
+            return f"{GREEN_TEXT_BRIGHT}HACK SUCCESSFUL! {base_val} HP restored.{RESET}"
+        elif db['type'] == 'buff':
+            player[ENTITY_DAMAGE] += base_val
+            return f"{GREEN_TEXT_BRIGHT}SYSTEM OVERCLOCKED! +{base_val} DMG this turn.{RESET}"
+        return None
+
+    elif result == 'partial':
+        half_val = base_val // 2
+        if db['type'] == 'damage':
+            enemy[ENTITY_HP] -= half_val
+            return f"{YELLOW_TEXT_BRIGHT}PARTIAL SUCCESS. {half_val} DMG dealt.{RESET}"
+        elif db['type'] == 'heal':
+            player[ENTITY_HP] = min(100, player[ENTITY_HP] + half_val)
+            return f"{YELLOW_TEXT_BRIGHT}PARTIAL SUCCESS. {half_val} HP restored.{RESET}"
+        else:
+            return f"{YELLOW_TEXT_BRIGHT}WEAK SIGNAL. NO EFFECT.{RESET}"
+
+    else:
+        fail_val = db.get('fail_val', 0)
+        effect = db['fail_effect']
+
+        if effect == 'backfire':
+            player[ENTITY_HP] -= fail_val
+            return f"{RED_TEXT_BRIGHT}HACK FAILED! NEURAL FEEDBACK! {fail_val} DMG taken.{RESET}"
+        elif effect == 'overload':
+            player[ENTITY_HP] -= fail_val
+            return f"{RED_TEXT_BRIGHT}HACK FAILED! SYSTEM OVERLOAD! {fail_val} DMG taken.{RESET}"
+        elif effect == 'system_error':
+            return f"{RED_TEXT_BRIGHT}HACK FAILED! SYSTEM CRASH. TURN ENDED.{RESET}"
+
+
 def handle_inventory_menu(player_data: list[int | float | str]):
     """
     Отображает инвентарь и характеристики игрока.
