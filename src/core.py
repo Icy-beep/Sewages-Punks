@@ -881,9 +881,39 @@ def open_skill_shop(player_data: list) -> None:
 
 
 def handle_terminal_interaction(dungeon_map: list[list[int]], player_data: list, pos: list[int]) -> None:
-    """Открывает магазин навыков при наступлении на терминал."""
+    """
+    Главный цикл терминала-ОС.
+    Запускает меню программ и обрабатывает выбор пользователя.
+    """
     while True:
-        draw_terminal_menu(player_data)
+        draw_terminal_os(player_data)
+        choice = input().strip().lower()
+
+        if choice == '0' or choice == 'exit':
+            return
+
+        elif choice == '1' or choice == 'shop':
+            run_terminal_shop(player_data)
+
+        elif choice == '2' or choice == 'status':
+            run_terminal_status(player_data)
+
+        elif choice == '3' or choice == 'logs':
+            run_terminal_logs(player_data)
+
+        elif choice == '4' or choice == 'scanner':
+            print(f"\n{RED_TEXT_BRIGHT}[ERROR] Module not installed.{RESET}")
+            time.sleep(1)
+
+        else:
+            print(f"{RED_TEXT_BRIGHT}[ERROR] Unknown command.{RESET}")
+            time.sleep(0.8)
+
+
+def run_terminal_shop(player_data: list) -> None:
+    """Запускает программу магазина навыков."""
+    while True:
+        draw_terminal_shop(player_data)
         choice = input().strip()
 
         if choice == '0':
@@ -892,6 +922,7 @@ def handle_terminal_interaction(dungeon_map: list[list[int]], player_data: list,
         try:
             idx = int(choice) - 1
             skills = list(SKILL_DATABASE.keys())
+
             if 0 <= idx < len(skills):
                 skill_id = skills[idx]
                 info = SKILL_DATABASE[skill_id]
@@ -913,6 +944,47 @@ def handle_terminal_interaction(dungeon_map: list[list[int]], player_data: list,
                 print(f"{RED_TEXT_BRIGHT}[ERROR] INVALID SELECTION.{RESET}")
         except ValueError:
             print(f"{RED_TEXT_BRIGHT}[ERROR] INPUT NOT RECOGNIZED.{RESET}")
+            time.sleep(0.5)
+
+
+def run_terminal_status(player_data: list) -> None:
+    """Запускает программу системного мониторинга."""
+    while True:
+        draw_terminal_status(player_data)
+        choice = input().strip()
+        if choice == '0':
+            return
+
+
+def run_terminal_logs(player_data: list) -> None:
+    """Запускает программу просмотра логов миссии."""
+    clear_display()
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╔══════════════════════════════════════════╗{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}║      MISSION_LOG // ARCHIVE              ║{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╚══════════════════════════════════════════╝{RESET}\n")
+
+    print(f"{MAGENTA_TEXT_BRIGHT}MISSION: {RESET}Explore Moon City sewers")
+    print(f"{DARK_GRAY}{'─' * 42}{RESET}\n")
+
+    logs = [
+        f"{DARK_GRAY}[00:01]{RESET} PSY-link synchronized with Elgeia",
+        f"{DARK_GRAY}[00:15]{RESET} Sector 7-A entered",
+        f"{DARK_GRAY}[01:23]{RESET} Enemy eliminated: Punk",
+        f"{DARK_GRAY}[02:45]{RESET} Key-card acquired",
+        f"{DARK_GRAY}[03:12]{RESET} Terminal accessed"
+    ]
+
+    for log in logs:
+        print(f"  {log}")
+
+    print(f"\n{DARK_GRAY}{'─' * 42}{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}[ 0 ] BACK TO TERMINAL{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED > {RESET}", end='', flush=True)
+
+    while True:
+        choice = input().strip()
+        if choice == '0':
+            return
 
 
 def gain_xp(player_data: list, amount: int) -> None:

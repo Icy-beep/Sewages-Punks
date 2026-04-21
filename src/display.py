@@ -1040,17 +1040,46 @@ def draw_hacking_screen(skill_name: str, zone_start: int, zone_end: int, cursor_
     print(f"[{bar}]")
 
 
-def draw_terminal_menu(player_data: list) -> None:
-    """Отрисовывает интерфейс Black Market Terminal."""
+def draw_terminal_os(player_data: list) -> None:
+    """Отрисовывает главный экран терминала-ОС."""
+    clear_display()
+
+    # Заголовок ОС
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╔══════════════════════════════════════════╗{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}║      MOON_CITY_NET v.4.2 // TERMINAL     ║{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╚══════════════════════════════════════════╝{RESET}\n")
+
+    # Статус-бар
+    shards = player_data[PLAYER_SKILL_POINTS]
+    energy = player_data[PLAYER_ENERGY]
+    level = player_data[PLAYER_LEVEL]
+    print(f"{DARK_GRAY}USER: {MAIN_CHARACTER_NAME} | LVL: {level} | SHARDS: {shards} | ENERGY: {energy}/50{RESET}\n")
+
+    # Меню программ
+    print(f"{MAGENTA_TEXT_BRIGHT}AVAILABLE PROGRAMS:{RESET}")
+    print(f"{DARK_GRAY}{'─' * 42}{RESET}")
+
+    for key, prog in TERMINAL_PROGRAMS.items():
+        if key == '0':
+            print(f"{DARK_GRAY}[{key}] {prog['name']}{RESET} — {prog['desc']}")
+        else:
+            print(f"{LIGHT_BLUE_TEXT_BRIGHT}[{key}] {prog['name']}{RESET} — {prog['desc']}")
+
+    print(f"\n{DARK_GRAY}{'─' * 42}{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED > {RESET}", end='', flush=True)
+
+
+def draw_terminal_shop(player_data: list) -> None:
+    """Отрисовывает интерфейс магазина внутри терминала."""
     clear_display()
     print(f"{LIGHT_BLUE_TEXT_BRIGHT}╔══════════════════════════════════════════╗{RESET}")
-    print(f"{LIGHT_BLUE_TEXT_BRIGHT}║   MOON_CITY_NET // BLACK_MARKET_NODE     ║{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}║      DARKNET_MARKET // SKILL_STORE       ║{RESET}")
     print(f"{LIGHT_BLUE_TEXT_BRIGHT}╚══════════════════════════════════════════╝{RESET}\n")
 
     shards = player_data[PLAYER_SKILL_POINTS]
-    print(f"{YELLOW_TEXT_BRIGHT}◉ DATA SHARDS BALANCE: {shards} DS{RESET}\n")
+    print(f"{YELLOW_TEXT_BRIGHT}◉ BALANCE: {shards} DATA SHARDS{RESET}\n")
     print(f"{MAGENTA_TEXT_BRIGHT}AVAILABLE AUGMENTATIONS:{RESET}")
-    print(f"{DARK_GRAY}{'─' * 42}{RESET}")
+    print(f"{DARK_GRAY}{'─' * 42}{RESET}\n")
 
     skills = list(SKILL_DATABASE.items())
     for i, (skill_id, info) in enumerate(skills, 1):
@@ -1065,6 +1094,48 @@ def draw_terminal_menu(player_data: list) -> None:
         print(f"     {DARK_GRAY}> {info['desc']}{RESET}")
         print(f"     Status: {status}\n")
 
-    print(f"{MAGENTA_TEXT_BRIGHT}[ 0 ] DISCONNECT & RETURN{RESET}")
-    print(f"{LIGHT_BLUE_TEXT_BRIGHT}{'─' * 42}{RESET}")
+    print(f"{DARK_GRAY}{'─' * 42}{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}[ 0 ] BACK TO TERMINAL{RESET}")
     print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED > {RESET}", end='', flush=True)
+
+
+def draw_terminal_status(player_data: list) -> None:
+    """Отрисовывает экран системного мониторинга."""
+    clear_display()
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╔══════════════════════════════════════════╗{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}║      SYS_MONITOR // BIO_FEED             ║{RESET}")
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}╚══════════════════════════════════════════╝{RESET}\n")
+
+    # Бар здоровья
+    hp = player_data[ENTITY_HP]
+    hp_bar = f"{GREEN_TEXT_BRIGHT}{'█' * (hp // 5)}{RESET}{'░' * (20 - hp // 5)}"
+
+    # Бар энергии
+    energy = player_data[PLAYER_ENERGY]
+    max_energy = player_data[PLAYER_MAX_ENERGY]
+    energy_bar = f"{LIGHT_BLUE_TEXT_BRIGHT}{'█' * (energy * 20 // max_energy)}{RESET}{'░' * (20 - energy * 20 // max_energy)}"
+
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}VITALS:{RESET}")
+    print(f"  HP:        [{hp_bar}] {hp}/100")
+    print(f"  ENERGY:    [{energy_bar}] {energy}/{max_energy}")
+    print(f"  TOXICITY:  {player_data[ENTITY_TOXICITY]}/4")
+    print()
+
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}PROGRESSION:{RESET}")
+    print(f"  LEVEL:     {player_data[PLAYER_LEVEL]}")
+    print(f"  XP:        {player_data[PLAYER_XP]}/{player_data[PLAYER_XP_REQ]}")
+    print(f"  SHARDS:    {player_data[PLAYER_SKILL_POINTS]} DS")
+    print()
+
+    print(f"{LIGHT_BLUE_TEXT_BRIGHT}INSTALLED SKILLS:{RESET}")
+    if player_data[PLAYER_SKILLS]:
+        for skill in player_data[PLAYER_SKILLS]:
+            print(f"  • {GREEN_TEXT_BRIGHT}{skill}{RESET}")
+    else:
+        print(f"  {DARK_GRAY}No augmentations installed.{RESET}")
+
+    print(f"\n{DARK_GRAY}{'─' * 42}{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}[ 0 ] BACK TO TERMINAL{RESET}")
+    print(f"{MAGENTA_TEXT_BRIGHT}ACTION_REQUIRED > {RESET}", end='', flush=True)
+
+

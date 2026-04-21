@@ -231,5 +231,15 @@ HACK_SKILLS = {
     }
 }
 
+TERMINAL_PROGRAMS = {
+    '1': {'name': 'DARKNET_MARKET', 'func': 'shop', 'desc': 'Buy skill augmentations'},
+    '2': {'name': 'SYS_MONITOR', 'func': 'status', 'desc': 'View operator biometrics'},
+    '3': {'name': 'MISSION_LOG', 'func': 'logs', 'desc': 'Access mission archive'},
+    '4': {'name': 'NET_SCANNER', 'func': 'scanner', 'desc': 'Scan local sector (WIP)'},
+    '0': {'name': 'DISCONNECT', 'func': 'exit', 'desc': 'Terminate connection'}
+}
+
+TERMINAL_COMMANDS = ['1', '2', '3', '4', '0', 'shop', 'status', 'logs', 'exit']
+
 # Команда на использование навыка
 SKILL_COMMAND = 'k'
